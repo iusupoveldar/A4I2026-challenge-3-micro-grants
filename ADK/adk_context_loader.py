@@ -367,6 +367,8 @@ class ADKContextLoader:
             "spatial_human_impact_agent": "spatial_human_impact_agent",
             "orchestrator": "regime_orchestrator_agent",
             "regime_stress_test": "regime_orchestrator_agent",
+            "regime_stress_test_orchestrator": "regime_orchestrator_agent",
+            "regime_stress_test_orchestrator_agent": "regime_orchestrator_agent",
             "regime_orchestrator": "regime_orchestrator_agent",
             "regime_orchestrator_agent": "regime_orchestrator_agent",
         }

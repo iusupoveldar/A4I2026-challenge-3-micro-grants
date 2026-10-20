@@ -46,6 +46,8 @@ class RunwaySectorPurityAgent:
     """
 
     def __init__(self, adk_dir: Optional[str] = None) -> None:
+        self.name = "Runway_Sector_Purity_Agent"
+        self.display_name = "Runway, Sector & Purity Agent"
         self.agent_name = "runway_sector_purity_agent"
         self.adk_dir = adk_dir
         self.rubric = get_agent_rubric(self.agent_name, adk_dir=adk_dir)
@@ -123,7 +125,9 @@ class RunwaySectorPurityAgent:
             }
 
         return {
-            "agent": self.agent_name,
+            "agent": self.name,
+            "agent_id": self.agent_name,
+            "display_name": self.display_name,
             "role": "Runway, Sector & Purity Agent",
             "applicant_financial_purity_reports": reports,
             "disqualified_corporate_entities": [
@@ -153,11 +157,12 @@ def create_runway_sector_purity_adk_agent(
         agent_name="runway_sector_purity_agent",
     )
     return Agent(
-        name="runway_sector_purity_agent",
+        name="Runway_Sector_Purity_Agent",
         model=model,
         description=(
-            "Enforces Stage 0 Corporate Exclusion Gate, evaluates financial runway survival "
-            "lift, structural viability gates, sector volatility multipliers, and small-business purity."
+            "Runway, Sector & Purity Agent: Enforces Stage 0 Corporate Exclusion Gate, "
+            "evaluates financial runway survival lift, structural viability gates, "
+            "sector volatility multipliers, and small-business purity."
         ),
         instruction=prompt,
         tools=[
