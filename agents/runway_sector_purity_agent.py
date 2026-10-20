@@ -30,7 +30,7 @@ from tools.scoring_engine import (
 
 RUNWAY_AGENT_BASE_PROMPT = """You are the Runway, Sector & Purity Agent for the Central Market Micro-Grant ADK.
 You must NEVER calculate scores in prose. Always invoke your deterministic Python tools to evaluate:
-1. Stage 0 Hard Corporate Exclusion Gate (E_corp in {0, 1}) blocking enterprise tech, biotech,
+1. Stage 0 Hard Corporate Exclusion Gate (E_corp in (0, 1)) blocking enterprise tech, biotech,
    autonomous vehicle conglomerates, >50 FTE firms, >3 location chains, and >=25% institutional ownership.
 2. Dimension 1 Financial Runway (r_i = C_i / kappa_i), Logistic Survival Lift Delta P(g_i | r_i),
    Theorem 1 inflection optimality (r_max = r* - Delta_r / 2), Non-Monotonic Survival Bell Curve
@@ -46,6 +46,8 @@ class RunwaySectorPurityAgent:
     """
 
     def __init__(self, adk_dir: Optional[str] = None) -> None:
+        self.name = "Runway_Sector_Purity_Agent"
+        self.display_name = "Runway, Sector & Purity Agent"
         self.agent_name = "runway_sector_purity_agent"
         self.adk_dir = adk_dir
         self.rubric = get_agent_rubric(self.agent_name, adk_dir=adk_dir)
@@ -123,7 +125,9 @@ class RunwaySectorPurityAgent:
             }
 
         return {
-            "agent": self.agent_name,
+            "agent": self.name,
+            "agent_id": self.agent_name,
+            "display_name": self.display_name,
             "role": "Runway, Sector & Purity Agent",
             "applicant_financial_purity_reports": reports,
             "disqualified_corporate_entities": [
@@ -153,11 +157,12 @@ def create_runway_sector_purity_adk_agent(
         agent_name="runway_sector_purity_agent",
     )
     return Agent(
-        name="runway_sector_purity_agent",
+        name="Runway_Sector_Purity_Agent",
         model=model,
         description=(
-            "Enforces Stage 0 Corporate Exclusion Gate, evaluates financial runway survival "
-            "lift, structural viability gates, sector volatility multipliers, and small-business purity."
+            "Runway, Sector & Purity Agent: Enforces Stage 0 Corporate Exclusion Gate, "
+            "evaluates financial runway survival lift, structural viability gates, "
+            "sector volatility multipliers, and small-business purity."
         ),
         instruction=prompt,
         tools=[

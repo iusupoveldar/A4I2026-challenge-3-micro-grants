@@ -15,11 +15,16 @@ Run from the repository root:
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from typing import Optional
 
 from adk_context_loader import get_context_audit_summary
-from agents.regime_orchestrator_agent import RegimeStressTestOrchestratorAgent
+from agents.regime_orchestrator_agent import (
+    RegimeStressTestOrchestratorAgent,
+    list_available_agents,
+    select_deterministic_agent,
+)
 from tools.bigquery_connector import (
     BigQueryGraphConnector,
     get_bigquery_mcp_status,
@@ -33,6 +38,20 @@ from tools.bigquery_connector import (
 def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="Test the Ecosystem & Demand-Anchored Micro-Grant ADK Pipeline"
+    )
+    parser.add_argument(
+        "--agent",
+        default="Regime_Stress_Test_Orchestrator_Agent",
+        help=(
+            "Select which named ADK agent to run: "
+            "'Regime_Stress_Test_Orchestrator_Agent' (default, runs full 4-agent pipeline), "
+            "'Supply_Provenance_Agent', 'Runway_Sector_Purity_Agent', or 'Spatial_Human_Impact_Agent'."
+        ),
+    )
+    parser.add_argument(
+        "--list-agents",
+        action="store_true",
+        help="List all 4 selectable named ADK agents and exit.",
     )
     parser.add_argument(
         "--mode",
@@ -67,6 +86,12 @@ def main(argv: Optional[list[str]] = None) -> int:
         help="Also execute live CREATE OR REPLACE PROPERTY GRAPH and GRAPH_TABLE queries on the Enterprise reservation.",
     )
     args = parser.parse_args(argv)
+
+    if args.list_agents:
+        print("Available Named ADK Agents:")
+        for spec in list_available_agents():
+            print(f"  - {spec['name']} ({spec['display_name']}): {spec['role']}")
+        return 0
 
     print("=" * 80)
     print("A4I 2026 MICRO-GRANT ADK — END-TO-END VERIFICATION SUITE")
@@ -143,12 +168,18 @@ def main(argv: Optional[list[str]] = None) -> int:
     print(f"  Source    : {source_label}")
     print(f"  Loaded    : {len(applicants)} applicant records", flush=True)
 
-    # 3. Run Multi-Agent Pipeline & Deterministic Scoring Engine
-    print("\n[MODULES 2-4] Running 4-Agent Pipeline + Knapsack Optimizer + Red-Team Auditor...", flush=True)
-    orchestrator = RegimeStressTestOrchestratorAgent()
-    pipeline_output = orchestrator.run_pipeline(applicants=applicants)
+    # 3. Run Selected Named Agent or Full 4-Agent Pipeline
+    selected_agent = select_deterministic_agent(args.agent)
+    print(f"\n[SELECTED AGENT] {selected_agent.name} ({selected_agent.display_name})")
 
-    print("\n" + pipeline_output["red_team_compliance_report_markdown"], flush=True)
+    if isinstance(selected_agent, RegimeStressTestOrchestratorAgent):
+        print("[MODULES 2-4] Running 4-Agent Pipeline + Knapsack Optimizer + Red-Team Auditor...")
+        pipeline_output = selected_agent.run_pipeline(applicants=applicants)
+        print("\n" + pipeline_output["red_team_compliance_report_markdown"])
+    else:
+        print(f"[SPECIALIST AGENT EVALUATION] Executing {selected_agent.display_name}...")
+        agent_output = selected_agent.evaluate(applicants=applicants)
+        print(json.dumps(agent_output, indent=2))
     return 0
 
 

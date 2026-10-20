@@ -47,6 +47,18 @@ WITH cleaned AS (
 )
 SELECT
   *,
+  CASE
+    WHEN STARTS_WITH(naics4, '722') THEN 'Food Services — restaurants, bars, catering'
+    WHEN STARTS_WITH(naics4, '54')  THEN 'Professional, Scientific, and Technical Services — legal, IT, consulting, design'
+    WHEN STARTS_WITH(naics4, '44') OR STARTS_WITH(naics4, '45') THEN 'Retail Trade — groceries, clothing, furniture, other stores'
+    WHEN STARTS_WITH(naics4, '81')  THEN 'Certain Services — repairs, personal care, laundry, parking, community organizations'
+    WHEN STARTS_WITH(naics4, '62')  THEN 'Private Education and Health Services — health care and social assistance'
+    WHEN STARTS_WITH(naics4, '51')  THEN 'Information — publishing, software, telecommunications, hosting'
+    WHEN STARTS_WITH(naics4, '31') OR STARTS_WITH(naics4, '32') OR STARTS_WITH(naics4, '33') THEN 'Manufacturing — food, apparel, pharmaceuticals, equipment'
+    WHEN STARTS_WITH(naics4, '721') THEN 'Accommodations — hotels and lodging'
+    WHEN STARTS_WITH(naics4, '71')  THEN 'Arts, Entertainment and Recreation — theaters, events, fitness'
+    ELSE 'Other'
+  END AS industry_type,
   COUNT(*) OVER (PARTITION BY naics4) - 1 AS corridor_alternatives
 FROM cleaned;
 
@@ -226,6 +238,7 @@ SELECT
   b.legal_name,
   COALESCE(b.corridor, 'Central Market') AS corridor,
   b.naics4,
+  b.industry_type,
   (l.business_id IS NOT NULL) AS has_sba_history,
   COALESCE(l.loan_count, 0) AS loan_count,
   COALESCE(l.total_borrowed_amount, NUMERIC '0.0') AS total_borrowed_amount,
@@ -277,7 +290,7 @@ CREATE OR REPLACE PROPERTY GRAPH a4i_econ.LocalEconomy
     a4i_econ.businesses
       KEY (business_id)
       LABEL Business
-      PROPERTIES (business_id, name, legal_name, naics4, zip, latitude, longitude, registration_year, tenure_years, corridor_alternatives),
+      PROPERTIES (business_id, name, legal_name, naics4, industry_type, zip, latitude, longitude, registration_year, tenure_years, corridor_alternatives),
     a4i_econ.employer_blocks
       KEY (block_id)
       LABEL Employer
@@ -313,7 +326,7 @@ CREATE OR REPLACE PROPERTY GRAPH a4i_econ.ValidationGraph
     a4i_econ.businesses
       KEY (business_id)
       LABEL Business
-      PROPERTIES (business_id, name, legal_name, naics4, zip, latitude, longitude, registration_year, tenure_years, corridor_alternatives),
+      PROPERTIES (business_id, name, legal_name, naics4, industry_type, zip, latitude, longitude, registration_year, tenure_years, corridor_alternatives),
     a4i_econ.employer_blocks
       KEY (block_id)
       LABEL Employer
@@ -501,3 +514,23 @@ SELECT
 FROM supplier_scores
 ORDER BY rank_after_decay ASC
 LIMIT 15;
+
+-- Query 8F: Industry Type Breakdown Across the 218 Corridor Businesses
+SELECT
+  industry_type,
+  CASE
+    WHEN STARTS_WITH(naics4, '722') THEN '722'
+    WHEN STARTS_WITH(naics4, '54')  THEN '54'
+    WHEN STARTS_WITH(naics4, '44') OR STARTS_WITH(naics4, '45') THEN '44–45'
+    WHEN STARTS_WITH(naics4, '81')  THEN '811, 812, 813'
+    WHEN STARTS_WITH(naics4, '62')  THEN '62'
+    WHEN STARTS_WITH(naics4, '51')  THEN '51'
+    WHEN STARTS_WITH(naics4, '31') OR STARTS_WITH(naics4, '32') OR STARTS_WITH(naics4, '33') THEN '31–33'
+    WHEN STARTS_WITH(naics4, '721') THEN '721'
+    WHEN STARTS_WITH(naics4, '71')  THEN '71'
+    ELSE 'Other'
+  END AS naics_prefixes_represented,
+  COUNT(*) AS businesses
+FROM `a4i_econ.businesses`
+GROUP BY 1, 2
+ORDER BY businesses DESC;

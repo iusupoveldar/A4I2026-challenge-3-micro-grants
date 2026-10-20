@@ -645,6 +645,8 @@
   // --- 3. APPLICATION STATE & DEFAULT SETTINGS ---
 
   const state = {
+    activeAgentId: "Regime_Stress_Test_Orchestrator_Agent",
+    activeAgentDisplayName: "Regime Stress-Test & Orchestrator Agent",
     budget: 50000,
     regime: "hybrid", // "concentrate", "spread", "hybrid"
     runwayWeight: 1.0,
@@ -1239,7 +1241,7 @@
 
     // Summary text
     document.getElementById("memo-summary-metrics-para").innerHTML = `
-      Under the <strong>${state.regime.toUpperCase()} allocation regime</strong>, the system has allocated 
+      Evaluated by <strong>${state.activeAgentDisplayName}</strong> (<code>${state.activeAgentId}</code>) under the <strong>${state.regime.toUpperCase()} allocation regime</strong>, the system has allocated 
       <strong>$${s.budgetAllocated.toLocaleString()}</strong> across <strong>${s.fundedCount}</strong> eligible storefronts and makers. 
       This deployment directly preserves <strong>${s.directJobs} direct full-time jobs</strong>, shields an estimated 
       <strong>${s.networkJobs} downstream supply-chain workers</strong>, and maintains daily service access for over 
@@ -1353,6 +1355,64 @@
         recomputeAll();
       });
     });
+
+    // Active ADK Agent Selector
+    const selectAdkAgent = document.getElementById("select-adk-agent");
+    if (selectAdkAgent) {
+      selectAdkAgent.addEventListener("change", (e) => {
+        const agentId = e.target.value;
+        state.activeAgentId = agentId;
+        const agentBadge = document.getElementById("active-agent-badge");
+        const agentDesc = document.getElementById("active-agent-description-text");
+
+        if (agentId === "Supply_Provenance_Agent") {
+          state.activeAgentDisplayName = "Supply & Provenance Agent";
+          state.alpha = 0.85;
+          state.parentWeight = 1.9;
+          state.peopleWeight = 0.8;
+          state.runwayWeight = 0.9;
+          if (agentBadge) agentBadge.textContent = "Sub-Agent 1";
+          if (agentDesc) {
+            agentDesc.innerHTML = "<strong>Supply &amp; Provenance Agent:</strong> Evaluates upstream parent suppliers, trophic cascade multipliers, substitutability friction, and verified commercial tax invoice provenance gates.";
+          }
+        } else if (agentId === "Runway_Sector_Purity_Agent") {
+          state.activeAgentDisplayName = "Runway, Sector & Purity Agent";
+          state.alpha = 0.45;
+          state.runwayWeight = 1.9;
+          state.purityWeight = 1.8;
+          state.volatilityWeight = 1.4;
+          if (agentBadge) agentBadge.textContent = "Sub-Agent 2";
+          if (agentDesc) {
+            agentDesc.innerHTML = "<strong>Runway, Sector &amp; Purity Agent:</strong> Enforces Stage 0 small-business purity gates, asymmetric bell-shaped runway urgency curves, and sector volatility adjustments.";
+          }
+        } else if (agentId === "Spatial_Human_Impact_Agent") {
+          state.activeAgentDisplayName = "Spatial Foot-Traffic & Human-Impact Agent";
+          state.alpha = 0.15;
+          state.peopleWeight = 1.9;
+          state.parentWeight = 1.0;
+          state.runwayWeight = 1.2;
+          if (agentBadge) agentBadge.textContent = "Sub-Agent 3";
+          if (agentDesc) {
+            agentDesc.innerHTML = "<strong>Spatial Foot-Traffic &amp; Human-Impact Agent:</strong> Evaluates daily people served per dollar, neighborhood equity multipliers, and two-block storefront cluster critical mass.";
+          }
+        } else {
+          state.activeAgentDisplayName = "Regime Stress-Test & Orchestrator Agent";
+          state.alpha = 0.50;
+          state.parentWeight = 1.4;
+          state.runwayWeight = 1.0;
+          state.peopleWeight = 1.0;
+          state.purityWeight = 1.0;
+          state.volatilityWeight = 1.0;
+          if (agentBadge) agentBadge.textContent = "Root Agent";
+          if (agentDesc) {
+            agentDesc.innerHTML = "<strong>Regime Stress-Test &amp; Orchestrator Agent:</strong> Root multi-agent coordinator that synthesizes all 3 domain sub-agents, executes multi-regime stress testing, and verifies 10-vector Red-Team compliance.";
+          }
+        }
+
+        syncSlidersFromState();
+        recomputeAll();
+      });
+    }
 
     // Presets Bar
     const presetButtons = document.querySelectorAll(".preset-btn");

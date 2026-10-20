@@ -41,6 +41,8 @@ class SpatialHumanImpactAgent:
     """
 
     def __init__(self, adk_dir: Optional[str] = None) -> None:
+        self.name = "Spatial_Human_Impact_Agent"
+        self.display_name = "Spatial Foot-Traffic & Human-Impact Agent"
         self.agent_name = "spatial_human_impact_agent"
         self.adk_dir = adk_dir
         self.rubric = get_agent_rubric(self.agent_name, adk_dir=adk_dir)
@@ -100,7 +102,9 @@ class SpatialHumanImpactAgent:
         )
 
         return {
-            "agent": self.agent_name,
+            "agent": self.name,
+            "agent_id": self.agent_name,
+            "display_name": self.display_name,
             "role": "Spatial Foot-Traffic & Human-Impact Agent",
             "applicant_human_impact_reports": impact_reports,
             "spatial_cluster_audit": spatial_cluster_audit,
@@ -123,11 +127,12 @@ def create_spatial_human_impact_adk_agent(
         agent_name="spatial_human_impact_agent",
     )
     return Agent(
-        name="spatial_human_impact_agent",
+        name="Spatial_Human_Impact_Agent",
         model=model,
         description=(
-            "Enforces 200m spatial critical-mass cluster rules, evaluates Track 1 Community "
-            "Anchor scores and Census Tract Equity Multipliers, and computes Total People Helped per Dollar."
+            "Spatial Foot-Traffic & Human-Impact Agent: Enforces 200m spatial critical-mass "
+            "cluster rules, evaluates Track 1 Community Anchor scores and Census Tract Equity "
+            "Multipliers, and computes Total People Helped per Dollar."
         ),
         instruction=prompt,
         tools=[

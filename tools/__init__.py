@@ -43,11 +43,17 @@ from tools.compliance_reporter import (
 )
 from tools.bigquery_connector import (
     BigQueryGraphConnector,
+    classify_industry_type,
+    ensure_bigquery_property_graph,
+    evaluate_gql_cascade_and_recommend_funding,
     get_bq_enriched_corridor_sql,
     get_gql_multihop_cascade_sql,
+    get_gql_shortest_path_trace_sql,
     get_property_graph_ddl,
     load_applicants_from_local_csv,
     load_corridor_applicants,
+    trace_applicant_multihop_paths_and_compare,
+    traverse_corridor_graph_gql,
 )
 
 __all__ = [
@@ -61,13 +67,16 @@ __all__ = [
     "calculate_total_people_helped",
     "calculate_vulnerable_resident_reach",
     "census_equity_multiplier",
+    "classify_industry_type",
     "community_anchor_score",
     "compute_applicant_utility",
     "compute_sensitivity_and_robust_awardees",
     "cyclical_viability_factor",
     "discover_unapplied_bottlenecks",
+    "ensure_bigquery_property_graph",
     "evaluate_all_applicants",
     "evaluate_corporate_exclusion_gate",
+    "evaluate_gql_cascade_and_recommend_funding",
     "evaluate_red_team_compliance",
     "evaluate_spatial_cluster_critical_mass",
     "filter_naics_81_b2b_links",
@@ -75,6 +84,7 @@ __all__ = [
     "get_bq_enriched_corridor_sql",
     "get_canonical_applicants",
     "get_gql_multihop_cascade_sql",
+    "get_gql_shortest_path_trace_sql",
     "get_property_graph_ddl",
     "haversine_distance_meters",
     "jaccard_similarity",
@@ -93,5 +103,7 @@ __all__ = [
     "small_business_purity_score",
     "structural_viability_gate",
     "supply_cascade_score",
+    "trace_applicant_multihop_paths_and_compare",
+    "traverse_corridor_graph_gql",
     "upstream_asymmetry_and_cascade_multiplier",
 ]

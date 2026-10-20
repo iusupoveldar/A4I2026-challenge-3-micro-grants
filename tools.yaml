@@ -1,0 +1,196 @@
+# ==============================================================================
+# Google MCP Toolbox for Databases Configuration (`tools.yaml`)
+# ==============================================================================
+# Consumed by Google's MCP Toolbox for Databases (`googleapis/mcp-toolbox`) via:
+#   toolbox --tools-file tools.yaml --port 5000
+# or combined with prebuilt BigQuery tools:
+#   toolbox --prebuilt bigquery --tools-file tools.yaml --port 5000
+#
+# Satisfies BOTH:
+#   1. Google-managed MCP server consumption (`kind: bigquery` source + prebuilt tools)
+#   2. Custom-defined MCP Toolbox tools traversing the `a4i_econ.LocalEconomy`
+#      BigQuery Property Graph via genuine multi-hop GQL `MATCH` (Section 13).
+# ==============================================================================
+
+sources:
+  central_market_bq:
+    kind: bigquery
+    project: ${GOOGLE_CLOUD_PROJECT:qwiklabs-gcp-04-486b161c6a8e}
+    location: US
+
+tools:
+  gql-multihop-supply-cascade:
+    kind: bigquery-sql
+    source: central_market_bq
+    description: >-
+      Traverse the a4i_econ.LocalEconomy BigQuery Property Graph 1-to-2 hops along
+      Supplies edges using genuine GQL quantified path matching (-[:Supplies]->{1,2})
+      with NEXT + FILTER post-aggregation, joined withDrawsFootfall and real SBA
+      borrowed_from loan records (Section 13 Traps 1-7 compliant).
+    statement: |
+      WITH multihop_reach AS (
+        SELECT
+          business_id,
+          business_name,
+          naics4,
+          two_hop_exposed_count
+        FROM GRAPH_TABLE(
+          a4i_econ.LocalEconomy
+          MATCH (seed:Business)-[:Supplies]->{1,2}(exposed:Business)
+          WHERE exposed.business_id != seed.business_id
+          RETURN
+            seed.business_id AS business_id,
+            seed.name AS business_name,
+            seed.naics4 AS naics4,
+            COUNT(DISTINCT exposed.business_id) AS two_hop_exposed_count
+          GROUP BY seed.business_id, seed.name, seed.naics4
+          NEXT
+          FILTER WHERE two_hop_exposed_count >= @min_exposed
+          RETURN business_id, business_name, naics4, two_hop_exposed_count
+        )
+      ),
+      hop_coefficients AS (
+        SELECT
+          business_id,
+          COUNT(DISTINCT hop1_id) AS direct_buyers,
+          SUM(hop1_intensity) AS hop1_intensity_sum,
+          AVG(hop1_metres) AS avg_hop1_metres,
+          COUNT(DISTINCT hop2_id) AS hop2_only_buyers,
+          SUM(compounded_hop2_intensity) AS hop2_compounded_intensity_sum
+        FROM GRAPH_TABLE(
+          a4i_econ.LocalEconomy
+          MATCH (seed:Business)-[e1:Supplies]->(hop1:Business)
+          OPTIONAL MATCH (hop1:Business)-[e2:Supplies]->(hop2:Business)
+          WHERE hop2.business_id IS NULL OR hop2.business_id != seed.business_id
+          RETURN
+            seed.business_id AS business_id,
+            hop1.business_id AS hop1_id,
+            e1.intensity AS hop1_intensity,
+            e1.metres AS hop1_metres,
+            hop2.business_id AS hop2_id,
+            COALESCE(e1.intensity * e2.intensity, 0.0) AS compounded_hop2_intensity
+        )
+        GROUP BY business_id
+      ),
+      footfall_reach AS (
+        SELECT
+          business_id,
+          SUM(worker_share) AS worker_footfall_jobs,
+          COUNT(DISTINCT block_id) AS employer_blocks_served
+        FROM GRAPH_TABLE(
+          a4i_econ.LocalEconomy
+          MATCH (emp:Employer)-[df:DrawsFootfall]->(b:Business)
+          RETURN
+            b.business_id AS business_id,
+            emp.block_id AS block_id,
+            df.worker_share AS worker_share
+        )
+        GROUP BY business_id
+      ),
+      sba_verified AS (
+        SELECT
+          business_id,
+          COUNT(*) AS sba_loan_count,
+          SUM(COALESCE(SAFE_CAST(gross_approval AS FLOAT64), 0.0)) AS total_sba_approved,
+          COUNTIF(SAFE_CAST(charged_off AS BOOL)) > 0 AS has_sba_charge_off
+        FROM `a4i_econ.borrowed_from`
+        GROUP BY business_id
+      )
+      SELECT
+        m.business_id,
+        m.business_name,
+        m.naics4,
+        COALESCE(hc.direct_buyers, 0) AS direct_buyers,
+        m.two_hop_exposed_count AS two_hop_exposed,
+        ROUND(COALESCE(hc.hop1_intensity_sum, 0.0), 4) AS hop1_intensity_sum,
+        ROUND(COALESCE(hc.hop2_compounded_intensity_sum, 0.0), 4) AS hop2_compounded_intensity_sum,
+        ROUND(COALESCE(hc.avg_hop1_metres, 0.0), 1) AS avg_hop1_metres,
+        ROUND(COALESCE(ff.worker_footfall_jobs, 0.0), 1) AS worker_footfall_jobs,
+        COALESCE(sba.sba_loan_count, 0) AS sba_loan_count,
+        ROUND(COALESCE(sba.total_sba_approved, 0.0), 2) AS total_sba_approved,
+        COALESCE(sba.has_sba_charge_off, FALSE) AS has_sba_charge_off
+      FROM multihop_reach m
+      LEFT JOIN hop_coefficients hc USING (business_id)
+      LEFT JOIN footfall_reach ff USING (business_id)
+      LEFT JOIN sba_verified sba USING (business_id)
+      ORDER BY m.two_hop_exposed_count DESC, hc.hop1_intensity_sum DESC
+    parameters:
+      - name: min_exposed
+        type: integer
+        description: Minimum number of distinct 1-to-2 hop downstream businesses exposed.
+        default: 2
+
+  gql-shortest-path-provenance-trace:
+    kind: bigquery-sql
+    source: central_market_bq
+    description: >-
+      Inspect serialized JSON multi-hop supply paths (TO_JSON(p)) using GQL
+      ANY SHORTEST (seed:Business)-[:Supplies]->{1,2}(exposed:Business) so the
+      agent can verify hop-by-hop BEA intensity coefficients and spatial distances.
+    statement: |
+      SELECT
+        seed_id,
+        seed_name,
+        seed_naics4,
+        exposed_id,
+        exposed_name,
+        exposed_naics4,
+        TO_JSON_STRING(supply_path) AS supply_path_json
+      FROM GRAPH_TABLE(
+        a4i_econ.LocalEconomy
+        MATCH p = ANY SHORTEST (seed:Business)-[:Supplies]->{1,2}(exposed:Business)
+        WHERE seed.business_id != exposed.business_id
+          AND (@seed_business_id = '' OR seed.business_id = @seed_business_id)
+        RETURN
+          seed.business_id AS seed_id,
+          seed.name AS seed_name,
+          seed.naics4 AS seed_naics4,
+          exposed.business_id AS exposed_id,
+          exposed.name AS exposed_name,
+          exposed.naics4 AS exposed_naics4,
+          TO_JSON(p) AS supply_path
+      )
+      LIMIT 50
+    parameters:
+      - name: seed_business_id
+        type: string
+        description: Optional business_id to filter the upstream seed node (pass empty string for all).
+        default: ""
+
+  gql-anchor-closure-impact:
+    kind: bigquery-sql
+    source: central_market_bq
+    description: >-
+      Simultaneously traverse DrawsFootfall (Employer -> Business) and Supplies
+      (upstream Supplier -> Anchor -> downstream Buyer) in a4i_econ.LocalEconomy
+      to quantify both commuter demand loss and B2B supply contagion if a corridor
+      anchor closes.
+    statement: |
+      SELECT
+        anchor_id,
+        anchor_name,
+        anchor_naics4,
+        ROUND(SUM(worker_share), 1) AS total_worker_footfall_exposed,
+        COUNT(DISTINCT block_id) AS census_blocks_impacted,
+        COUNT(DISTINCT upstream_supplier_id) AS upstream_suppliers_losing_buyer
+      FROM GRAPH_TABLE(
+        a4i_econ.LocalEconomy
+        MATCH (emp:Employer)-[df:DrawsFootfall]->(anchor:Business)
+        OPTIONAL MATCH (sup:Business)-[s:Supplies]->(anchor:Business)
+        RETURN
+          anchor.business_id AS anchor_id,
+          anchor.name AS anchor_name,
+          anchor.naics4 AS anchor_naics4,
+          emp.block_id AS block_id,
+          df.worker_share AS worker_share,
+          sup.business_id AS upstream_supplier_id
+      )
+      GROUP BY anchor_id, anchor_name, anchor_naics4
+      ORDER BY total_worker_footfall_exposed DESC
+      LIMIT 25
+
+toolsets:
+  central_market_bigquery_graph_toolset:
+    - gql-multihop-supply-cascade
+    - gql-shortest-path-provenance-trace
+    - gql-anchor-closure-impact

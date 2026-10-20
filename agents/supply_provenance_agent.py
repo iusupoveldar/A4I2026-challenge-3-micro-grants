@@ -3,8 +3,9 @@ Supply & Provenance Agent (`agents/supply_provenance_agent.py`).
 
 Evaluates B2B network topology, upstream parent/root suppliers (xi_i, mu_i, omega_parent),
 local redundancy discount (r_j^-0.5), external distributor substitutability friction (theta_ext),
-4-digit NAICS 81 B2B disaggregation, un-applied upstream corridor bottlenecks, and mandatory
-1-invoice verification gates ([MODELED] vs. [VERIFIED]).
+4-digit NAICS 81 B2B disaggregation, un-applied upstream corridor bottlenecks, mandatory
+1-invoice verification gates ([MODELED] vs. [VERIFIED]), and live BigQuery GQL multi-hop
+property graph traversals on `a4i_econ.LocalEconomy`.
 """
 
 from __future__ import annotations
@@ -13,10 +14,17 @@ from typing import Any, Dict, List, Optional
 
 from ADK.adk_context_loader import build_system_prompt_with_adk_docs, get_agent_rubric
 from tools.bigquery_connector import (
-    create_bigquery_mcp_toolset,
     ensure_bigquery_property_graph,
-    execute_gql_anchor_closure_cascade,
-    execute_gql_multihop_cascade,
+    evaluate_gql_cascade_and_recommend_funding,
+    get_gql_multihop_cascade_sql,
+    get_gql_shortest_path_trace_sql,
+    get_property_graph_ddl,
+    trace_applicant_multihop_paths_and_compare,
+    traverse_corridor_graph_gql,
+)
+from tools.mcp_bigquery_toolset import (
+    get_google_managed_bigquery_mcp_toolsets,
+    get_mcp_bigquery_server_status,
 )
 from tools.scoring_engine import (
     PROVENANCE_MODELED,
@@ -30,15 +38,20 @@ from tools.scoring_engine import (
 
 
 SUPPLY_AGENT_BASE_PROMPT = """You are the Supply & Provenance Agent for the Central Market Micro-Grant ADK.
-You must NEVER calculate scores in prose. Always invoke your deterministic Python tools to evaluate:
-1. Track 2 Commercial Network Contagion Score (S_cascade) with spatial decay, local redundancy (r_j^-0.5),
+You must NEVER calculate scores in prose. Always invoke your deterministic Python and BigQuery MCP/GQL tools to evaluate:
+1. Multi-Hop BigQuery Property Graph Traversal on `a4i_econ.LocalEconomy`:
+   - Use `traverse_corridor_graph_gql` and `evaluate_gql_cascade_and_recommend_funding` (plus the Google-managed
+     BigQuery MCP server / `BigQueryToolset`) to run genuine multi-hop `MATCH (seed:Business)-[:Supplies]->(1..2 hops)(exposed:Business)`
+     and `MATCH p = ANY SHORTEST (seed:Business)-[:Supplies]->(1..2 hops)(exposed:Business)` queries.
+2. Track 2 Commercial Network Contagion Score (S_cascade) with spatial decay, local redundancy (r_j^-0.5),
    and external distributor substitutability friction (theta_ext in [0.0, 0.80]).
-2. Upstream Asymmetry Ratio (xi_i), Cascading Failure Multiplier (mu_i), and Piecewise Root Supplier
+3. Upstream Asymmetry Ratio (xi_i), Cascading Failure Multiplier (mu_i), and Piecewise Root Supplier
    Multiplier (omega_parent).
-3. Vector 8 Mandatory 4-Digit NAICS Disaggregation (stripping false B2B edges from NAICS 8121/8129).
-4. Vector 1 Provenance Tagging ([MODELED] vs [VERIFIED]), Zero-Cascade Lower-Bound Audit (alpha=0.0),
+4. Vector 8 Mandatory 4-Digit NAICS Disaggregation (stripping false B2B edges from NAICS 8121/8129).
+5. Vector 1 Provenance Tagging ([MODELED] vs [VERIFIED]), discounting modeled `Supplies` and `DrawsFootfall`
+   edges relative to verified `borrowed_from` SBA loan records, Zero-Cascade Lower-Bound Audit (alpha=0.0),
    and Pre-Disbursement 1-Invoice Gate triggers (cascade contribution > 30%).
-5. Vector 9 Bidirectional 2-Hop Scan for Un-Applied Corridor Bottlenecks (B_upstream(Q))."""
+6. Vector 9 Bidirectional 2-Hop Scan for Un-Applied Corridor Bottlenecks (B_upstream(Q))."""
 
 
 class SupplyProvenanceAgent:
@@ -47,6 +60,8 @@ class SupplyProvenanceAgent:
     """
 
     def __init__(self, adk_dir: Optional[str] = None) -> None:
+        self.name = "Supply_Provenance_Agent"
+        self.display_name = "Supply & Provenance Agent"
         self.agent_name = "supply_provenance_agent"
         self.adk_dir = adk_dir
         self.rubric = get_agent_rubric(self.agent_name, adk_dir=adk_dir)
@@ -125,7 +140,9 @@ class SupplyProvenanceAgent:
         bottleneck_alerts = discover_unapplied_bottlenecks(applicants=apps)
 
         return {
-            "agent": self.agent_name,
+            "agent": self.name,
+            "agent_id": self.agent_name,
+            "display_name": self.display_name,
             "role": "Supply & Provenance Agent",
             "applicant_supply_reports": applicant_reports,
             "unapplied_bottleneck_alerts": bottleneck_alerts,
@@ -140,10 +157,12 @@ class SupplyProvenanceAgent:
 def create_supply_provenance_adk_agent(
     model: str = "gemini-2.5-flash",
     adk_dir: Optional[str] = None,
+    include_mcp_toolsets: bool = True,
 ) -> Any:
     """
     Constructs a `google.adk.agents.Agent` instance wired with the Supply & Provenance
-    tools and `./ADK/DOCS/*.md` system instructions.
+    custom Python tools, multi-hop GQL Property Graph traversal tools, Google-managed
+    BigQuery MCP toolsets, and `./ADK/DOCS/*.md` system instructions.
     """
     from google.adk.agents import Agent
 
@@ -152,28 +171,33 @@ def create_supply_provenance_adk_agent(
         adk_dir=adk_dir,
         agent_name="supply_provenance_agent",
     )
-    supply_tools: List[Any] = [
+    agent_tools: List[Any] = [
+        trace_applicant_multihop_paths_and_compare,
+        ensure_bigquery_property_graph,
+        traverse_corridor_graph_gql,
+        evaluate_gql_cascade_and_recommend_funding,
+        get_property_graph_ddl,
+        get_gql_multihop_cascade_sql,
+        get_gql_shortest_path_trace_sql,
+        get_mcp_bigquery_server_status,
         supply_cascade_score,
         upstream_asymmetry_and_cascade_multiplier,
         piecewise_root_supplier_multiplier,
         filter_naics_81_b2b_links,
         discover_unapplied_bottlenecks,
-        ensure_bigquery_property_graph,
-        execute_gql_multihop_cascade,
-        execute_gql_anchor_closure_cascade,
     ]
-    bq_mcp = create_bigquery_mcp_toolset()
-    if bq_mcp is not None:
-        supply_tools.append(bq_mcp)
+    if include_mcp_toolsets:
+        agent_tools.extend(get_google_managed_bigquery_mcp_toolsets())
 
     return Agent(
-        name="supply_provenance_agent",
+        name="Supply_Provenance_Agent",
         model=model,
         description=(
-            "Evaluates B2B supply topology, upstream parent/root multipliers, "
-            "substitutability friction, NAICS 81 disaggregation, un-applied bottlenecks, "
-            "and 1-invoice provenance verification gates."
+            "Supply & Provenance Agent: Traverses the BigQuery a4i_econ.LocalEconomy Property "
+            "Graph via multi-hop GQL and Google-managed BigQuery MCP tools; evaluates B2B "
+            "supply topology, upstream parent/root multipliers, substitutability friction, "
+            "NAICS 81 disaggregation, un-applied bottlenecks, and 1-invoice provenance verification gates."
         ),
         instruction=prompt,
-        tools=supply_tools,
+        tools=agent_tools,
     )

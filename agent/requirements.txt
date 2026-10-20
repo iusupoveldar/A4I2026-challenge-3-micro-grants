@@ -1,5 +1,12 @@
-google-adk>=1.0.0
-google-cloud-bigquery>=3.20.0
-google-genai>=0.1.0
-mcp>=1.0.0
-pydantic>=2.0.0
+google-adk>=2.0.0
+google-cloud-bigquery>=3.25.0
+google-genai>=1.0.0
+google-auth>=2.35.0
+mcp>=1.2.0
+toolbox-core>=0.1.0
+fastapi>=0.115.0
+uvicorn>=0.32.0
+pydantic>=2.9.0
+python-dotenv>=1.0.1
+requests>=2.32.0
+PyYAML>=6.0.2

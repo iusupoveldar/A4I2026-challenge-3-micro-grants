@@ -147,6 +147,25 @@
             </p>
           </div>
 
+          <!-- Active ADK Agent Selector -->
+          <div class="control-card">
+            <div class="control-card-title">
+              <span>Select Active ADK Agent</span>
+              <span class="badge-tag" id="active-agent-badge">Root Agent</span>
+            </div>
+            <div style="margin-bottom: 0.6rem;">
+              <select id="select-adk-agent" aria-label="Select Active ADK Agent" style="width: 100%; background: rgba(15, 23, 42, 0.9); color: #f8fafc; border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 6px; padding: 0.5rem 0.65rem; font-size: 0.8rem; font-weight: 600;">
+                <option value="Regime_Stress_Test_Orchestrator_Agent">1. Regime Stress-Test &amp; Orchestrator Agent</option>
+                <option value="Supply_Provenance_Agent">2. Supply &amp; Provenance Agent</option>
+                <option value="Runway_Sector_Purity_Agent">3. Runway, Sector &amp; Purity Agent</option>
+                <option value="Spatial_Human_Impact_Agent">4. Spatial Foot-Traffic &amp; Human-Impact Agent</option>
+              </select>
+            </div>
+            <p class="slider-help-text" id="active-agent-description-text">
+              <strong>Regime Stress-Test &amp; Orchestrator Agent:</strong> Root multi-agent coordinator that synthesizes all 3 domain sub-agents, executes multi-regime stress testing, and verifies 10-vector Red-Team compliance.
+            </p>
+          </div>
+
           <!-- Optimization Presets -->
           <div class="control-card">
             <div class="control-card-title">

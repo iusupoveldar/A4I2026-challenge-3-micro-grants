@@ -2,18 +2,21 @@
 Regime Stress-Test & Orchestrator Agent (`agents/regime_orchestrator_agent.py`).
 
 Coordinates the 3 specialized evaluation agents:
-  1. Supply & Provenance Agent (`supply_provenance_agent`)
-  2. Runway, Sector & Purity Agent (`runway_sector_purity_agent`)
-  3. Spatial Foot-Traffic & Human-Impact Agent (`spatial_human_impact_agent`)
+  1. Supply & Provenance Agent (`Supply_Provenance_Agent`)
+  2. Runway, Sector & Purity Agent (`Runway_Sector_Purity_Agent`)
+  3. Spatial Foot-Traffic & Human-Impact Agent (`Spatial_Human_Impact_Agent`)
 
-Executes Submodular Multi-Choice Knapsack Portfolio Optimization across Regimes A, B, and C,
-computes Parameter Invariance Intervals and the Simplex Robust Awardee Set S_robust,
-and generates the decision-grade Red-Team Compliance Report.
+Consumes the Google-managed BigQuery MCP server / `BigQueryToolset` and executes
+genuine multi-hop GQL traversals on `a4i_econ.LocalEconomy`, applies post-traversal
+provenance weighting and non-monotonic survival lift filtering, executes Submodular
+Multi-Choice Knapsack Portfolio Optimization across Regimes A, B, and C, computes
+Parameter Invariance Intervals and the Simplex Robust Awardee Set S_robust, and
+generates the decision-grade Red-Team Compliance Report.
 """
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from ADK.adk_context_loader import (
     build_system_prompt_with_adk_docs,
@@ -34,20 +37,23 @@ from agents.supply_provenance_agent import (
     SupplyProvenanceAgent,
     create_supply_provenance_adk_agent,
 )
+from tools.bigquery_connector import (
+    ensure_bigquery_property_graph,
+    evaluate_gql_cascade_and_recommend_funding,
+    get_gql_multihop_cascade_sql,
+    get_gql_shortest_path_trace_sql,
+    get_property_graph_ddl,
+    load_corridor_applicants,
+    trace_applicant_multihop_paths_and_compare,
+    traverse_corridor_graph_gql,
+)
 from tools.compliance_reporter import (
     evaluate_red_team_compliance,
     format_red_team_compliance_report_markdown,
 )
-from tools.bigquery_connector import (
-    create_bigquery_mcp_toolset,
-    ensure_bigquery_property_graph,
-    execute_gql_anchor_closure_cascade,
-    execute_gql_multihop_cascade,
-    get_bigquery_mcp_status,
-    get_gql_anchor_closure_cascade_sql,
-    get_gql_multihop_cascade_sql,
-    get_property_graph_ddl,
-    load_corridor_applicants,
+from tools.mcp_bigquery_toolset import (
+    get_google_managed_bigquery_mcp_toolsets,
+    get_mcp_bigquery_server_status,
 )
 from tools.scoring_engine import (
     compute_applicant_utility,
@@ -62,14 +68,23 @@ from tools.scoring_engine import (
 
 ORCHESTRATOR_BASE_PROMPT = """You are the Regime Stress-Test & Orchestrator Agent (Chief Municipal Economist)
 for the San Francisco Central Market Micro-Grant ADK.
-You must NEVER perform arithmetic in prose. You orchestrate:
-1. Supply & Provenance Agent (`supply_provenance_agent`)
-2. Runway, Sector & Purity Agent (`runway_sector_purity_agent`)
-3. Spatial Foot-Traffic & Human-Impact Agent (`spatial_human_impact_agent`)
-and invoke deterministic optimization tools to compare Regimes A, B, and C under a $50,000 budget,
-prevent partial-grant dilution on Indivisible Capital Cliffs, enforce 200m spatial critical mass,
-compute parameter invariance intervals [alpha_min, alpha_max] and S_robust, and produce the
-Red-Team Compliance & Determination Report."""
+You must NEVER perform arithmetic in prose, and you must NEVER answer a Grant Officer's question
+merely by quoting internal formula variable names (`u_i`, `LiftFactor`, `parent_multiplier_mu_i`).
+Always build a **defensible case, not just a score**:
+- Whenever asked questions like:
+  * "If I fund nobody, which of these eleven closures does the most damage?"
+  * "Show me why this one and not that one."
+  * "Are any downstream suppliers/buyers already fragile?"
+  * "Nobody at the far end of that chain applied. Should they have?"
+  * "What does $8,000 [or $10,000] actually change?"
+  * "Whose neighborhood does this help?"
+  * "Write it up. I present Friday."
+  you MUST call `trace_applicant_multihop_paths_and_compare` (and `evaluate_gql_cascade_and_recommend_funding`)
+  to show the **actual named Hop-1 -> Hop-2 GQL paths** (`Seed -> Hop 1 -> Hop 2` with business names,
+  addresses, NAICS codes, BEA `intensity`, and walking distances in `metres`), the unfunded cascade damage
+  (jobs, downstream buyers, baseline closure risk), why raw high-centrality corporate hubs (`Tradespace`,
+  `Ossium Health`, `Wpengine`) are excluded, what modeling assumptions govern the grant impact, and which
+  evidence is real (`borrowed_from` SBA loans & ACS tracts) vs. modeled (`Supplies` & `DrawsFootfall` edges)."""
 
 
 class RegimeStressTestOrchestratorAgent:
@@ -79,6 +94,8 @@ class RegimeStressTestOrchestratorAgent:
     """
 
     def __init__(self, adk_dir: Optional[str] = None) -> None:
+        self.name = "Regime_Stress_Test_Orchestrator_Agent"
+        self.display_name = "Regime Stress-Test & Orchestrator Agent"
         self.agent_name = "regime_orchestrator_agent"
         self.adk_dir = adk_dir
         self.rubric = get_agent_rubric(self.agent_name, adk_dir=adk_dir)
@@ -91,6 +108,14 @@ class RegimeStressTestOrchestratorAgent:
         self.runway_agent = RunwaySectorPurityAgent(adk_dir=adk_dir)
         self.spatial_agent = SpatialHumanImpactAgent(adk_dir=adk_dir)
 
+    def evaluate(
+        self,
+        applicants: Optional[List[Dict[str, Any]]] = None,
+        budget: float = 50000.0,
+    ) -> Dict[str, Any]:
+        """Alias for `run_pipeline` so all 4 deterministic agents share `.evaluate()`."""
+        return self.run_pipeline(applicants=applicants, budget=budget)
+
     def run_pipeline(
         self,
         applicants: Optional[List[Dict[str, Any]]] = None,
@@ -101,16 +126,18 @@ class RegimeStressTestOrchestratorAgent:
         """
         Executes the complete 4-agent decision pipeline:
           Step 1: Dynamic Context Audit of `./ADK/DOCS/*.md`
-          Step 2: Supply & Provenance Agent Evaluation
-          Step 3: Runway, Sector & Purity Agent Evaluation
-          Step 4: Multi-Regime (A, B, C) Submodular Knapsack Optimization
-          Step 5: Spatial Foot-Traffic & Human-Impact Agent Cluster Verification
-          Step 6: Parameter Invariance & Simplex Robustness Stress-Test
-          Step 7: 10-Vector Red-Team Compliance Report Generation
+          Step 2: Multi-Hop GQL Property Graph Traversal & Post-Traversal Decision Analysis
+          Step 3: Supply & Provenance Agent Evaluation
+          Step 4: Runway, Sector & Purity Agent Evaluation
+          Step 5: Multi-Regime (A, B, C) Submodular Knapsack Optimization
+          Step 6: Spatial Foot-Traffic & Human-Impact Agent Cluster Verification
+          Step 7: Parameter Invariance & Simplex Robustness Stress-Test
+          Step 8: 10-Vector Red-Team Compliance Report Generation
         """
         apps = applicants if applicants is not None else get_canonical_applicants()
 
         context_audit = get_context_audit_summary(adk_dir=self.adk_dir)
+        gql_decision_output = evaluate_gql_cascade_and_recommend_funding(budget=budget)
         supply_output = self.supply_agent.evaluate(applicants=apps)
         runway_output = self.runway_agent.evaluate(applicants=apps)
 
@@ -142,9 +169,12 @@ class RegimeStressTestOrchestratorAgent:
         )
 
         return {
-            "orchestrator": self.agent_name,
+            "orchestrator": self.name,
+            "orchestrator_id": self.agent_name,
+            "display_name": self.display_name,
             "context_audit": context_audit,
-            "mcp_and_graph_status": get_bigquery_mcp_status(),
+            "gql_traversal_and_decision": gql_decision_output,
+            "mcp_bigquery_status": get_mcp_bigquery_server_status(),
             "supply_agent_output": supply_output,
             "runway_agent_output": runway_output,
             "spatial_agent_output": spatial_output,
@@ -159,15 +189,18 @@ class RegimeStressTestOrchestratorAgent:
 def create_orchestrator_adk_pipeline(
     model: str = "gemini-2.5-flash",
     adk_dir: Optional[str] = None,
+    include_mcp_toolsets: bool = True,
 ) -> Any:
     """
-    Constructs the root Google ADK `Agent` coordinating the 3 sub-agents and all
-    deterministic scoring, regime stress-testing, Red-Team compliance tools,
-    live BigQuery Property Graph (GQL) traversal tools, and Google-managed BigQuery `MCPToolset`.
+    Constructs the root Google ADK `Agent` coordinating the 3 sub-agents, custom
+    multi-hop GQL Property Graph traversal & decision tools, Google-managed BigQuery
+    MCP toolsets, and Red-Team compliance tools.
     """
     from google.adk.agents import Agent
 
-    supply_sub = create_supply_provenance_adk_agent(model=model, adk_dir=adk_dir)
+    supply_sub = create_supply_provenance_adk_agent(
+        model=model, adk_dir=adk_dir, include_mcp_toolsets=include_mcp_toolsets
+    )
     runway_sub = create_runway_sector_purity_adk_agent(model=model, adk_dir=adk_dir)
     spatial_sub = create_spatial_human_impact_adk_agent(model=model, adk_dir=adk_dir)
 
@@ -177,7 +210,12 @@ def create_orchestrator_adk_pipeline(
         agent_name="regime_orchestrator_agent",
     )
 
-    agent_tools: List[Any] = [
+    orchestrator_tools: List[Any] = [
+        trace_applicant_multihop_paths_and_compare,
+        ensure_bigquery_property_graph,
+        traverse_corridor_graph_gql,
+        evaluate_gql_cascade_and_recommend_funding,
+        get_mcp_bigquery_server_status,
         compute_applicant_utility,
         evaluate_all_applicants,
         jaccard_similarity,
@@ -191,25 +229,155 @@ def create_orchestrator_adk_pipeline(
         load_corridor_applicants,
         get_property_graph_ddl,
         get_gql_multihop_cascade_sql,
-        get_gql_anchor_closure_cascade_sql,
-        ensure_bigquery_property_graph,
-        execute_gql_multihop_cascade,
-        execute_gql_anchor_closure_cascade,
-        get_bigquery_mcp_status,
+        get_gql_shortest_path_trace_sql,
     ]
-
-    bq_mcp_toolset = create_bigquery_mcp_toolset()
-    if bq_mcp_toolset is not None:
-        agent_tools.append(bq_mcp_toolset)
+    if include_mcp_toolsets:
+        orchestrator_tools.extend(get_google_managed_bigquery_mcp_toolsets())
 
     return Agent(
-        name="central_market_micro_grant_orchestrator",
+        name="Regime_Stress_Test_Orchestrator_Agent",
         model=model,
         description=(
-            "Chief Municipal Economist & Multi-Agent Orchestrator for the Central Market "
-            "Ecosystem & Demand-Anchored Micro-Grant ADK."
+            "Regime Stress-Test & Orchestrator Agent: Chief Municipal Economist & Multi-Agent "
+            "Orchestrator for the Central Market Ecosystem & Demand-Anchored Micro-Grant ADK, "
+            "powered by BigQuery Property Graph GQL multi-hop traversal and Google-managed "
+            "BigQuery MCP tools."
         ),
         instruction=prompt,
         sub_agents=[supply_sub, runway_sub, spatial_sub],
-        tools=agent_tools,
+        tools=orchestrator_tools,
     )
+
+
+# ==============================================================================
+# NAMED AGENT CATALOG & SELECTOR FUNCTIONS
+# ==============================================================================
+
+ADK_AGENTS_CATALOG: Dict[str, Dict[str, Any]] = {
+    "Regime_Stress_Test_Orchestrator_Agent": {
+        "name": "Regime_Stress_Test_Orchestrator_Agent",
+        "agent_id": "Regime_Stress_Test_Orchestrator_Agent",
+        "display_name": "Regime Stress-Test & Orchestrator Agent",
+        "role": (
+            "Root Coordinator: Synthesizes all 3 domain sub-agents, executes multi-regime "
+            "knapsack optimization (Regimes A, B, C), computes parameter invariance bounds, "
+            "and generates the 10-Vector Red-Team Compliance Report."
+        ),
+        "aliases": [
+            "regime_stress_test_orchestrator_agent",
+            "regime_orchestrator_agent",
+            "orchestrator",
+            "root",
+            "all",
+        ],
+        "adk_factory": create_orchestrator_adk_pipeline,
+        "deterministic_class": RegimeStressTestOrchestratorAgent,
+    },
+    "Supply_Provenance_Agent": {
+        "name": "Supply_Provenance_Agent",
+        "agent_id": "Supply_Provenance_Agent",
+        "display_name": "Supply & Provenance Agent",
+        "role": (
+            "Sub-Agent 1: Traverses the BigQuery LocalEconomy Property Graph via multi-hop GQL, "
+            "evaluates upstream parent/root suppliers, substitutability friction, NAICS 81 "
+            "disaggregation, un-applied bottlenecks, and 1-invoice provenance verification gates."
+        ),
+        "aliases": [
+            "supply_provenance_agent",
+            "supply",
+            "provenance",
+        ],
+        "adk_factory": create_supply_provenance_adk_agent,
+        "deterministic_class": SupplyProvenanceAgent,
+    },
+    "Runway_Sector_Purity_Agent": {
+        "name": "Runway_Sector_Purity_Agent",
+        "agent_id": "Runway_Sector_Purity_Agent",
+        "display_name": "Runway, Sector & Purity Agent",
+        "role": (
+            "Sub-Agent 2: Enforces Stage 0 Corporate Exclusion Gate, evaluates financial "
+            "runway survival lift, structural viability gates, sector volatility multipliers, "
+            "and small-business purity."
+        ),
+        "aliases": [
+            "runway_sector_purity_agent",
+            "runway",
+            "purity",
+            "sector",
+        ],
+        "adk_factory": create_runway_sector_purity_adk_agent,
+        "deterministic_class": RunwaySectorPurityAgent,
+    },
+    "Spatial_Human_Impact_Agent": {
+        "name": "Spatial_Human_Impact_Agent",
+        "agent_id": "Spatial_Human_Impact_Agent",
+        "display_name": "Spatial Foot-Traffic & Human-Impact Agent",
+        "role": (
+            "Sub-Agent 3: Enforces 200m spatial critical-mass cluster rules, evaluates "
+            "Track 1 Community Anchor scores and Census Tract Equity Multipliers, and "
+            "computes Total People Helped per Dollar."
+        ),
+        "aliases": [
+            "spatial_human_impact_agent",
+            "spatial",
+            "human_impact",
+            "people",
+        ],
+        "adk_factory": create_spatial_human_impact_adk_agent,
+        "deterministic_class": SpatialHumanImpactAgent,
+    },
+}
+
+
+def _resolve_agent_spec(agent_name: Optional[str] = None) -> Dict[str, Any]:
+    if not agent_name:
+        return ADK_AGENTS_CATALOG["Regime_Stress_Test_Orchestrator_Agent"]
+    cleaned = agent_name.strip()
+    if cleaned in ADK_AGENTS_CATALOG:
+        return ADK_AGENTS_CATALOG[cleaned]
+    lowered = cleaned.lower()
+    for spec in ADK_AGENTS_CATALOG.values():
+        if lowered == spec["name"].lower() or lowered in spec["aliases"]:
+            return spec
+    valid_names = ", ".join(ADK_AGENTS_CATALOG.keys())
+    raise ValueError(f"Unknown ADK agent '{agent_name}'. Available agents: {valid_names}")
+
+
+def list_available_agents() -> List[Dict[str, str]]:
+    """Returns metadata for all 4 selectable named ADK agents."""
+    return [
+        {
+            "name": spec["name"],
+            "agent_id": spec["agent_id"],
+            "display_name": spec["display_name"],
+            "role": spec["role"],
+        }
+        for spec in ADK_AGENTS_CATALOG.values()
+    ]
+
+
+def select_adk_agent(
+    agent_name: Optional[str] = None,
+    model: str = "gemini-2.5-flash",
+    adk_dir: Optional[str] = None,
+) -> Any:
+    """
+    Constructs and returns the selected Google ADK `Agent` instance by name or alias.
+    Defaults to `Regime_Stress_Test_Orchestrator_Agent`.
+    """
+    spec = _resolve_agent_spec(agent_name)
+    factory: Callable[..., Any] = spec["adk_factory"]
+    return factory(model=model, adk_dir=adk_dir)
+
+
+def select_deterministic_agent(
+    agent_name: Optional[str] = None,
+    adk_dir: Optional[str] = None,
+) -> Any:
+    """
+    Constructs and returns the selected deterministic Python agent evaluator by name or alias.
+    Defaults to `RegimeStressTestOrchestratorAgent`.
+    """
+    spec = _resolve_agent_spec(agent_name)
+    cls = spec["deterministic_class"]
+    return cls(adk_dir=adk_dir)
