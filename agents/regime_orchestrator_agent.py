@@ -56,9 +56,11 @@ from tools.mcp_bigquery_toolset import (
     get_mcp_bigquery_server_status,
 )
 from tools.scoring_engine import (
+    audit_context_and_simulate_what_if,
     compute_applicant_utility,
     compute_sensitivity_and_robust_awardees,
     evaluate_all_applicants,
+    evaluate_industry_variety,
     get_canonical_applicants,
     jaccard_similarity,
     optimize_portfolio_knapsack,
@@ -224,6 +226,8 @@ def create_orchestrator_adk_pipeline(
 
     orchestrator_tools: List[Any] = [
         trace_applicant_multihop_paths_and_compare,
+        audit_context_and_simulate_what_if,
+        evaluate_industry_variety,
         ensure_bigquery_property_graph,
         traverse_corridor_graph_gql,
         evaluate_gql_cascade_and_recommend_funding,

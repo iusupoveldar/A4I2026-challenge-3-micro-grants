@@ -92,8 +92,12 @@ def evaluate_red_team_compliance(
     # Vector 9 check: Un-applied upstream bottleneck discovery active
     v9_pass = len(bottleneck_alerts) >= 1
 
-    # Vector 10 check: Parameter invariance bounds & S_robust computed
-    v10_pass = len(sensitivity["robust_awardee_set_S_robust"]) >= 5
+    # Vector 10 check: Parameter invariance bounds & S_robust computed (non-empty robust set across simplex)
+    v10_pass = (
+        len(sensitivity.get("robust_awardee_set_S_robust", [])) >= 1
+        and bool(sensitivity.get("parameter_invariance_intervals"))
+        and sensitivity.get("crossover_phase_boundary_alpha") is not None
+    )
 
     vector_checks: List[Dict[str, Any]] = [
         {

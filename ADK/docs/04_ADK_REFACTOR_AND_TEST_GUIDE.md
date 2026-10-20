@@ -33,22 +33,22 @@ The following components in `team/main` are already well-structured and aligned 
 ### Why This Is Needed
 In commit `1913a90`, `agents/regime_orchestrator_agent.py` (lines 40–49) and `agents/supply_provenance_agent.py` (lines 16–24) import 5 functions from `tools.bigquery_connector` that were not committed to `tools/bigquery_connector.py`:
 - `ensure_bigquery_property_graph`
-- `evaluate_gql_cascade_and_recommend_funding`
-- `get_gql_shortest_path_trace_sql`
+- `evaluate_graph_query_cascade_and_recommend_funding`
+- `get_graph_query_shortest_path_trace_sql`
 - `trace_applicant_multihop_paths_and_compare`
-- `traverse_corridor_graph_gql`
+- `traverse_corridor_graph_graph_query`
 
 ### Drop-In Fix for `tools/bigquery_connector.py`
 Append these functions to the bottom of `tools/bigquery_connector.py` (or commit your local uncommitted changes to `tools/bigquery_connector.py`):
 
 ```python
-def get_gql_shortest_path_trace_sql(
+def get_graph_query_shortest_path_trace_sql(
     project_id: Optional[str] = None,
     dataset: Optional[str] = None,
     seed_business_id: str = "",
     limit: int = 50,
 ) -> str:
-    """Returns GQL ANY SHORTEST path query with TO_JSON_STRING(p) for hop-by-hop provenance."""
+    """Returns Graph-Query ANY SHORTEST path query with TO_JSON_STRING(p) for hop-by-hop provenance."""
     proj = project_id or DEFAULT_PROJECT_ID
     ds = dataset or DEFAULT_DATASET
     seed_filter = f"AND seed.business_id = '{seed_business_id}'" if seed_business_id else ""
@@ -61,8 +61,8 @@ SELECT
   exposed_name,
   exposed_naics4,
   TO_JSON_STRING(supply_path) AS supply_path_json
-FROM GRAPH_TABLE(
-  `{proj}.{ds}.LocalEconomy`
+FROM PROPERTY_GRAPH_QUERY(
+  `{proj}.{ds}.CorridorGraph`
   MATCH p = ANY SHORTEST (seed:Business)-[:Supplies]->{{1,3}}(exposed:Business)
   WHERE seed.business_id != exposed.business_id
     {seed_filter}
@@ -83,7 +83,7 @@ def ensure_bigquery_property_graph(
     project_id: Optional[str] = None,
     dataset: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Ensures `a4i_econ.LocalEconomy` Property Graph DDL exists or returns DDL preview in offline mode."""
+    """Ensures `central_market_econ.CorridorGraph` Property Graph DDL exists or returns DDL preview in offline mode."""
     connector = BigQueryGraphConnector(project_id=project_id, dataset=dataset)
     ddl = get_property_graph_ddl(connector.project_id, connector.dataset)
     if connector.client is not None:
@@ -95,18 +95,18 @@ def ensure_bigquery_property_graph(
     return {"status": "OFFLINE_DDL_READY", "project_id": connector.project_id, "dataset": connector.dataset, "ddl": ddl}
 
 
-def traverse_corridor_graph_gql(
+def traverse_corridor_graph_graph_query(
     corridor_name: str = "Central Market",
     min_exposed: int = 1,
 ) -> Dict[str, Any]:
-    """Executes multi-hop GQL cascade query against BigQuery or falls back to local corridor graph."""
+    """Executes multi-hop Graph-Query cascade query against BigQuery or falls back to local corridor graph."""
     connector = BigQueryGraphConnector()
     rows, mode = connector.fetch_corridor_applicants(corridor_name=corridor_name)
     return {
         "corridor_name": corridor_name,
         "data_source_mode": mode,
         "applicant_count": len(rows),
-        "gql_query_executed": get_gql_multihop_cascade_sql(connector.project_id, connector.dataset, min_exposed=min_exposed),
+        "graph_query_query_executed": get_graph_query_multihop_cascade_sql(connector.project_id, connector.dataset, min_exposed=min_exposed),
         "applicants": rows,
     }
 
@@ -138,18 +138,18 @@ def trace_applicant_multihop_paths_and_compare(
             "cascade_score": b.get("cascade_score"),
             "anchor_score": b.get("anchor_score"),
         },
-        "gql_shortest_path_sql": get_gql_shortest_path_trace_sql(seed_business_id=a["id"]),
+        "graph_query_shortest_path_sql": get_graph_query_shortest_path_trace_sql(seed_business_id=a["id"]),
     }
 
 
-def evaluate_gql_cascade_and_recommend_funding(
+def evaluate_graph_query_cascade_and_recommend_funding(
     corridor_name: str = "Central Market",
     budget: float = 50000.0,
     regime: str = "C",
 ) -> Dict[str, Any]:
-    """Combines multi-hop GQL graph traversal with Regime A/B/C portfolio optimization."""
+    """Combines multi-hop Graph-Query graph traversal with Regime A/B/C portfolio optimization."""
     from tools.scoring_engine import optimize_portfolio_knapsack
-    graph_res = traverse_corridor_graph_gql(corridor_name=corridor_name)
+    graph_res = traverse_corridor_graph_graph_query(corridor_name=corridor_name)
     portfolio = optimize_portfolio_knapsack(applicants=graph_res["applicants"], budget=budget, regime=regime)
     return {
         "corridor_name": corridor_name,
@@ -169,15 +169,15 @@ The challenge rubric (`README.md`) specifically checks for:
    - *Problem 1*: B2B Supply Contagion (`Supplies`)
    - *Problem 2*: Commuter Foot-Traffic Anchor Loss (`DrawsFootfall`)
    - *Problem 3*: Two-Block Spatial Blight Tipping Point (`<=200m` walkshed vacancy $>35\%$)
-   - *Problem 4*: Credit & SBA Debt Distress (`borrowed_from` + `runway_quarters`)
+   - *Problem 4*: Credit & SBA Debt Distress (`sba_loan_edges` + `runway_quarters`)
    - *Problem 5*: Neighborhood Demographic Vulnerability (`Census Tract` poverty + car-free households)
 3. **Making consequences visible on the map**: Returning structured `[lat, lon]` node + edge consequence chains so the map renders what survives vs. what cascades if unfunded.
 
 ### 1. Update `tools.yaml` (Lines 39 & 141)
-In `tools.yaml`, expand quantified path patterns from `{1,2}` to `{1,3}` and add a 4-hop cross-domain GQL tool (`Business -[:Supplies]->{1,2} Business <-[:DrawsFootfall]- Employer`):
+In `tools.yaml`, expand quantified path patterns from `{1,2}` to `{1,3}` and add a 4-hop cross-domain Graph-Query tool (`Business -[:Supplies]->{1,2} Business <-[:DrawsFootfall]- Employer`):
 
 ```yaml
-          # In gql-multihop-supply-cascade (line 39):
+          # In graph_query-multihop-supply-cascade (line 39):
           MATCH (seed:Business)-[:Supplies]->{1,3}(exposed:Business)
 ```
 
@@ -408,7 +408,7 @@ Right now:
 OUT_OF_SCHEMA_KEYWORDS = {
     "landlord_or_building_sale": (
         ["landlord", "building sold", "lease", "eviction", "rent hike", "property owner"],
-        "Commercial lease terms, property ownership transfers, and eviction filings are NOT in `a4i_econ`.",
+        "Commercial lease terms, property ownership transfers, and eviction filings are NOT in `central_market_econ`.",
         "Require commercial lease addendum / landlord co-sign verification before disbursement.",
     ),
     "private_balance_sheet_or_credit": (
@@ -423,7 +423,7 @@ OUT_OF_SCHEMA_KEYWORDS = {
     ),
     "private_b2b_invoices": (
         ["invoice", "contract", "purchase order", "actual supplier", "who supplies"],
-        "B2B supply edges in `LocalEconomy` are inferred from BEA input-output tables + haversine distance (`[MODELED]`).",
+        "B2B supply edges in `CorridorGraph` are inferred from BEA input-output tables + haversine distance (`[MODELED]`).",
         "Enforce the Pre-Disbursement 1-Invoice Verification Gate if B2B cascade > 30% of score.",
     ),
 }

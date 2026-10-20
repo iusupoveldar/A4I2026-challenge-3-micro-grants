@@ -1411,6 +1411,7 @@
 
         syncSlidersFromState();
         recomputeAll();
+        syncChatbotAgentHeader();
       });
     }
 
@@ -1451,6 +1452,7 @@
         // Sync slider controls
         syncSlidersFromState();
         recomputeAll();
+        syncChatbotAgentHeader();
       });
     });
 
@@ -1605,6 +1607,442 @@
     renderDeterminationMemo();
   }
 
+  // --- 10. GRANT OFFICER ADK AGENT COPILOT CHATBOT ---
+
+  function computeGlassBoxBuckets(app) {
+    const b1 = Math.min(25, Math.round((app.scoring.cascadeScore / 100) * 25 * 10) / 10);
+    const b2 = Math.min(25, Math.round((app.scoring.anchorScore / 100) * 25 * 10) / 10);
+    const b3 = Math.min(25, Math.round((Math.min(100, app.scoring.peopleHelpedTotal / 12) / 100) * 25 * 10) / 10);
+    const b4 = Math.min(25, Math.round(((app.scoring.purityScore / 100) * 12.5 + Math.min(12.5, app.scoring.survivalLift * 28)) * 10) / 10);
+    const total100 = Math.round((b1 + b2 + b3 + b4) * 10) / 10;
+    return { b1, b2, b3, b4, total100 };
+  }
+
+  function syncChatbotAgentHeader() {
+    const nameEl = document.getElementById("chatbot-active-agent-name");
+    const badgeEl = document.getElementById("chatbot-active-agent-badge");
+    const fabSub = document.getElementById("fab-agent-subtext");
+    if (nameEl) nameEl.textContent = state.activeAgentDisplayName;
+    if (fabSub) fabSub.textContent = state.activeAgentDisplayName;
+    if (badgeEl) {
+      if (state.activeAgentId === "Supply_Provenance_Agent") badgeEl.textContent = "Sub-Agent 1";
+      else if (state.activeAgentId === "Runway_Sector_Purity_Agent") badgeEl.textContent = "Sub-Agent 2";
+      else if (state.activeAgentId === "Spatial_Human_Impact_Agent") badgeEl.textContent = "Sub-Agent 3";
+      else badgeEl.textContent = "Root Agent";
+    }
+  }
+
+  function appendChatMessage(role, htmlContent) {
+    const container = document.getElementById("chatbot-messages");
+    if (!container) return;
+    const msg = document.createElement("div");
+    msg.className = `chat-msg ${role}`;
+    msg.innerHTML = htmlContent;
+    container.appendChild(msg);
+    container.scrollTop = container.scrollHeight;
+
+    msg.querySelectorAll("[data-chat-action]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const act = btn.getAttribute("data-chat-action");
+        if (act === "goto-map") {
+          const tabBtn = document.getElementById("btn-tab-pairwise");
+          if (tabBtn) tabBtn.click();
+        } else if (act === "goto-memo") {
+          const tabBtn = document.getElementById("btn-tab-memo");
+          if (tabBtn) tabBtn.click();
+        } else if (act === "goto-redteam") {
+          const tabBtn = document.getElementById("btn-tab-redteam");
+          if (tabBtn) tabBtn.click();
+        } else if (act === "compare-pair") {
+          const aId = btn.getAttribute("data-a") || "sour_flour";
+          const bId = btn.getAttribute("data-b") || "cumaica_coffee";
+          state.selectedApplicantAId = aId;
+          state.selectedApplicantBId = bId;
+          const selA = document.getElementById("select-applicant-a");
+          const selB = document.getElementById("select-applicant-b");
+          if (selA) selA.value = aId;
+          if (selB) selB.value = bId;
+          const tabBtn = document.getElementById("btn-tab-pairwise");
+          if (tabBtn) tabBtn.click();
+        }
+      });
+    });
+  }
+
+  function buildAgentReplyForPreset(qKey, customText) {
+    const top1 = state.rankedQueue[0] || APPLICANTS_DATA[0];
+    const top2 = state.rankedQueue[1] || APPLICANTS_DATA[1];
+    const sourFlour = state.rankedQueue.find(a => a.id === "sour_flour") || top1;
+    const cumaica = state.rankedQueue.find(a => a.id === "cumaica_coffee") || top2;
+    const grocer = state.rankedQueue.find(a => a.id === "corner_grocer") || state.rankedQueue[2];
+    const s = state.fundedSummary;
+    const sfGlass = computeGlassBoxBuckets(sourFlour);
+
+    if (qKey === "q1") {
+      return `
+        <div class="chat-agent-meta">
+          <span>🤖 ${state.activeAgentDisplayName}</span>
+          <span class="chat-tool-pill">trace_multihop_consequence_chains()</span>
+        </div>
+        <div>
+          <strong>Unfunded Corridor Contagion Verdict:</strong> If zero grants are disbursed today, <strong>${sourFlour.name}</strong> (${sourFlour.address}) causes the largest systemic corridor cascade across <strong>5 linked resilience domains (4 hops)</strong>:
+        </div>
+        <div class="chat-hop-chain">
+          <strong>• Hop 0 (Seed Equipment Cliff):</strong> ${sourFlour.name} holds only <strong>${sourFlour.runwayQuarters} quarters</strong> of cash (45.0% 12-month closure probability) facing an indivisible $10,000 commercial deck oven replacement.<br>
+          <strong>• Hop 1 (Direct B2B Supply Shock):</strong> Supplies fresh par-baked sourdough to <strong>${sourFlour.outDegree} direct corridor buyers</strong> (436.5m avg delivery walk), including <em>Cumaica Coffee</em>, <em>G.Rabbit</em>, <em>Chico's Pizza</em>, and <em>Monarch Beverage</em>.<br>
+          <strong>• Hop 2 (Secondary Retail &amp; Catering Contagion):</strong> Exposes <strong>${sourFlour.secondOrderReach} second-order businesses</strong> across Mid-Market and 6th Street.<br>
+          <strong>• Hop 3 (Commuter Footfall Attrition):</strong> Puts <strong>${sourFlour.headcount} direct FTEs + 38 network kitchen staff</strong> and <strong>${sourFlour.dailyPatronCommuters} daily transit commuters</strong> at risk.<br>
+          <strong>• Hop 4 (Block Vacancy Tipping Point):</strong> Pushes the 6th &amp; Mission micro-cluster past the <strong>35% commercial vacancy blight threshold</strong>.
+        </div>
+        <div style="font-size:0.75rem; color:#94a3b8;">
+          <strong>Why Raw Centrality Hubs Are Excluded:</strong> Corporate entities like <em>CloudScale</em>, <em>Waymo Depot</em>, and <em>BioGenix</em> have high raw transaction volume but are blocked at <strong>Stage 0 ($0.00)</strong> because their survival lift is near zero (&Delta;P &approx; 0).
+        </div>
+        <div class="chat-action-row">
+          <button type="button" class="chat-action-btn" data-chat-action="goto-map">🗺️ Inspect 4-Hop Cascade on Map</button>
+          <button type="button" class="chat-action-btn" data-chat-action="compare-pair" data-a="sour_flour" data-b="cumaica_coffee">⚖️ Compare Top 2 Roots</button>
+        </div>
+      `;
+    }
+
+    if (qKey === "q2") {
+      const cuGlass = computeGlassBoxBuckets(cumaica);
+      return `
+        <div class="chat-agent-meta">
+          <span>🤖 ${state.activeAgentDisplayName}</span>
+          <span class="chat-tool-pill">trace_applicant_multihop_paths_and_compare()</span>
+        </div>
+        <div>
+          <strong>Head-to-Head Structural Proof: ${sourFlour.name} (#1) vs. ${cumaica.name} (#2)</strong>
+        </div>
+        <div class="chat-hop-chain">
+          <strong>1. Direct Upstream Dependency (Hop 1):</strong> <em>${sourFlour.name}</em> directly supplies <em>${cumaica.name}</em> at Hop 1 (436.5m walk) and sits at pure root status (<code>out_degree=${sourFlour.outDegree}</code>, <code>in_degree=1</code>, &mu;=${sourFlour.scoring.parentMultiplier}x) vs. ${cumaica.name} (<code>out_degree=${cumaica.outDegree}</code>, <code>in_degree=2</code>).<br>
+          <strong>2. Substitutability Friction (&theta;<sub>ext</sub>):</strong> Daily par-baked artisan bread (&theta;<sub>ext</sub>=0.15) cannot be substituted from outside the corridor without menu/margin loss, whereas roasted coffee beans (&theta;<sub>ext</sub>=0.20) have longer shelf storage.<br>
+          <strong>3. Runway Urgency &amp; Lift:</strong> ${sourFlour.name} has <strong>${sourFlour.runwayQuarters}q</strong> runway (+${Math.round(sourFlour.scoring.survivalLift * 100)}% lift) vs. ${cumaica.name}'s <strong>${cumaica.runwayQuarters}q</strong> runway (+${Math.round(cumaica.scoring.survivalLift * 100)}% lift).<br>
+          <strong>4. Shared Buyer Deduplication:</strong> They share 3 downstream buyers (Jaccard overlap J=0.375). Under our <strong>${state.regime.toUpperCase()} Regime ($${state.budget.toLocaleString()})</strong>, <strong>both</strong> co-anchor Tier 1 at $${sourFlour.grantAward.toLocaleString()} and $${cumaica.grantAward.toLocaleString()}.
+        </div>
+        <div class="chat-receipt-grid">
+          <div class="chat-receipt-box">
+            <strong>${sourFlour.name} Glass-Box (100pt):</strong> <strong>${sfGlass.total100}/100</strong><br>
+            Cascade: ${sfGlass.b1}/25 • Anchor: ${sfGlass.b2}/25<br>
+            People: ${sfGlass.b3}/25 • Viability: ${sfGlass.b4}/25
+          </div>
+          <div class="chat-receipt-box">
+            <strong>${cumaica.name} Glass-Box (100pt):</strong> <strong>${cuGlass.total100}/100</strong><br>
+            Cascade: ${cuGlass.b1}/25 • Anchor: ${cuGlass.b2}/25<br>
+            People: ${cuGlass.b3}/25 • Viability: ${cuGlass.b4}/25
+          </div>
+        </div>
+        <div class="chat-action-row">
+          <button type="button" class="chat-action-btn" data-chat-action="compare-pair" data-a="sour_flour" data-b="cumaica_coffee">⚖️ Open Side-by-Side Inspector</button>
+        </div>
+      `;
+    }
+
+    if (qKey === "q3") {
+      return `
+        <div class="chat-agent-meta">
+          <span>🤖 ${state.activeAgentDisplayName}</span>
+          <span class="chat-tool-pill">evaluate_supplier_cascade_and_hidden_root()</span>
+        </div>
+        <div>
+          <strong>Downstream Buyer Fragility &amp; Verified Loan Audit:</strong> Yes—4 of ${sourFlour.name}'s direct downstream buyers in the cohort are in the acute 0.7q–1.2q fragility window:
+        </div>
+        <div class="chat-hop-chain">
+          • <strong>Chico's Pizza (131 6th St):</strong> <code>0.7q</code> runway • $5,000 Tier-2 Bridge Grant + Landlord Match<br>
+          • <strong>G.Rabbit (90 7th St):</strong> <code>0.9q</code> runway • $5,000 Tier-2 Bridge Grant<br>
+          • <strong>Monarch Beverage Catering (101 6th St):</strong> <code>1.0q</code> runway • $5,000 Tier-2 Bridge Grant<br>
+          • <strong>The Pawn Shop (993 Mission St):</strong> <code>1.2q</code> runway • $5,000 Tier-2 Bridge Grant
+        </div>
+        <div style="font-size:0.75rem; color:#94a3b8;">
+          <strong>Historical SBA 7(a) Ground Truth:</strong> Public federal loan records confirm that under-capitalized corridor food/print borrowers with &lt;0.25q runway and prior loan charge-offs face structural insolvency unless paired with two-party vendor/landlord escrow warrants.
+        </div>
+      `;
+    }
+
+    if (qKey === "q4") {
+      return `
+        <div class="chat-agent-meta">
+          <span>🤖 ${state.activeAgentDisplayName}</span>
+          <span class="chat-tool-pill">discover_unapplied_bottlenecks()</span>
+        </div>
+        <div>
+          <strong>Bidirectional 2-Hop Scan — Un-Applied Corridor Bottlenecks Found:</strong> Two critical upstream commercial service providers did <em>not</em> submit grant applications but supply 5 applicants each:
+        </div>
+        <div class="chat-hop-chain">
+          <strong>1. Mid-Market Commercial Kitchen &amp; Refrigeration Repair Co.</strong> (148 8th St, Sector 8113)<br>
+          • Est. Runway: <strong>0.75 quarters</strong> • Services refrigeration &amp; ovens for 5 cohort food/grocery applicants.<br><br>
+          <strong>2. Stevenson Street Sanitary Linen &amp; Apron Commissary</strong> (645 Stevenson St, Sector 8123)<br>
+          • Est. Runway: <strong>0.90 quarters</strong> • Provides health-code mandated linen laundering for 5 dining &amp; clinic storefronts.
+        </div>
+        <div style="font-size:0.75rem; color:#a7f3d0;">
+          <strong>Recommended Officer Action:</strong> Dispatch an OEWD Small Business Ambassador within 48 hours to invite both Sector 8113/8123 bottlenecks into Tranche 2 intake.
+        </div>
+      `;
+    }
+
+    if (qKey === "q5") {
+      const m = customText && customText.match(/\$?\s*([0-9]{1,3}(?:,[0-9]{3})+|[0-9]{4,6})/);
+      const hypAmt = m ? parseInt(m[1].replace(/,/g, ""), 10) : 8000;
+      const liftHyp = calculateSurvivalLift(sourFlour.runwayQuarters, hypAmt, sourFlour.burnRateMonthly);
+      const lift10k = calculateSurvivalLift(sourFlour.runwayQuarters, 10000, sourFlour.burnRateMonthly);
+      const gap = Math.max(0, 10000 - hypAmt);
+      return `
+        <div class="chat-agent-meta">
+          <span>🤖 ${state.activeAgentDisplayName}</span>
+          <span class="chat-tool-pill">audit_context_and_simulate_what_if($${hypAmt.toLocaleString()})</span>
+        </div>
+        <div>
+          <strong>What Does $${hypAmt.toLocaleString()} Actually Change? (Explicit Modeling Assumptions):</strong>
+        </div>
+        <div class="chat-hop-chain">
+          <strong>Assumption 1 — Continuous Logistic Survival Shift:</strong><br>
+          For <em>${sourFlour.name}</em> ($${sourFlour.burnRateMonthly.toLocaleString()}/mo burn, ${sourFlour.runwayQuarters}q runway), a <strong>$${hypAmt.toLocaleString()}</strong> grant adds <strong>+${liftHyp.runwayAdded.toFixed(2)} quarters</strong> of cash buffer (12-month survival shifts from ${Math.round(liftHyp.pBefore * 100)}% &rarr; ${Math.round(liftHyp.pAfter * 100)}%, continuous lift <strong>+${Math.round(liftHyp.lift * 100)}%</strong> vs. <strong>+${Math.round(lift10k.lift * 100)}%</strong> at $10,000).<br><br>
+          <strong>Assumption 2 — Category 1 Indivisible Capital Cliff Step-Function:</strong><br>
+          ${gap > 0
+            ? `⚠️ <strong>CRITICAL CLIFF WARNING:</strong> ${sourFlour.name} requires $10,000 for an indivisible commercial deck oven replacement. A partial <strong>$${hypAmt.toLocaleString()}</strong> grant leaves an unfunded <strong>$${gap.toLocaleString()} equipment gap</strong> (0% cliff resolution unless paired with a verified $${gap.toLocaleString()} vendor/landlord co-pay).`
+            : `✅ <strong>FULL CLIFF CLEARED:</strong> $${hypAmt.toLocaleString()} fully clears the $10,000 indivisible equipment replacement threshold.`
+          }
+        </div>
+      `;
+    }
+
+    if (qKey === "q6") {
+      return `
+        <div class="chat-agent-meta">
+          <span>🤖 ${state.activeAgentDisplayName}</span>
+          <span class="chat-tool-pill">evaluate_spatial_cluster_critical_mass()</span>
+        </div>
+        <div>
+          <strong>Neighborhood Equity &amp; Dual-Track Protection (7 Central Market Census Tracts):</strong>
+        </div>
+        <div class="chat-hop-chain">
+          • <strong>Zero-Vehicle Households:</strong> <strong>71.0% – 78.5%</strong> of corridor households do not own a car.<br>
+          • <strong>Poverty Rate:</strong> <strong>28.0% – 36.2%</strong> across Tenderloin / 6th &amp; Mission / Mid-Market tracts (Equity Multiplier <strong>1.35x – 1.46x</strong>).<br>
+          • <strong>Why Track 1 Protects B2C Anchors:</strong> National supply tables give retail grocers zero outgoing B2B supply edges. Our <strong>Dual-Track Architecture</strong> scores <strong>${grocer.name}</strong> (${grocer.address}) on Track 1 Community Anchor gravity, securing a full <strong>$10,000 Tier-1 Grant</strong> serving ${grocer.vulnerableResidentsServed} low-mobility seniors and families daily.
+        </div>
+        <div class="chat-action-row">
+          <button type="button" class="chat-action-btn" data-chat-action="compare-pair" data-a="corner_grocer" data-b="sour_flour">⚖️ Compare Corner Grocer vs. Sour Flour</button>
+        </div>
+      `;
+    }
+
+    if (qKey === "q7") {
+      const funded = state.rankedQueue.filter(a => a.status.startsWith("funded"));
+      return `
+        <div class="chat-agent-meta">
+          <span>🤖 ${state.activeAgentDisplayName}</span>
+          <span class="chat-tool-pill">format_red_team_compliance_report_markdown()</span>
+        </div>
+        <div>
+          <strong>Friday Executive Determination Memo Ready ($${s.budgetAllocated.toLocaleString()} / ${s.fundedCount} Storefronts):</strong>
+        </div>
+        <div class="chat-hop-chain">
+          • <strong>Tier 1 Full Grants ($10,000):</strong> ${funded.filter(a => a.grantAward >= 10000).map(a => a.name).join(", ") || "Top Anchors"}<br>
+          • <strong>Tier 2 Cluster Bridges ($5,000):</strong> ${funded.filter(a => a.grantAward < 10000).map(a => a.name).join(", ") || "Concentrated Regime Active"}<br>
+          • <strong>Impact:</strong> <strong>${s.directJobs} direct FTEs</strong> + <strong>${s.networkJobs} supply-chain staff</strong> + <strong>${s.peopleServed.toLocaleString()} daily patrons/residents</strong>.<br>
+          • <strong>Honest Provenance Line:</strong> Business registry, Census tracts, and federal SBA loan records are <em>measured</em>; commercial supply and footfall edges are <em>modeled</em> and require the 1-Invoice Pre-Disbursement Gate (&gt;30% cascade share).
+        </div>
+        <div class="chat-action-row">
+          <button type="button" class="chat-action-btn" data-chat-action="goto-memo">📑 Open Printable Friday Memo</button>
+        </div>
+      `;
+    }
+
+    if (qKey === "blindspot") {
+      return `
+        <div class="chat-agent-meta">
+          <span>🤖 ${state.activeAgentDisplayName}</span>
+          <span class="chat-tool-pill">audit_context_and_simulate_what_if(out_of_schema)</span>
+        </div>
+        <div>
+          <strong>Out-of-Schema Blind-Spot &amp; Proposition 209 Compliance Audit:</strong>
+        </div>
+        <div class="chat-hop-chain">
+          • <strong>Landlord / Lease Sale / Eviction Threats:</strong> <em>Not in public registry dataset.</em> Requires a mandatory <strong>Landlord Estoppel &amp; Lease-Match Addendum</strong> before releasing bridge funds.<br>
+          • <strong>Personal Credit Scores / Unrecorded Cash / Litigation:</strong> <em>Out of schema.</em> Mitigated via <strong>Two-Party Vendor/Landlord Escrow Warrants</strong> (zero unverified cash disbursement).<br>
+          • <strong>Owner Race / Gender / Ethnicity:</strong> <em>Strictly excluded per California Proposition 209.</em> Equity is weighted strictly via <strong>Census Tract Poverty &amp; Car-Free Household Rates</strong>.
+        </div>
+        <div class="chat-action-row">
+          <button type="button" class="chat-action-btn" data-chat-action="goto-redteam">🛡️ View All 10 Red-Team Defenses</button>
+        </div>
+      `;
+    }
+
+    return "";
+  }
+
+  function processFreeTextChatQuery(rawQuery) {
+    const q = rawQuery.trim();
+    const qLower = q.toLowerCase();
+
+    // 1. Out-of-schema keywords check
+    if (/(landlord|evict|building sold|credit score|fico|race|gender|ethnic|lawsuit|litigation|under the table)/.test(qLower)) {
+      return buildAgentReplyForPreset("blindspot", q);
+    }
+    // 2. Dollar what-if check (e.g. "$8,000", "8000", "what does $7,500 change")
+    if (/(\$[0-9]|what does|what if.*grant|partial grant|8,000|8000|7,500|6,000)/.test(qLower)) {
+      return buildAgentReplyForPreset("q5", q);
+    }
+    // 3. Unfunded / most damage / fund nobody
+    if (/(fund nobody|no one|most damage|which closure|cascade|4-hop|multihop)/.test(qLower)) {
+      return buildAgentReplyForPreset("q1", q);
+    }
+    // 4. Un-applied bottlenecks / far end of chain
+    if (/(nobody.*applied|unapplied|far end|bottleneck|repair|linen|8113|8123)/.test(qLower)) {
+      return buildAgentReplyForPreset("q4", q);
+    }
+    // 5. Downstream fragility / SBA loans
+    if (/(downstream|fragile|sba|charge-off|loan)/.test(qLower)) {
+      return buildAgentReplyForPreset("q3", q);
+    }
+    // 6. Neighborhood / equity / grocer / census
+    if (/(neighborhood|census|poverty|car-free|grocer|equity|whose)/.test(qLower)) {
+      return buildAgentReplyForPreset("q6", q);
+    }
+    // 7. Memo / Friday / write it up
+    if (/(memo|friday|write it up|present|report)/.test(qLower)) {
+      return buildAgentReplyForPreset("q7", q);
+    }
+    // 8. Check if user mentions specific applicants to compare or inspect
+    const matchedApps = state.rankedQueue.filter(a => qLower.includes(a.name.toLowerCase()) || qLower.includes(a.id.replace("_", " ")));
+    if (matchedApps.length >= 2) {
+      const a = matchedApps[0];
+      const b = matchedApps[1];
+      const rankA = state.rankedQueue.findIndex(x => x.id === a.id) + 1;
+      const rankB = state.rankedQueue.findIndex(x => x.id === b.id) + 1;
+      return `
+        <div class="chat-agent-meta">
+          <span>🤖 ${state.activeAgentDisplayName}</span>
+          <span class="chat-tool-pill">trace_applicant_multihop_paths_and_compare()</span>
+        </div>
+        <div>
+          <strong>Live Pairwise Comparison: ${a.name} (#${rankA}) vs. ${b.name} (#${rankB})</strong>
+        </div>
+        <div class="chat-hop-chain">
+          • <strong>${a.name}:</strong> Composite <strong>${a.scoring.compositeScore}</strong> • Award <strong>$${a.grantAward.toLocaleString()}</strong> • Runway ${a.runwayQuarters}q (+${Math.round(a.scoring.survivalLift * 100)}% lift) • ${a.outDegree} B2B buyers • ${a.scoring.peopleHelpedTotal.toLocaleString()} daily people served.<br>
+          • <strong>${b.name}:</strong> Composite <strong>${b.scoring.compositeScore}</strong> • Award <strong>$${b.grantAward.toLocaleString()}</strong> • Runway ${b.runwayQuarters}q (+${Math.round(b.scoring.survivalLift * 100)}% lift) • ${b.outDegree} B2B buyers • ${b.scoring.peopleHelpedTotal.toLocaleString()} daily people served.
+        </div>
+        <div class="chat-action-row">
+          <button type="button" class="chat-action-btn" data-chat-action="compare-pair" data-a="${a.id}" data-b="${b.id}">⚖️ Load in Pairwise Inspector</button>
+        </div>
+      `;
+    }
+    if (matchedApps.length === 1) {
+      const a = matchedApps[0];
+      const rankA = state.rankedQueue.findIndex(x => x.id === a.id) + 1;
+      const gb = computeGlassBoxBuckets(a);
+      return `
+        <div class="chat-agent-meta">
+          <span>🤖 ${state.activeAgentDisplayName}</span>
+          <span class="chat-tool-pill">compute_applicant_utility(${a.id})</span>
+        </div>
+        <div>
+          <strong>Applicant Diagnostic — ${a.name} (Rank #${rankA} • $${a.grantAward.toLocaleString()}):</strong>
+        </div>
+        <div class="chat-hop-chain">
+          • <strong>Address &amp; Sector:</strong> ${a.address} (${a.sector})<br>
+          • <strong>Runway &amp; Survival Lift:</strong> ${a.runwayQuarters} quarters (+${Math.round(a.scoring.survivalLift * 100)}% survival lift)<br>
+          • <strong>B2B Supply Reach:</strong> ${a.outDegree} direct buyers (${a.secondOrderReach} 2-hop exposed)<br>
+          • <strong>4-Bucket Glass-Box Receipt:</strong> <strong>${gb.total100}/100</strong> (Cascade ${gb.b1}/25, Anchor ${gb.b2}/25, People ${gb.b3}/25, Viability ${gb.b4}/25)<br>
+          • <strong>Justification:</strong> ${a.needJustification}
+        </div>
+        <div class="chat-action-row">
+          <button type="button" class="chat-action-btn" data-chat-action="compare-pair" data-a="${a.id}" data-b="sour_flour">⚖️ Compare Against #1 Rank</button>
+        </div>
+      `;
+    }
+
+    // Default why this one and not that one / general summary
+    return buildAgentReplyForPreset("q2", q);
+  }
+
+  function initAdkChatbot() {
+    const root = document.getElementById("adk-chatbot-root");
+    const fab = document.getElementById("adk-chatbot-fab");
+    const headerBtn = document.getElementById("btn-toggle-chatbot-header");
+    const closeBtn = document.getElementById("btn-chatbot-close");
+    const expandBtn = document.getElementById("btn-chatbot-expand");
+    const clearBtn = document.getElementById("btn-chatbot-clear");
+    const panel = document.getElementById("adk-chatbot-panel");
+    const form = document.getElementById("chatbot-form");
+    const input = document.getElementById("chatbot-input");
+
+    if (!root || !panel) return;
+
+    function renderWelcomeMessage() {
+      const container = document.getElementById("chatbot-messages");
+      if (!container) return;
+      container.innerHTML = "";
+      appendChatMessage(
+        "agent",
+        `
+          <div class="chat-agent-meta">
+            <span>🤖 ${state.activeAgentDisplayName}</span>
+            <span class="chat-tool-pill">ADK Ready • 11 Cohort + 4 Corp Traps</span>
+          </div>
+          <div>
+            Welcome, Grant Officer. I am synced to your live <strong>$${state.budget.toLocaleString()}</strong> portfolio simulator (currently funding <strong>${state.fundedSummary.fundedCount} storefronts</strong> and preserving <strong>${state.fundedSummary.directJobs} direct FTEs</strong>).
+            Click any <strong>Tuesday 2 PM Drill</strong> chip above or ask a question below.
+          </div>
+        `
+      );
+    }
+
+    syncChatbotAgentHeader();
+    renderWelcomeMessage();
+
+    if (fab) {
+      fab.addEventListener("click", () => {
+        root.classList.add("open");
+        if (input) input.focus();
+      });
+    }
+    if (headerBtn) {
+      headerBtn.addEventListener("click", () => {
+        root.classList.toggle("open");
+        if (root.classList.contains("open") && input) input.focus();
+      });
+    }
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        root.classList.remove("open");
+      });
+    }
+    if (expandBtn) {
+      expandBtn.addEventListener("click", () => {
+        panel.classList.toggle("expanded");
+      });
+    }
+    if (clearBtn) {
+      clearBtn.addEventListener("click", () => {
+        renderWelcomeMessage();
+      });
+    }
+
+    document.querySelectorAll(".chatbot-chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        const qKey = chip.getAttribute("data-q");
+        const label = chip.textContent;
+        root.classList.add("open");
+        appendChatMessage("user", label);
+        const reply = buildAgentReplyForPreset(qKey, label);
+        appendChatMessage("agent", reply);
+      });
+    });
+
+    if (form && input) {
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = "";
+        appendChatMessage("user", text);
+        const reply = processFreeTextChatQuery(text);
+        appendChatMessage("agent", reply);
+      });
+    }
+  }
+
   // --- INITIALIZATION ENTRY POINT ---
   document.addEventListener("DOMContentLoaded", () => {
     runPortfolioOptimization();
@@ -1617,6 +2055,7 @@
     renderNetworkMap();
     renderDeterminationMemo();
     attachEventListeners();
+    initAdkChatbot();
   });
 
 })();

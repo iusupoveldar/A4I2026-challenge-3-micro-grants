@@ -36,7 +36,7 @@ tools:
           two_hop_exposed_count
         FROM GRAPH_TABLE(
           a4i_econ.LocalEconomy
-          MATCH (seed:Business)-[:Supplies]->{1,2}(exposed:Business)
+          MATCH (seed:Business)-[:Supplies]->{1,3}(exposed:Business)
           WHERE exposed.business_id != seed.business_id
           RETURN
             seed.business_id AS business_id,
@@ -138,7 +138,7 @@ tools:
         TO_JSON_STRING(supply_path) AS supply_path_json
       FROM GRAPH_TABLE(
         a4i_econ.LocalEconomy
-        MATCH p = ANY SHORTEST (seed:Business)-[:Supplies]->{1,2}(exposed:Business)
+        MATCH p = ANY SHORTEST (seed:Business)-[:Supplies]->{1,3}(exposed:Business)
         WHERE seed.business_id != exposed.business_id
           AND (@seed_business_id = '' OR seed.business_id = @seed_business_id)
         RETURN

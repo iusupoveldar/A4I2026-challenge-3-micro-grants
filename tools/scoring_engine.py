@@ -725,12 +725,18 @@ def structural_viability_gate(
     runway_quarters: float,
     quarterly_burn_rate: float,
     requested_amount: float = 10000.0,
+    smooth: bool = False,
 ) -> float:
     """
     Implements the Structural Insolvency Floor Gate Theta_viable(r_i, kappa_i, R_i)
     from `02_RED_TEAM_AND_DEFENSE_PLAYBOOK.md` (Vector 3) and `03_BEYOND_DATASET_ENHANCEMENT_MODEL.md` (Eq. 2.5):
       Theta_viable = 0.10 if (r_i < 0.25 and kappa_i > 3 * R_i) else 1.00
+    When `smooth=True`, replaces the hard 0.25q step cliff with a continuous logistic ramp.
     """
+    if smooth:
+        if quarterly_burn_rate > 3.0 * requested_amount:
+            return 0.10 + 0.90 / (1.0 + math.exp(-20.0 * (float(runway_quarters) - 0.25)))
+        return 1.00
     if runway_quarters < 0.25 and quarterly_burn_rate > 3.0 * requested_amount:
         return 0.10
     return 1.00
@@ -744,6 +750,7 @@ def runway_priority_score(
     r_star: float = 1.0,
     peer_mean_burn_rate: float = 9500.0,
     peer_std_burn_rate: float = 2500.0,
+    smooth: bool = False,
 ) -> Dict[str, Any]:
     """
     Computes the Non-Monotonic Survival Bell Curve score Phi_runway(r_i) in [0, 100]
@@ -753,7 +760,7 @@ def runway_priority_score(
     abs_diff = abs(float(runway_quarters) - float(r_star))
     exp_term = math.exp(-k * min(abs_diff, 30.0))
     bell_kernel = (4.0 * exp_term) / ((1.0 + exp_term) ** 2)
-    theta_viable = structural_viability_gate(runway_quarters, quarterly_burn_rate, requested_amount)
+    theta_viable = structural_viability_gate(runway_quarters, quarterly_burn_rate, requested_amount, smooth=smooth)
     phi_score = 100.0 * bell_kernel * theta_viable
 
     delta_p = marginal_survival_lift(
@@ -1481,6 +1488,19 @@ def compute_applicant_utility(
         else 0.0
     )
 
+    # Bounded [0, 100] 4-Bucket Glass-Box Score Receipt for City Hall / Sunshine Ordinance audit
+    b1_cascade_25 = round(min(25.0, (effective_cascade / 100.0) * 25.0), 2)
+    b2_anchor_25 = round(min(25.0, (float(applicant["anchor_score"]) / 100.0) * 25.0), 2)
+    b3_human_25 = round(min(25.0, (s_people / 100.0) * 25.0), 2)
+    b4_viability_25 = round(
+        min(25.0, ((float(applicant["small_biz_purity"]) / 100.0) * 12.5) + min(12.5, delta_p * 28.0)),
+        2,
+    )
+    glass_box_100 = round(
+        (b1_cascade_25 + b2_anchor_25 + b3_human_25 + b4_viability_25) if gate["eligible"] else 0.0,
+        2,
+    )
+
     return {
         "id": applicant["id"],
         "name": applicant["name"],
@@ -1503,6 +1523,13 @@ def compute_applicant_utility(
         "core_composite_gamma_i": round(gamma_i, 2),
         "equity_multiplier_m_equity": round(m_equity, 3),
         "composite_utility_U_i": round(utility, 2),
+        "glass_box_score_100": glass_box_100,
+        "glass_box_4_buckets": {
+            "bucket_1_supply_cascade_max25": b1_cascade_25,
+            "bucket_2_community_anchor_max25": b2_anchor_25,
+            "bucket_3_people_helped_max25": b3_human_25,
+            "bucket_4_runway_purity_viability_max25": b4_viability_25,
+        },
         "cascade_share_of_gamma": round(cascade_share_of_gamma, 4),
         "requires_1_invoice_verification": cascade_share_of_gamma > 0.30,
         "provenance_status": applicant.get("provenance_status", PROVENANCE_MODELED),
@@ -1559,6 +1586,50 @@ def jaccard_similarity(downstream_a: List[str], downstream_b: List[str]) -> floa
     return float(len(set_a & set_b)) / float(len(union))
 
 
+def evaluate_industry_variety(
+    funded_items: List[Dict[str, Any]],
+    max_single_sector_share: float = 0.45,
+    min_distinct_sectors: int = 4,
+) -> Dict[str, Any]:
+    """
+    Audits portfolio industry variety across 4-digit NAICS sectors to prevent
+    monoculture concentration (e.g., funding 100% restaurants/cafes while ignoring
+    grocers, retail, arts/print, or repair services).
+    Computes Shannon Diversity Index H' and checks sector concentration caps.
+    """
+    if not funded_items:
+        return {
+            "distinct_naics4_count": 0,
+            "sector_counts": {},
+            "max_sector_share": 0.0,
+            "shannon_diversity_index": 0.0,
+            "variety_compliant": False,
+        }
+
+    counts: Dict[str, int] = {}
+    for item in funded_items:
+        n4 = str(item.get("naics", "0000"))[:4]
+        counts[n4] = counts.get(n4, 0) + 1
+
+    total = len(funded_items)
+    max_share = max(counts.values()) / float(total)
+    shannon_h = -sum((c / total) * math.log(c / total) for c in counts.values() if c > 0)
+
+    is_compliant = (len(counts) >= min(min_distinct_sectors, total)) and (max_share <= max_single_sector_share)
+    return {
+        "distinct_naics4_count": len(counts),
+        "sector_counts": counts,
+        "max_sector_share": round(max_share, 4),
+        "shannon_diversity_index": round(shannon_h, 4),
+        "variety_compliant": is_compliant,
+        "status_note": (
+            f"PASS: {len(counts)} distinct 4-digit NAICS sectors funded (H'={shannon_h:.2f}, max share={max_share:.0%})."
+            if is_compliant
+            else f"WARNING: Sector concentration {max_share:.0%} exceeds {max_single_sector_share:.0%} cap or <{min_distinct_sectors} sectors."
+        ),
+    }
+
+
 def optimize_portfolio_knapsack(
     applicants: Optional[List[Dict[str, Any]]] = None,
     budget: float = 50000.0,
@@ -1611,6 +1682,7 @@ def optimize_portfolio_knapsack(
                     **item,
                     "award_amount": 0.0,
                     "tier": "Disqualified (Stage 0 Gate)",
+                    "decision_code": "EXCLUDED_STAGE0_CORPORATE_GATE",
                     "realized_utility": 0.0,
                     "direct_jobs_preserved": 0,
                 })
@@ -1620,6 +1692,7 @@ def optimize_portfolio_knapsack(
                     **item,
                     "award_amount": req,
                     "tier": "Regime A: Full $10,000 Grant",
+                    "decision_code": "FUNDED_REGIME_A_FULL_10K",
                     "realized_utility": item["composite_utility_U_i"],
                     "direct_jobs_preserved": int(raw_app["direct_employees"]),
                 })
@@ -1628,6 +1701,7 @@ def optimize_portfolio_knapsack(
                     **item,
                     "award_amount": 0.0,
                     "tier": "Unfunded (Regime A Budget Exhausted)",
+                    "decision_code": "WAITLISTED_BUDGET_CAP",
                     "realized_utility": 0.0,
                     "direct_jobs_preserved": 0,
                 })
@@ -1644,6 +1718,7 @@ def optimize_portfolio_knapsack(
                     **item,
                     "award_amount": 0.0,
                     "tier": "Disqualified (Stage 0 Gate)",
+                    "decision_code": "EXCLUDED_STAGE0_CORPORATE_GATE",
                     "realized_utility": 0.0,
                     "direct_jobs_preserved": 0,
                 })
@@ -1653,6 +1728,7 @@ def optimize_portfolio_knapsack(
                     **item,
                     "award_amount": req,
                     "tier": "Regime B: Full $10,000 (Indivisible Capital Cliff y_i=0)",
+                    "decision_code": "FUNDED_REGIME_B_CLIFF_10K",
                     "realized_utility": item["composite_utility_U_i"],
                     "direct_jobs_preserved": int(raw_app["direct_employees"]),
                 })
@@ -1663,6 +1739,7 @@ def optimize_portfolio_knapsack(
                     **item,
                     "award_amount": 5000.0,
                     "tier": "Regime B: $5,000 Concave Bridge ((g/R)^0.60 = 0.66x)",
+                    "decision_code": "FUNDED_REGIME_B_BRIDGE_5K",
                     "realized_utility": round(item["composite_utility_U_i"] * concave_factor, 2),
                     "direct_jobs_preserved": int(raw_app["direct_employees"]),
                 })
@@ -1671,98 +1748,119 @@ def optimize_portfolio_knapsack(
                     **item,
                     "award_amount": 0.0,
                     "tier": "Unfunded / Waitlisted",
+                    "decision_code": "WAITLISTED_BUDGET_CAP",
                     "realized_utility": 0.0,
                     "direct_jobs_preserved": 0,
                 })
 
     else:
         # Regime C: Canonical OEWD Tiered Hybrid Portfolio (3 x $10k Tier-1 + 4 x $5k Tier-2 = $50k)
-        # Enforces Dual-Track Tier-1 Reservation (Vector 7: Track 2 Root Suppliers + Track 1 Zero-Cascade Anchor),
-        # Spatial Walkshed Critical Mass (Vector 6: >=3 co-located storefronts per active cluster),
-        # and re-routes non-profit clinics with >=2.0q philanthropic runway to CDBG Public Services.
-        max_tier1_slots = max(1, int(budget // 10000.0) - 2) if budget >= 30000.0 else int(budget // 10000.0)
-        tier1_candidates = [
-            item for item in ranked
+        # Enforces Dual-Track Tier-1 balance (2 Track-2 Root Suppliers + 1 Track-1 Essential Neighborhood Anchor),
+        # 200m Spatial Walkshed Critical Mass (>= 3 co-located storefronts in high-vacancy cluster),
+        # and NAICS Sector Variety (<= 45% single-sector share), while re-routing >2.0q non-profit clinic to CDBG.
+        max_tier1_slots = max(1, min(3, int(budget // 10000.0) - 2)) if budget >= 30000.0 else int(budget // 10000.0)
+
+        eligible_tier1_candidates = [
+            item
+            for item in ranked
             if item["eligible"]
-            and not (app_by_id[item["id"]].get("alternate_funding_routing") and float(app_by_id[item["id"]].get("runway_quarters", 0.0)) >= 2.0)
+            and not (
+                app_by_id[item["id"]].get("alternate_funding_routing")
+                and float(app_by_id[item["id"]].get("runway_quarters", 0.0)) >= 2.0
+            )
             and "Category 1" in str(app_by_id[item["id"]].get("shock_category", ""))
-            and 0.25 <= float(app_by_id[item["id"]].get("runway_quarters", 0.0)) < 2.0
-        ]
-        track1_zero_b2b = [
-            item for item in tier1_candidates
-            if float(item["s_cascade"]) == 0.0 and float(item["s_anchor"]) >= 85.0
-        ]
-        track2_root_b2b = [
-            item for item in tier1_candidates
-            if float(item["s_cascade"]) > 0.0
         ]
 
-        selected_tier1_ids = set()
-        if track1_zero_b2b and max_tier1_slots >= 1:
-            selected_tier1_ids.add(track1_zero_b2b[0]["id"])
-        for item in track2_root_b2b:
-            if len(selected_tier1_ids) >= max_tier1_slots:
+        # Dual-Track Tier-1 selection: ensure at least 1 Track-1 Essential B2C Anchor (e.g., NAICS 4451/4452 grocer)
+        # alongside Track-2 Root B2B Suppliers when available
+        tier1_selected_ids: List[str] = []
+        essential_b2c_candidates = [
+            item
+            for item in eligible_tier1_candidates
+            if str(item.get("naics", ""))[:4] in ("4451", "4452")
+            or float(item.get("s_anchor", 0.0)) >= 90.0
+        ]
+        for item in eligible_tier1_candidates:
+            if len(tier1_selected_ids) >= max_tier1_slots:
                 break
-            selected_tier1_ids.add(item["id"])
-        for item in tier1_candidates:
-            if len(selected_tier1_ids) >= max_tier1_slots:
-                break
-            selected_tier1_ids.add(item["id"])
+            # Reserve the last Tier-1 slot for the top Track-1 Essential Anchor if none selected yet
+            if (
+                len(tier1_selected_ids) == max_tier1_slots - 1
+                and essential_b2c_candidates
+                and not any(
+                    str(app_by_id[tid].get("naics", ""))[:4] in ("4451", "4452")
+                    or float(app_by_id[tid].get("anchor_score", 0.0)) >= 90.0
+                    for tid in tier1_selected_ids
+                )
+            ):
+                best_anchor_id = essential_b2c_candidates[0]["id"]
+                if best_anchor_id not in tier1_selected_ids:
+                    tier1_selected_ids.append(best_anchor_id)
+                    break
+            tier1_selected_ids.append(item["id"])
 
         tier1_budget_used = sum(
-            float(app_by_id[tid].get("requested_amount", 10000.0)) for tid in selected_tier1_ids
+            float(app_by_id[tid].get("requested_amount", 10000.0)) for tid in tier1_selected_ids
         )
-        tier2_slots = max(0, int((budget - tier1_budget_used) // 5000.0))
+        rem_tier2_budget = max(0.0, float(budget) - tier1_budget_used)
+        max_tier2_slots = int(rem_tier2_budget // 5000.0)
 
-        tier2_candidates = [
-            item for item in ranked
+        eligible_tier2_candidates = [
+            item
+            for item in ranked
             if item["eligible"]
-            and item["id"] not in selected_tier1_ids
-            and not (app_by_id[item["id"]].get("alternate_funding_routing") and float(app_by_id[item["id"]].get("runway_quarters", 0.0)) >= 2.0)
-            and "Category 1" not in str(app_by_id[item["id"]].get("shock_category", ""))
-            and 0.25 <= float(app_by_id[item["id"]].get("runway_quarters", 0.0)) <= 1.5
+            and item["id"] not in tier1_selected_ids
+            and not (
+                app_by_id[item["id"]].get("alternate_funding_routing")
+                and float(app_by_id[item["id"]].get("runway_quarters", 0.0)) >= 2.0
+            )
+            and float(app_by_id[item["id"]].get("runway_quarters", 0.0)) <= 1.5
         ]
 
-        # Count cluster membership of selected Tier-1 awardees to satisfy Vector 6 Critical Mass (>= 3)
-        cluster_counts: Dict[str, int] = {}
-        for tid in selected_tier1_ids:
-            cid = app_by_id[tid].get("cluster_id", "central_market_default")
-            cluster_counts[cid] = cluster_counts.get(cid, 0) + 1
+        # Select Tier-2 bridge awardees while respecting industry variety (max 3 per 4-digit NAICS across 7 awards)
+        # and ensuring high-vacancy clusters reach >= 3 critical mass
+        sector_counts_so_far: Dict[str, int] = {}
+        cluster_counts_so_far: Dict[str, int] = {}
+        for tid in tier1_selected_ids:
+            n4 = str(app_by_id[tid].get("naics", "0000"))[:4]
+            cid = str(app_by_id[tid].get("cluster_id", "default"))
+            sector_counts_so_far[n4] = sector_counts_so_far.get(n4, 0) + 1
+            cluster_counts_so_far[cid] = cluster_counts_so_far.get(cid, 0) + 1
 
-        selected_tier2_ids = set()
-        # First pass: top up any active cluster with 1 or 2 storefronts to reach >= 3 critical mass
-        for cid, cnt in list(cluster_counts.items()):
-            if 0 < cnt < 3:
-                needed = 3 - cnt
-                for item in tier2_candidates:
-                    if len(selected_tier2_ids) >= tier2_slots or needed <= 0:
-                        break
-                    if item["id"] not in selected_tier2_ids and app_by_id[item["id"]].get("cluster_id", "central_market_default") == cid:
-                        selected_tier2_ids.add(item["id"])
-                        cluster_counts[cid] = cluster_counts.get(cid, 0) + 1
-                        needed -= 1
+        # Determine dominant high-vacancy cluster to anchor >= 3 storefronts
+        high_vac_clusters = [
+            str(a.get("cluster_id", "default"))
+            for a in apps
+            if float(a.get("cluster_vacancy_rate", 0.0)) > 0.35
+        ]
+        target_cluster = high_vac_clusters[0] if high_vac_clusters else None
 
-        # Second pass: fill remaining Tier-2 slots by rank without stranding a single isolated storefront in a new cluster
-        for item in tier2_candidates:
-            if len(selected_tier2_ids) >= tier2_slots:
+        tier2_selected_ids: List[str] = []
+        # For large corridor pools (>20 applicants), enforce strict NAICS diversity cap (<=2 per NAICS4)
+        # and cluster co-location so the 7-storefront portfolio spans >=4 distinct sectors in the target cluster
+        enforce_diversity_filter = len(apps) > 20
+
+        if enforce_diversity_filter:
+            for item in eligible_tier2_candidates:
+                if len(tier2_selected_ids) >= max_tier2_slots:
+                    break
+                raw_app = app_by_id[item["id"]]
+                n4 = str(raw_app.get("naics", "0000"))[:4]
+                cid = str(raw_app.get("cluster_id", "default"))
+                if sector_counts_so_far.get(n4, 0) >= 2:
+                    continue
+                if target_cluster and cluster_counts_so_far.get(target_cluster, 0) < 3 and cid != target_cluster:
+                    continue
+                tier2_selected_ids.append(item["id"])
+                sector_counts_so_far[n4] = sector_counts_so_far.get(n4, 0) + 1
+                cluster_counts_so_far[cid] = cluster_counts_so_far.get(cid, 0) + 1
+
+        # Fill any remaining Tier-2 slots in rank order
+        for item in eligible_tier2_candidates:
+            if len(tier2_selected_ids) >= max_tier2_slots:
                 break
-            if item["id"] in selected_tier2_ids:
-                continue
-            cid = app_by_id[item["id"]].get("cluster_id", "central_market_default")
-            curr_cnt = cluster_counts.get(cid, 0)
-            slots_left = tier2_slots - len(selected_tier2_ids)
-            if curr_cnt == 0 and slots_left < 3:
-                # Avoid starting a new cluster if fewer than 3 slots remain
-                continue
-            selected_tier2_ids.add(item["id"])
-            cluster_counts[cid] = curr_cnt + 1
-
-        # Fallback if any slots still remain
-        for item in tier2_candidates:
-            if len(selected_tier2_ids) >= tier2_slots:
-                break
-            if item["id"] not in selected_tier2_ids:
-                selected_tier2_ids.add(item["id"])
+            if item["id"] not in tier2_selected_ids:
+                tier2_selected_ids.append(item["id"])
 
         for item in ranked:
             raw_app = app_by_id[item["id"]]
@@ -1774,6 +1872,7 @@ def optimize_portfolio_knapsack(
                     **item,
                     "award_amount": 0.0,
                     "tier": "Disqualified (Stage 0 Corporate Gate)",
+                    "decision_code": "EXCLUDED_STAGE0_CORPORATE_GATE",
                     "realized_utility": 0.0,
                     "direct_jobs_preserved": 0,
                 })
@@ -1782,25 +1881,28 @@ def optimize_portfolio_knapsack(
                     **item,
                     "award_amount": 0.0,
                     "tier": f"Re-Routed: {alt_routing}",
+                    "decision_code": "REROUTED_CDBG_PUBLIC_SERVICES",
                     "realized_utility": 0.0,
                     "direct_jobs_preserved": 0,
                 })
-            elif item["id"] in selected_tier1_ids and remaining_budget >= req:
+            elif item["id"] in tier1_selected_ids and remaining_budget >= req:
                 remaining_budget -= req
                 allocations.append({
                     **item,
                     "award_amount": req,
                     "tier": "Tier 1: Full Anchor & Root Supplier Grant ($10,000)",
+                    "decision_code": "FUNDED_TIER1_FULL_10K",
                     "realized_utility": item["composite_utility_U_i"],
                     "direct_jobs_preserved": int(raw_app["direct_employees"]),
                 })
-            elif item["id"] in selected_tier2_ids and remaining_budget >= 5000.0:
+            elif item["id"] in tier2_selected_ids and remaining_budget >= 5000.0:
                 remaining_budget -= 5000.0
                 concave_factor = (5000.0 / req) ** 0.60
                 allocations.append({
                     **item,
                     "award_amount": 5000.0,
                     "tier": "Tier 2: Cluster Stabilization Bridge Grant ($5,000 + Landlord Match)",
+                    "decision_code": "FUNDED_TIER2_BRIDGE_5K",
                     "realized_utility": round(item["composite_utility_U_i"] * concave_factor, 2),
                     "direct_jobs_preserved": int(raw_app["direct_employees"]),
                 })
@@ -1809,6 +1911,7 @@ def optimize_portfolio_knapsack(
                     **item,
                     "award_amount": 0.0,
                     "tier": "Tier 3: Secondary Waitlist (2.5q Buffer)",
+                    "decision_code": "WAITLISTED_BUDGET_CAP",
                     "realized_utility": 0.0,
                     "direct_jobs_preserved": 0,
                 })
@@ -1852,6 +1955,7 @@ def optimize_portfolio_knapsack(
     )
 
     spatial_audit = evaluate_spatial_cluster_critical_mass(apps, funded_ids=funded_ids)
+    industry_variety_audit = evaluate_industry_variety(funded_items)
 
     return {
         "regime": regime_code,
@@ -1870,6 +1974,7 @@ def optimize_portfolio_knapsack(
         "net_submodular_portfolio_utility": round(net_submodular_utility, 2),
         "overlap_pairs": overlap_pairs,
         "spatial_cluster_audit": spatial_audit,
+        "industry_variety_audit": industry_variety_audit,
         "allocations": allocations,
     }
 
@@ -1989,3 +2094,103 @@ def compute_sensitivity_and_robust_awardees(
         ),
         "parameter_invariance_intervals": invariance_intervals,
     }
+
+
+OUT_OF_SCHEMA_KEYWORDS = {
+    "landlord_or_building_sale": ["landlord", "building sold", "eviction", "lease renewal", "property owner"],
+    "personal_credit_or_tax_liens": ["credit score", "fico", "tax lien", "personal bankruptcy", "divorce"],
+    "pending_litigation_or_permits": ["lawsuit", "litigation", "health department closure", "permit revoked"],
+    "unrecorded_cash_or_family_loans": ["under the table", "family loan", "unreported cash", "crypto"],
+    "owner_demographics": ["race", "gender", "ethnicity", "immigration status", "political"],
+}
+
+
+def audit_context_and_simulate_what_if(
+    applicant_id: str = "cm_01",
+    hypothetical_grant_amount: float = 8000.0,
+    officer_question_or_context: str = "",
+) -> Dict[str, Any]:
+    """
+    1. Simulates arbitrary 'What-If' grant amounts (e.g., 'What does $8,000 change vs. $10,000?')
+       showing both continuous survival lift and Category 1 Indivisible Capital Cliff step behavior.
+    2. Audits natural-language Grant Officer context for Out-of-Schema factors (landlord eviction,
+       building sale, personal credit, owner demographics) and returns explicit blind-spot warnings
+       and verification actions instead of hallucinating.
+    """
+    apps = {a["id"]: a for a in get_canonical_applicants()}
+    name_map = {a["name"].lower(): a for a in apps.values()}
+    app = apps.get(applicant_id) or name_map.get(applicant_id.lower()) or apps["cm_01"]
+
+    runway = float(app["runway_quarters"])
+    burn = float(app["burn_rate"])
+    req = float(app.get("requested_amount", 10000.0))
+    is_cat1 = "Category 1" in str(app.get("shock_category", ""))
+
+    p_no_grant = logistic_survival_probability(runway)
+    p_with_hypothetical = logistic_survival_probability(runway + float(hypothetical_grant_amount) / max(burn, 1.0))
+    p_with_full_10k = logistic_survival_probability(runway + 10000.0 / max(burn, 1.0))
+
+    # Category 1 Indivisible Capital Cliff evaluation
+    clears_capital_cliff = (not is_cat1) or (hypothetical_grant_amount >= req)
+    unfunded_cliff_gap = max(0.0, req - hypothetical_grant_amount) if is_cat1 else 0.0
+
+    # Out-of-Schema Context Detection
+    q_lower = officer_question_or_context.lower()
+    detected_blind_spots: List[Dict[str, str]] = []
+    for category, kw_list in OUT_OF_SCHEMA_KEYWORDS.items():
+        matched = [kw for kw in kw_list if kw in q_lower]
+        if matched:
+            detected_blind_spots.append(
+                {
+                    "blind_spot_category": category,
+                    "matched_terms": ", ".join(matched),
+                    "schema_limitation": (
+                        f"The BigQuery dataset (`a4i_econ`) does NOT record `{category}`. "
+                        "Do not fabricate or infer this attribute from graph edges."
+                    ),
+                    "required_human_action": (
+                        "Trigger OEWD Field Verification / Landlord Estoppel Certificate / "
+                        "Two-Party Escrow Warrant prior to disbursement."
+                    ),
+                }
+            )
+
+    return {
+        "applicant_id": app["id"],
+        "applicant_name": app["name"],
+        "shock_category": app.get("shock_category"),
+        "hypothetical_grant_amount": hypothetical_grant_amount,
+        "requested_full_amount": req,
+        "survival_simulation": {
+            "baseline_12m_survival_prob": round(p_no_grant, 4),
+            "hypothetical_grant_survival_prob": round(p_with_hypothetical, 4),
+            "marginal_survival_lift_continuous": round(p_with_hypothetical - p_no_grant, 4),
+            "full_10k_survival_prob": round(p_with_full_10k, 4),
+            "clears_indivisible_capital_cliff": clears_capital_cliff,
+            "unfunded_capital_cliff_gap_dollars": round(unfunded_cliff_gap, 2),
+            "effective_realized_survival_lift": (
+                round(p_with_hypothetical - p_no_grant, 4)
+                if clears_capital_cliff
+                else 0.0
+            ),
+            "what_if_verdict": (
+                f"PASS: ${hypothetical_grant_amount:,.0f} clears the working-capital/equipment threshold "
+                f"and lifts 12-month survival by +{(p_with_hypothetical - p_no_grant)*100:.1f} percentage points."
+                if clears_capital_cliff
+                else f"WARNING [Category 1 Capital Cliff]: {app['name']} requires ${req:,.0f} for an indivisible "
+                f"equipment/lease cliff. A partial ${hypothetical_grant_amount:,.0f} grant leaves a "
+                f"${unfunded_cliff_gap:,.0f} gap (0% cliff resolution unless paired with a verified "
+                f"${unfunded_cliff_gap:,.0f} vendor/landlord co-pay)."
+            ),
+        },
+        "out_of_schema_context_audit": {
+            "out_of_schema_factors_detected": len(detected_blind_spots) > 0,
+            "blind_spot_warnings": detected_blind_spots,
+            "known_schema_boundaries": [
+                "Supplies and DrawsFootfall edges are MODELED (BEA I-O + LODES gravity), not bank wire transfers.",
+                "Commercial lease terms, landlord sale intent, and personal credit scores are OUT OF SCHEMA.",
+                "Per Proposition 209 & OEWD guidelines, owner race/gender/ethnicity are never used as scoring inputs; equity is measured strictly via ACS Census Tract poverty and zero-vehicle rates.",
+            ],
+        },
+    }
+

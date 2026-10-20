@@ -20,6 +20,7 @@ from tools.bigquery_connector import (
     get_gql_shortest_path_trace_sql,
     get_property_graph_ddl,
     trace_applicant_multihop_paths_and_compare,
+    trace_multihop_consequence_chains,
     traverse_corridor_graph_gql,
 )
 from tools.mcp_bigquery_toolset import (
@@ -195,6 +196,7 @@ def create_supply_provenance_adk_agent(
     )
     agent_tools: List[Any] = [
         trace_applicant_multihop_paths_and_compare,
+        trace_multihop_consequence_chains,
         ensure_bigquery_property_graph,
         traverse_corridor_graph_gql,
         evaluate_gql_cascade_and_recommend_funding,
