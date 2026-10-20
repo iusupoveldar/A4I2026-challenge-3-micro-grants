@@ -54,29 +54,38 @@ def get_property_graph_ddl(dataset: str = "a4i_econ") -> str:
     Return the exact BigQuery GQL `CREATE OR REPLACE PROPERTY GRAPH` DDL
     matching Section 13 of `notebooks/c3_01_load_explore.ipynb` (incorporating
     all 7 notebook traps: dataset-qualified unbackticked NODE/EDGE tables,
-    unqualified REFERENCES, global property type safety with `worker_share`).
+    unqualified REFERENCES, global property type safety with `worker_share`,
+    and including `Lender` nodes + `BorrowedFrom` edges).
     """
     return f"""
 CREATE OR REPLACE PROPERTY GRAPH {dataset}.LocalEconomy
   NODE TABLES (
     {dataset}.businesses
       KEY (business_id)
-      LABEL Business PROPERTIES (business_id, name, legal_name, naics4, zip, latitude, longitude),
+      LABEL Business PROPERTIES (business_id, name, legal_name, naics4, zip, latitude, longitude, registration_year, tenure_years, corridor_alternatives),
     {dataset}.employer_blocks
       KEY (block_id)
-      LABEL Employer PROPERTIES (block_id, jobs)
+      LABEL Employer PROPERTIES (block_id, jobs),
+    {dataset}.lenders
+      KEY (bank_name)
+      LABEL Lender PROPERTIES (bank_name, corridor_loan_count, corridor_businesses_funded, total_capital_deployed, defaulted_loans)
   )
   EDGE TABLES (
     {dataset}.supplies
       KEY (edge_id)
       SOURCE KEY (supplier_id) REFERENCES businesses (business_id)
       DESTINATION KEY (buyer_id) REFERENCES businesses (business_id)
-      LABEL Supplies PROPERTIES (intensity, metres),
+      LABEL Supplies PROPERTIES (intensity, metres, corridor_alternatives),
     {dataset}.draws_footfall_from
       KEY (edge_id)
       SOURCE KEY (block_id) REFERENCES employer_blocks (block_id)
       DESTINATION KEY (business_id) REFERENCES businesses (business_id)
-      LABEL DrawsFootfall PROPERTIES (worker_share, metres)
+      LABEL DrawsFootfall PROPERTIES (worker_share, metres),
+    {dataset}.borrowed_from
+      KEY (edge_id)
+      SOURCE KEY (business_id) REFERENCES businesses (business_id)
+      DESTINATION KEY (bank_name) REFERENCES lenders (bank_name)
+      LABEL BorrowedFrom PROPERTIES (loan_amount, approval_date, term_months, jobs_supported, loan_status, is_charged_off, monthly_debt_est)
   );
 """.strip()
 

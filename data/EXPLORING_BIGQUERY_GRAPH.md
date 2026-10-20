@@ -1,34 +1,41 @@
-# Exploring BigQuery Property Graphs (`a4i_econ.LocalEconomy`)
-**Agents for Impact 2026 — Challenge 3: Community Economic Resilience & Micro-Grants**
+# 🚀 Exploring & Visualizing the BigQuery Property Graph (`a4i_econ.LocalEconomy`)
 
-This document explains how to set up, query, and visualize the **BigQuery Property Graph** (`a4i_econ.LocalEconomy`) over your corridor dataset.
+Google BigQuery supports **GQL (Graph Query Language)** over relational tables using the `CREATE OR REPLACE PROPERTY GRAPH` DDL and `GRAPH_TABLE(...)` syntax.
 
 ---
 
-## 1. Troubleshooting: `Not found: Property graph ...:a4i_econ.LocalEconomy`
+## 🛠️ Step 1: Create the Complete 3-Node, 3-Edge Property Graph
 
-If you encounter this error:
-```
-Not found: Property graph <project-id>:a4i_econ.LocalEconomy
-```
-**Why it happens:**  
-A Property Graph is not a physical table; it is a **virtual schema declaration** layered over your existing BigQuery tables (`businesses`, `employer_blocks`, `supplies`, `draws_footfall_from`). If you try to run a `GRAPH a4i_econ.LocalEconomy MATCH ...` query before executing the DDL declaration, BigQuery will report that the graph does not exist.
+> **⚠️ Why did `Not found: Property graph a4i_econ.LocalEconomy` happen?**
+> BigQuery Property Graphs are schema metadata definitions over base tables (`businesses`, `employer_blocks`, `lenders`, `supplies`, `draws_footfall_from`, `borrowed_from`).
+>
+> **Important BigQuery GQL Syntax Rules:**
+> 1. In `NODE TABLES` and `EDGE TABLES`, write `a4i_econ.table_name` **without backticks**.
+> 2. In `REFERENCES`, write **only the unqualified table name** (`REFERENCES businesses (business_id)`, `REFERENCES employer_blocks (block_id)`, `REFERENCES lenders (bank_name)`).
+> 3. Explicitly list `PROPERTIES (...)` on each node and edge table so property names never collide across labels.
 
-### The Fix: Create the Property Graph
-Open the [BigQuery Query Editor](https://console.cloud.google.com/bigquery) and run this DDL statement once:
+Run [`data/custom_bq_upload/schema_and_queries.sql`](file:///Users/sepi/Documents/work/Hackathon/A4I2026-challenge-3-micro-grants/data/custom_bq_upload/schema_and_queries.sql) first (or run the DDL below in the **BigQuery SQL Workspace**):
 
 ```sql
 CREATE OR REPLACE PROPERTY GRAPH a4i_econ.LocalEconomy
   NODE TABLES (
     a4i_econ.businesses
       KEY (business_id)
-      LABEL Business PROPERTIES (
-        business_id, name, legal_name, address, naics, naics4, zip, latitude, longitude
+      LABEL Business
+      PROPERTIES (
+        business_id, name, legal_name, naics4, zip,
+        latitude, longitude, registration_year, tenure_years, corridor_alternatives
       ),
     a4i_econ.employer_blocks
       KEY (block_id)
-      LABEL Employer PROPERTIES (
-        block_id, tract, jobs, lat, lon
+      LABEL Employer
+      PROPERTIES (block_id, jobs),
+    a4i_econ.lenders
+      KEY (bank_name)
+      LABEL Lender
+      PROPERTIES (
+        bank_name, corridor_loan_count, corridor_businesses_funded,
+        total_capital_deployed, defaulted_loans
       )
   )
   EDGE TABLES (
@@ -36,148 +43,222 @@ CREATE OR REPLACE PROPERTY GRAPH a4i_econ.LocalEconomy
       KEY (edge_id)
       SOURCE KEY (supplier_id) REFERENCES businesses (business_id)
       DESTINATION KEY (buyer_id) REFERENCES businesses (business_id)
-      LABEL Supplies PROPERTIES (intensity, metres),
+      LABEL Supplies
+      PROPERTIES (intensity, metres, corridor_alternatives, decayed_intensity),
     a4i_econ.draws_footfall_from
       KEY (edge_id)
       SOURCE KEY (block_id) REFERENCES employer_blocks (block_id)
       DESTINATION KEY (business_id) REFERENCES businesses (business_id)
-      LABEL DrawsFootfall PROPERTIES (worker_share, metres)
+      LABEL DrawsFootfall
+      PROPERTIES (worker_share, metres),
+    a4i_econ.borrowed_from
+      KEY (edge_id)
+      SOURCE KEY (business_id) REFERENCES businesses (business_id)
+      DESTINATION KEY (bank_name) REFERENCES lenders (bank_name)
+      LABEL BorrowedFrom
+      PROPERTIES (
+        loan_amount, approval_date, term_months, jobs_supported,
+        loan_status, is_charged_off, monthly_debt_est
+      )
   );
 ```
 
-*(Takes ~2 seconds to complete).*
-
 ---
 
-## 2. How to Visualize the Graph
+## 🔍 Step 2: 5 Copy-Paste GQL Graph Queries
 
-### Method A: Colab Enterprise / Jupyter Notebook (Interactive Force-Directed Visualizer)
-In a notebook environment with `bigquery-magics`:
+### Query 1: 2-Hop Cascade Reach & `corridor_alternatives` Hub Rejection Proof
+*(Covers **Person 2 #2, #7** & **Person 3 #2**)*
 
-```python
-%%bigquery --graph
-GRAPH a4i_econ.LocalEconomy
-MATCH p = ANY SHORTEST (seed:Business WHERE seed.name = 'Merchant Roots')
-      -[:Supplies]->{1,2}(exposed:Business)
-RETURN TO_JSON(p) AS paths
-```
-
-#### ⚠️ The Two Golden Rules for Notebook Visualization:
-1. **You MUST wrap the path in `TO_JSON(p) AS paths`**:  
-   If you return plain columns (`RETURN seed.name, exposed.name`), BigQuery returns a flat table with no error. Returning `TO_JSON(p)` activates the interactive graph canvas.
-2. **Always use `ANY SHORTEST`**:  
-   Without `ANY SHORTEST`, BigQuery returns every redundant multi-hop permutation, creating an unreadable hairball and quickly hitting the **2 MB notebook data limit**.
-
----
-
-### Method B: BigQuery Web Console / BigQuery Studio
-In the standard BigQuery Console SQL editor:
+Walks 1-to-2 hops along `Supplies` edges (`(seed:Business)-[:Supplies]->(hop1:Business)-[:Supplies]->(hop2:Business)`) and discounts raw BEA supply intensity by same-NAICS4 local redundancy (`1 / SQRT(1 + corridor_alternatives)`):
 
 ```sql
-GRAPH a4i_econ.LocalEconomy
-MATCH p = ANY SHORTEST (seed:Business)-[:Supplies]->{1,2}(exposed:Business)
-RETURN TO_JSON(p) AS paths
-LIMIT 25;
+SELECT
+  business_id,
+  business_name,
+  naics4,
+  tenure_years,
+  corridor_alternatives,
+  COUNT(DISTINCT hop1_id) AS reach_1hop,
+  COUNT(DISTINCT COALESCE(hop2_id, hop1_id)) AS reach_2hop,
+  ROUND(SUM(e1_intensity), 4) AS raw_intensity_sum,
+  ROUND(SUM(e1_intensity) / SQRT(1 + corridor_alternatives), 4) AS redundancy_adjusted_intensity
+FROM GRAPH_TABLE(
+  a4i_econ.LocalEconomy
+  MATCH (seed:Business)-[e1:Supplies]->(hop1:Business)
+  OPTIONAL MATCH (hop1)-[e2:Supplies]->(hop2:Business)
+  WHERE hop2.business_id IS NULL OR hop2.business_id != seed.business_id
+  RETURN
+    seed.business_id AS business_id,
+    seed.name AS business_name,
+    seed.naics4 AS naics4,
+    seed.tenure_years AS tenure_years,
+    seed.corridor_alternatives AS corridor_alternatives,
+    hop1.business_id AS hop1_id,
+    hop2.business_id AS hop2_id,
+    e1.intensity AS e1_intensity
+)
+GROUP BY business_id, business_name, naics4, tenure_years, corridor_alternatives
+ORDER BY reach_2hop DESC, redundancy_adjusted_intensity DESC
+LIMIT 20;
 ```
 
-BigQuery returns the structured JSON path elements (including `nodes`, `edges`, and attached properties) which can be inspected directly in the JSON viewer or loaded into D3.js / front-end dashboards.
+**Why this query proves the Hub Rejection:**
+* Corporate IT firms (`Convergeone, Inc.`, `Wpengine, Inc.`, `Tray.Io, Inc` in NAICS `5415`) have `corridor_alternatives = 10` (11 IT offices in the corridor) and reach `121` nodes only via a single 1-hop bridge into `Tradespace` (`5182`, which fans out to `114` buyers).
+* Conversely, foundational makers **`Sour Flour`** (`3118`, `tenure_years = 10`, `reach_1hop = 85`, `reach_2hop = 145`) and **`Cumaica Coffee`** (`3119`, `tenure_years = 10`, `reach_1hop = 85`, `reach_2hop = 145`) have **`corridor_alternatives = 0`**—zero local substitutes in Central Market!
 
 ---
 
-## 3. Core Graph Exploration Queries
+### Query 2: SBA Debt Exposure & Downstream Fragility (`BorrowedFrom` + `Supplies`)
+*(Covers **Person 2 #5**)*
 
-### Query 1: Discovering Keystone Suppliers (Avoiding the Hub Trap)
-In GQL, there is no `HAVING` clause. To filter on aggregations, chain statements with `NEXT` and `FILTER`. This query discovers the **keystone businesses** whose downstream reach is between 5 and 25 businesses (avoiding giant mega-hubs):
+Traverses `(lender:Lender)<-[loan:BorrowedFrom]-(b:Business)` and walks downstream `-[:Supplies]->(d:Business)` to identify corridor borrowers whose SBA debt service compounds downstream supply-chain risk:
 
 ```sql
-GRAPH a4i_econ.LocalEconomy
-MATCH (seed:Business)-[:Supplies]->{1,2}(exposed:Business)
-RETURN seed.name AS business, 
-       seed.naics4 AS industry,
-       COUNT(DISTINCT exposed.business_id) AS exposed_2hop
-NEXT
-FILTER exposed_2hop >= 5 AND exposed_2hop <= 25
-RETURN business, industry, exposed_2hop
-ORDER BY exposed_2hop DESC;
+SELECT
+  borrower_id,
+  borrower_name,
+  naics4,
+  tenure_years,
+  lender_bank,
+  loan_amount,
+  loan_status,
+  monthly_debt_est,
+  COUNT(DISTINCT downstream_id) AS direct_downstream_buyers
+FROM GRAPH_TABLE(
+  a4i_econ.LocalEconomy
+  MATCH (lender:Lender)<-[loan:BorrowedFrom]-(b:Business)
+  OPTIONAL MATCH (b)-[:Supplies]->(d:Business)
+  RETURN
+    b.business_id AS borrower_id,
+    b.name AS borrower_name,
+    b.naics4 AS naics4,
+    b.tenure_years AS tenure_years,
+    lender.bank_name AS lender_bank,
+    loan.loan_amount AS loan_amount,
+    loan.loan_status AS loan_status,
+    loan.monthly_debt_est AS monthly_debt_est,
+    d.business_id AS downstream_id
+)
+GROUP BY borrower_id, borrower_name, naics4, tenure_years, lender_bank, loan_amount, loan_status, monthly_debt_est
+ORDER BY loan_amount DESC;
 ```
 
 ---
 
-### Query 2: Single-Business Downstream Cascade Trace
-Traces every 1-hop and 2-hop buyer exposed to a potential closure:
+### Query 3: Two-Direction Anchor-Closure Shock (`Employer -> Storefront <- Upstream Supplier`)
+*(Covers **Person 2 #6**)*
+
+Runs in **two directions** from consumer storefronts (`cafe:Business`):
+1. **Inbound footfall**: `(e:Employer)-[df:DrawsFootfall]->(cafe:Business)` measures daytime worker footfall lost if an office block (`e`) closes or shifts to remote work.
+2. **Inbound B2B supply**: `(upstream:Business)-[s:Supplies]->(cafe:Business)` identifies the upstream wholesale makers that lose B2B orders when those commuter-dependent storefronts contract.
 
 ```sql
-GRAPH a4i_econ.LocalEconomy
-MATCH p = ANY SHORTEST (seed:Business WHERE seed.name = 'Castro Hearth & Wholesale Bakery LLC')
-      -[:Supplies]->{1,2}(exposed:Business)
-RETURN TO_JSON(p) AS paths;
+SELECT
+  employer_block_id,
+  block_jobs,
+  COUNT(DISTINCT impacted_storefront_id) AS storefronts_losing_footfall,
+  ROUND(SUM(worker_share), 1) AS total_worker_footfall_at_risk,
+  COUNT(DISTINCT upstream_supplier_id) AS upstream_suppliers_losing_orders,
+  ARRAY_AGG(DISTINCT upstream_supplier_name IGNORE NULLS LIMIT 8) AS sample_upstream_suppliers_hit
+FROM GRAPH_TABLE(
+  a4i_econ.LocalEconomy
+  MATCH (e:Employer)-[df:DrawsFootfall]->(cafe:Business)
+  OPTIONAL MATCH (upstream:Business)-[s:Supplies]->(cafe)
+  RETURN
+    e.block_id AS employer_block_id,
+    e.jobs AS block_jobs,
+    cafe.business_id AS impacted_storefront_id,
+    df.worker_share AS worker_share,
+    upstream.business_id AS upstream_supplier_id,
+    upstream.name AS upstream_supplier_name
+)
+GROUP BY employer_block_id, block_jobs
+ORDER BY total_worker_footfall_at_risk DESC
+LIMIT 15;
 ```
 
 ---
 
-### Query 3: Workplace Commuter Footfall Exposure
-Traces footfall dependencies from major office/healthcare employer blocks into local restaurants and retail:
+### Query 4: Essential Consumer Anchors by Foot-Traffic Gravity & Registry Tenure
+*(Covers **Person 2 #4**)*
+
+Finds long-tenured retail, dining, and grocery storefronts (`tenure_years` extracted from SF Business Registry `ttxid`) that capture the highest daytime worker footfall across nearby `Employer` census blocks:
 
 ```sql
-GRAPH a4i_econ.LocalEconomy
-MATCH p = (e:Employer)-[:DrawsFootfall]->(b:Business)
-RETURN e.jobs AS block_worker_count,
-       b.name AS business_name,
-       b.naics4 AS business_industry,
-       TO_JSON(p) AS paths
-ORDER BY e.jobs DESC
+SELECT
+  business_id,
+  business_name,
+  naics4,
+  registration_year,
+  tenure_years,
+  corridor_alternatives,
+  COUNT(DISTINCT block_id) AS feeding_employer_blocks,
+  SUM(employer_jobs) AS total_nearby_office_jobs,
+  ROUND(SUM(worker_share), 1) AS total_worker_footfall_captured
+FROM GRAPH_TABLE(
+  a4i_econ.LocalEconomy
+  MATCH (e:Employer)-[df:DrawsFootfall]->(b:Business)
+  RETURN
+    b.business_id AS business_id,
+    b.name AS business_name,
+    b.naics4 AS naics4,
+    b.registration_year AS registration_year,
+    b.tenure_years AS tenure_years,
+    b.corridor_alternatives AS corridor_alternatives,
+    e.block_id AS block_id,
+    e.jobs AS employer_jobs,
+    df.worker_share AS worker_share
+)
+GROUP BY business_id, business_name, naics4, registration_year, tenure_years, corridor_alternatives
+ORDER BY total_worker_footfall_captured DESC
 LIMIT 20;
 ```
 
 ---
 
-### Query 4: Validating Graph Cascades with Real SBA Charge-Offs
-Combines the `LocalEconomy` property graph with `borrowed_from` to cross-examine theoretical network fragility against real historical loan failures:
+### Query 5: Export Full Subgraph as JSON for Interactive Visualization
 
 ```sql
-WITH cascade_summary AS (
-  SELECT 
-    seed_id,
-    COUNT(DISTINCT exposed_id) AS downstream_exposed_count
-  FROM GRAPH_TABLE(
-    a4i_econ.LocalEconomy
-    MATCH (seed:Business)-[:Supplies]->{1,2}(exposed:Business)
-    COLUMNS (seed.business_id AS seed_id, exposed.business_id AS exposed_id)
-  )
-  GROUP BY seed_id
+SELECT
+  TO_JSON_STRING(STRUCT(
+    supplier_id AS source,
+    supplier_name AS source_label,
+    supplier_naics AS source_naics,
+    supplier_alts AS source_corridor_alternatives,
+    buyer_id AS target,
+    buyer_name AS target_label,
+    buyer_naics AS target_naics,
+    intensity AS weight,
+    decayed_intensity AS decayed_weight,
+    metres AS distance_m
+  )) AS edge_json
+FROM GRAPH_TABLE(
+  a4i_econ.LocalEconomy
+  MATCH (a:Business)-[e:Supplies]->(b:Business)
+  WHERE e.intensity >= 0.02
+  RETURN
+    a.business_id AS supplier_id,
+    a.name AS supplier_name,
+    a.naics4 AS supplier_naics,
+    a.corridor_alternatives AS supplier_alts,
+    b.business_id AS buyer_id,
+    b.name AS buyer_name,
+    b.naics4 AS buyer_naics,
+    e.intensity AS intensity,
+    e.decayed_intensity AS decayed_intensity,
+    e.metres AS metres
 )
-SELECT 
-  b.business_id,
-  b.name,
-  b.naics4,
-  COALESCE(cs.downstream_exposed_count, 0) AS downstream_exposure,
-  sba.loan_status,
-  sba.is_charged_off,
-  sba.charge_off_amount,
-  sba.bank_name
-FROM `a4i_econ.businesses` b
-LEFT JOIN cascade_summary cs 
-  ON b.business_id = cs.seed_id
-JOIN `a4i_econ.borrowed_from` sba 
-  ON b.business_id = sba.business_id
-ORDER BY sba.is_charged_off DESC, cs.downstream_exposed_count DESC;
+ORDER BY decayed_intensity DESC
+LIMIT 200;
 ```
 
 ---
 
-## 4. The Seven BigQuery GQL Traps to Watch Out For
+## 🎨 Step 3: How to Visualize the Property Graph
 
-1. **Table Naming Syntax Trap:**  
-   In `NODE TABLES` and `EDGE TABLES`, write `a4i_econ.businesses` (unbackticked). In `REFERENCES`, write only the table name: `REFERENCES businesses (business_id)`.
-2. **`TO_JSON` Requirement:**  
-   The visual force-graph canvas requires `RETURN TO_JSON(p) AS paths`. Without `TO_JSON`, BigQuery outputs tabular rows.
-3. **The 2 MB Cap:**  
-   Notebook graph rendering limits results to 2 MB. Always use `ANY SHORTEST` and `LIMIT`.
-4. **Depth Saturation (`{1,3}` is too deep):**  
-   At 3 hops, over 80% of businesses connect to each other on a commercial street. Stick to `{1,2}` hops for meaningful analysis.
-5. **No `HAVING` in GQL:**  
-   Use `NEXT` followed by `FILTER` to filter on aggregate counts.
-6. **Property Name Conflicts:**  
-   Property names are global across labels. If two tables declare a property named `jobs`, their data types (`INT64` vs `FLOAT64`) must agree.
-7. **Spanner Graph vs BigQuery Graph:**  
-   Ensure you consult `/bigquery/` documentation. Spanner Graph functions like `IS_ACYCLIC` or `PROPERTY_EXISTS` are unsupported in BigQuery GQL.
+1. **Looker Studio (Zero-Code from BigQuery Console)**:
+   * Run **Query 1**, **Query 3**, or **Query 4** in the BigQuery Console.
+   * Click **Explore Data** $\to$ **Explore with Looker Studio** and add a **Google Maps Bubble Layer** using `latitude` / `longitude`, sizing bubbles by `redundancy_adjusted_intensity` or `total_worker_footfall_captured`.
+2. **Cosmograph / Gephi Lite (Interactive Force-Directed Network)**:
+   * Run `SELECT supplier_id AS source, buyer_id AS target, intensity, decayed_intensity, metres, corridor_alternatives FROM a4i_econ.supplies` and export as CSV, then drop into [cosmograph.app](https://cosmograph.app).
