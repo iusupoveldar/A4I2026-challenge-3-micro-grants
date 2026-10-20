@@ -35,14 +35,16 @@ from tools.scoring_engine import (
     supply_cascade_score,
     upstream_asymmetry_and_cascade_multiplier,
 )
+from tools.resilience_analysis import analyze_corridor_impact, review_industry_variety
 
 
 SUPPLY_AGENT_BASE_PROMPT = """You are the Supply & Provenance Agent for the Central Market Micro-Grant ADK.
-You must NEVER calculate scores in prose. Always invoke your deterministic Python and BigQuery MCP/GQL tools to evaluate:
-1. Multi-Hop BigQuery Property Graph Traversal on `a4i_econ.LocalEconomy`:
-   - Use `traverse_corridor_graph_gql` and `evaluate_gql_cascade_and_recommend_funding` (plus the Google-managed
-     BigQuery MCP server / `BigQueryToolset`) to run genuine multi-hop `MATCH (seed:Business)-[:Supplies]->(1..2 hops)(exposed:Business)`
-     and `MATCH p = ANY SHORTEST (seed:Business)-[:Supplies]->(1..2 hops)(exposed:Business)` queries.
+Source evidence takes priority over illustrative benchmark narratives. Use analyze_corridor_impact
+for local 1–8 hop paths in either direction; 2 hops is the decision baseline, deeper hops are sensitivity.
+Use traverse_corridor_graph_gql for live BigQuery paths, and identify the graph in every result.
+Never create edges from a degree count or call modeled options confirmed substitutability.
+You must NEVER calculate scores in prose. Invoke deterministic Python and BigQuery MCP/GQL tools to evaluate:
+1. Multi-hop BigQuery Property Graph traversal, with named ANY SHORTEST explanation paths.
 2. Track 2 Commercial Network Contagion Score (S_cascade) with spatial decay, local redundancy (r_j^-0.5),
    and external distributor substitutability friction (theta_ext in [0.0, 0.80]).
 3. Upstream Asymmetry Ratio (xi_i), Cascading Failure Multiplier (mu_i), and Piecewise Root Supplier
@@ -76,12 +78,26 @@ class SupplyProvenanceAgent:
         applicants: Optional[List[Dict[str, Any]]] = None,
         w_cascade: float = 0.30,
         w_anchor: float = 0.25,
+        max_hops: int = 2,
     ) -> Dict[str, Any]:
         """
         Executes deterministic B2B topology, root multiplier, NAICS 81 disaggregation,
         1-invoice gate, and un-applied bottleneck analysis across all applicants.
         """
         apps = applicants if applicants is not None else get_canonical_applicants()
+        if any(app.get("data_mode") == "source_review" for app in apps):
+            if any(str(app.get("data_source", "")).startswith("BIGQUERY:") for app in apps):
+                return {"agent": self.agent_name, "status": "EVIDENCE_ONLY",
+                        "note": "Use the BigQueryGraphConnector for this cloud graph. The local registry/BEA graph has different parameters and must not substitute for its paths."}
+            traces = []
+            for app in apps:
+                result = analyze_corridor_impact(app["id"], max_hops)
+                traces.append({**{k:v for k,v in result.items() if k != "endpoints"},
+                               "example_endpoints": sorted(result["endpoints"], key=lambda e:-e["hop"])[:3]})
+            return {"agent": self.agent_name, "status": "EVIDENCE_ONLY",
+                    "industry_variety": review_industry_variety(),
+                    "traces": traces,
+                    "note": "Supply exposure is modeled; SBA loan history is not a verified vendor invoice."}
         applicant_reports: Dict[str, Dict[str, Any]] = {}
 
         for app in apps:
@@ -185,6 +201,8 @@ def create_supply_provenance_adk_agent(
         piecewise_root_supplier_multiplier,
         filter_naics_81_b2b_links,
         discover_unapplied_bottlenecks,
+        analyze_corridor_impact,
+        review_industry_variety,
     ]
     if include_mcp_toolsets:
         agent_tools.extend(get_google_managed_bigquery_mcp_toolsets())

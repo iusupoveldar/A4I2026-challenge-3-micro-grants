@@ -1,3 +1,5 @@
+> **Illustrative design record.** Financials, beneficiaries, grant awards and schematic examples below are assumptions, not verified outcomes or city determinations. [Source evidence and corrections](04_SOURCE_EVIDENCE_AND_REVIEW.md) take priority.
+
 # Central Market Small Business Relief Showcase: Adversarial Red-Team Audit & Defense Playbook
 
 **Document Identifier**: Showcase Document 02  

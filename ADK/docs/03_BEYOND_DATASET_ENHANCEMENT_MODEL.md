@@ -1,3 +1,5 @@
+> **Illustrative design record.** Financials, beneficiaries, grant awards and schematic examples below are assumptions, not verified outcomes or city determinations. [Source evidence and corrections](04_SOURCE_EVIDENCE_AND_REVIEW.md) take priority.
+
 # Extended Multi-Objective Prioritization Framework: Beyond-Dataset Economic Enhancement Model
 
 **Publication-Grade Mathematical Specification & Policy Architecture**  

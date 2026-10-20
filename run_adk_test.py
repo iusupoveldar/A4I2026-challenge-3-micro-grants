@@ -25,10 +25,10 @@ from agents.regime_orchestrator_agent import (
     list_available_agents,
     select_deterministic_agent,
 )
+from tools.mcp_bigquery_toolset import get_mcp_bigquery_server_status
 from tools.bigquery_connector import (
     BigQueryGraphConnector,
-    get_bigquery_mcp_status,
-    get_gql_anchor_closure_cascade_sql,
+    get_gql_shortest_path_trace_sql,
     get_gql_multihop_cascade_sql,
     get_property_graph_ddl,
     load_corridor_applicants,
@@ -57,7 +57,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         "--mode",
         choices=["canonical", "local_csv", "bigquery", "auto"],
         default="canonical",
-        help="Data source mode: 'canonical' (11 benchmark applicants), 'local_csv' (232 real Central Market businesses), or 'bigquery' (live GCP BigQuery).",
+        help="Data source mode: 'canonical' (illustrative benchmark), 'local_csv' (reviewed registry evidence), or 'bigquery' (live GCP BigQuery).",
     )
     parser.add_argument(
         "--project",
@@ -113,16 +113,15 @@ def main(argv: Optional[list[str]] = None) -> int:
         print(get_property_graph_ddl(args.dataset))
         print("\n[BIGQUERY GQL] Multi-Hop Cascade Traversal (Forward Supplies):")
         print(get_gql_multihop_cascade_sql(args.dataset))
-        print("\n[BIGQUERY GQL] Bidirectional Anchor Closure Traversal (Forward DrawsFootfall -> Backward Supplies):")
-        print(get_gql_anchor_closure_cascade_sql(args.dataset), flush=True)
+        print("\n[BIGQUERY GQL] Named Shortest Supply Paths:")
+        print(get_gql_shortest_path_trace_sql(args.dataset), flush=True)
 
-    mcp_info = get_bigquery_mcp_status(project_id=args.project)
+    mcp_info = get_mcp_bigquery_server_status()
     print(f"\n[MCP TOOLSET] Google-Managed BigQuery MCP & Toolbox Integration")
-    print(f"  MCP Server Type  : {mcp_info['mcp_server_type']}")
-    print(f"  MCP Endpoint URL : {mcp_info['mcp_endpoint_url']}")
+    print(f"  MCP Endpoint URL : {mcp_info['google_builtin_mcp_endpoint']}")
     print(f"  Property Graph   : {mcp_info['property_graph']}")
-    print(f"  Toolbox Spec     : {mcp_info['toolbox_yaml_path']} (exists={mcp_info['toolbox_yaml_exists']})")
-    print(f"  ADK Toolset Class: {mcp_info['adk_mcp_toolset_class']}", flush=True)
+    print(f"  Toolbox Spec     : tools.yaml (exists={mcp_info['tools_yaml_present']})")
+    print(f"  Toolset Classes  : {mcp_info['active_toolset_classes']}", flush=True)
 
     # 2. Load Applicants from selected data mode
     print(f"\n[DATA CONNECTOR] Loading applicants in mode='{args.mode}'...", flush=True)
@@ -152,7 +151,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 for gr in gql_rows[:5]:
                     print(
                         f"    * {str(gr.get('business_name')):<32} | NAICS {gr.get('naics4')} "
-                        f"| 1-hop: {gr.get('direct_buyers'):>3} | 2-hop: {gr.get('two_hop_exposed'):>3} "
+                        f"| 1-hop: {gr.get('direct_buyers'):>3} | 2-hop: {gr.get('exposed_businesses'):>3} "
                         f"| intensity: {gr.get('total_direct_intensity')}",
                         flush=True,
                     )
@@ -173,9 +172,13 @@ def main(argv: Optional[list[str]] = None) -> int:
     print(f"\n[SELECTED AGENT] {selected_agent.name} ({selected_agent.display_name})")
 
     if isinstance(selected_agent, RegimeStressTestOrchestratorAgent):
-        print("[MODULES 2-4] Running 4-Agent Pipeline + Knapsack Optimizer + Red-Team Auditor...")
+        print("[MODULES 2-4] Running 4-Agent Pipeline + Portfolio Allocation + Red-Team Auditor...")
         pipeline_output = selected_agent.run_pipeline(applicants=applicants)
-        print("\n" + pipeline_output["red_team_compliance_report_markdown"])
+        if pipeline_output.get("status") == "EVIDENCE_ONLY":
+            print("\nEVIDENCE_ONLY: " + pipeline_output["message"])
+            print(json.dumps(pipeline_output["industry_variety"], indent=2))
+        else:
+            print("\nIllustrative benchmark only; no source outcomes certified.\n" + pipeline_output["red_team_compliance_report_markdown"])
     else:
         print(f"[SPECIALIST AGENT EVALUATION] Executing {selected_agent.display_name}...")
         agent_output = selected_agent.evaluate(applicants=applicants)

@@ -1415,6 +1415,8 @@ def compute_applicant_utility(
                  + w_peop * S_people(i)  + w_pure * P_pure(i)
       U_i = E_corp(i) * LiftFactor(Delta_P) * rho_s * mu_i * Gamma_i(w) * M_equity(i)
     """
+    if applicant.get("data_mode") == "source_review":
+        raise ValueError("Registry evidence cannot supply cash runway, ownership, invoices or causal grant lift. Complete applicant inputs before scoring.")
     gate = evaluate_corporate_exclusion_gate(
         naics_4=str(applicant.get("naics", "0000")),
         fte_count=float(applicant.get("direct_employees", 0)),

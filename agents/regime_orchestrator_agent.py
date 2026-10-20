@@ -64,27 +64,23 @@ from tools.scoring_engine import (
     optimize_portfolio_knapsack,
     run_all_regimes_comparison,
 )
+from tools.resilience_analysis import analyze_corridor_impact, review_industry_variety, industry_variety
 
 
 ORCHESTRATOR_BASE_PROMPT = """You are the Regime Stress-Test & Orchestrator Agent (Chief Municipal Economist)
 for the San Francisco Central Market Micro-Grant ADK.
-You must NEVER perform arithmetic in prose, and you must NEVER answer a Grant Officer's question
-merely by quoting internal formula variable names (`u_i`, `LiftFactor`, `parent_multiplier_mu_i`).
-Always build a **defensible case, not just a score**:
-- Whenever asked questions like:
-  * "If I fund nobody, which of these eleven closures does the most damage?"
-  * "Show me why this one and not that one."
-  * "Are any downstream suppliers/buyers already fragile?"
-  * "Nobody at the far end of that chain applied. Should they have?"
-  * "What does $8,000 [or $10,000] actually change?"
-  * "Whose neighborhood does this help?"
-  * "Write it up. I present Friday."
-  you MUST call `trace_applicant_multihop_paths_and_compare` (and `evaluate_gql_cascade_and_recommend_funding`)
-  to show the **actual named Hop-1 -> Hop-2 GQL paths** (`Seed -> Hop 1 -> Hop 2` with business names,
-  addresses, NAICS codes, BEA `intensity`, and walking distances in `metres`), the unfunded cascade damage
-  (jobs, downstream buyers, baseline closure risk), why raw high-centrality corporate hubs (`Tradespace`,
-  `Ossium Health`, `Wpengine`) are excluded, what modeling assumptions govern the grant impact, and which
-  evidence is real (`borrowed_from` SBA loans & ACS tracts) vs. modeled (`Supplies` & `DrawsFootfall` edges)."""
+Evidence rule: ADK financial examples and legacy priors are illustrative scenarios.
+For source_review records, use analyze_corridor_impact (1–8 hops) and review_industry_variety.
+Do not optimize grants when cash, current debt, eligibility or canonical rates are missing.
+Read data/TASK_2_3_REVIEW.md for corrected source claims. Never promise jobs saved from reach.
+You must NEVER perform arithmetic in prose. You orchestrate:
+1. Supply & Provenance Agent (`supply_provenance_agent`)
+2. Runway, Sector & Purity Agent (`runway_sector_purity_agent`)
+3. Spatial Foot-Traffic & Human-Impact Agent (`spatial_human_impact_agent`)
+and invoke deterministic optimization tools to compare Regimes A, B, and C under a $50,000 budget,
+prevent partial-grant dilution on Indivisible Capital Cliffs, enforce 200m spatial critical mass,
+compute parameter invariance intervals [alpha_min, alpha_max] and S_robust, and produce the
+Red-Team Compliance & Determination Report."""
 
 
 class RegimeStressTestOrchestratorAgent:
@@ -134,10 +130,23 @@ class RegimeStressTestOrchestratorAgent:
           Step 7: Parameter Invariance & Simplex Robustness Stress-Test
           Step 8: 10-Vector Red-Team Compliance Report Generation
         """
-        apps = applicants if applicants is not None else get_canonical_applicants()
+        apps = applicants if applicants is not None else load_corridor_applicants(mode="auto")[0]
+
+        if any(app.get("data_mode") == "source_review" for app in apps):
+            return {
+                "status": "EVIDENCE_ONLY",
+                "industry_variety": {"loaded_records": industry_variety(apps),
+                                     "local_review": review_industry_variety() if all(str(a.get("data_source", "")).startswith("LOCAL_REVIEW") for a in apps) else None},
+                "message": "Source records lack current applicant financial and eligibility evidence. No grant awards computed.",
+                "applicants": apps,
+                "traversal_tool": "Local reviewed graph: analyze_corridor_impact(business_id, max_hops=1..8, direction=downstream|upstream). Cloud graph: BigQueryGraphConnector.query_gql_multihop_cascade(max_hops=1..8). Do not mix graph counts.",
+            }
 
         context_audit = get_context_audit_summary(adk_dir=self.adk_dir)
-        gql_decision_output = evaluate_gql_cascade_and_recommend_funding(budget=budget)
+        gql_decision_output = {
+            "status": "ILLUSTRATIVE_BENCHMARK",
+            "note": "This portfolio uses supplied scenario applicants. Call traverse_corridor_graph_gql explicitly for live paths; do not join cloud reach to fixture finances.",
+        }
         supply_output = self.supply_agent.evaluate(applicants=apps)
         runway_output = self.runway_agent.evaluate(applicants=apps)
 
@@ -230,6 +239,8 @@ def create_orchestrator_adk_pipeline(
         get_property_graph_ddl,
         get_gql_multihop_cascade_sql,
         get_gql_shortest_path_trace_sql,
+        analyze_corridor_impact,
+        review_industry_variety,
     ]
     if include_mcp_toolsets:
         orchestrator_tools.extend(get_google_managed_bigquery_mcp_toolsets())

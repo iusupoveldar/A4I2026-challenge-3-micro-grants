@@ -1,0 +1,4178 @@
+[
+  {
+    "ttxid": "0012530-04-002",
+    "uniqueid": "0012530-04-002-0012530",
+    "dba_name": "The Hearst Corp",
+    "ownership_name": "Hearst Corp The",
+    "full_business_address": "901 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "511110",
+    "location_start_date": "2010-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.406615,
+        37.782162
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0019117-01-001",
+    "uniqueid": "0019117-01-001-0019117",
+    "dba_name": "Microbiz",
+    "ownership_name": "Microbiz Service Company",
+    "full_business_address": "444 Jessie St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "811210",
+    "location_start_date": "1968-10-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408127,
+        37.782621
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0019117-02-001",
+    "uniqueid": "0019117-02-001-0019117",
+    "dba_name": "Microbiz Security Company",
+    "ownership_name": "Microbiz Service Company",
+    "full_business_address": "444 Jessie St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "811210",
+    "location_start_date": "2005-04-05T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408127,
+        37.782621
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0046324-08-001",
+    "uniqueid": "0046324-08-001-0046324",
+    "dba_name": "Eurest Dining-Bank Of America",
+    "ownership_name": "Compass Group Usa Inc",
+    "full_business_address": "1455 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722300",
+    "location_start_date": "2004-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.418054,
+        37.775862
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0046324-27-001",
+    "uniqueid": "0046324-27-001-0046324",
+    "dba_name": "Canteen Refreshment Services",
+    "ownership_name": "Compass Group Usa Inc",
+    "full_business_address": "901 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722300",
+    "location_start_date": "2014-04-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.406615,
+        37.782162
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0111663-06-001",
+    "uniqueid": "0111663-06-001-0111663",
+    "dba_name": "Orpheum Theatre",
+    "ownership_name": "Broadway San Francisco LLC",
+    "full_business_address": "1192 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "711100",
+    "location_start_date": "1977-10-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4146655,
+        37.779336
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0111755-01-001",
+    "uniqueid": "0111755-01-001-0111755",
+    "dba_name": "Freds Liquor & Grocery",
+    "ownership_name": "Musa Bros Inc",
+    "full_business_address": "151 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445110",
+    "location_start_date": "1978-04-07T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4077175,
+        37.780488
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0115774-02-002",
+    "uniqueid": "0115774-02-002-0115774",
+    "dba_name": "Eddies Bookstores Inc Etc",
+    "ownership_name": "Eddies Bookstores Inc",
+    "full_business_address": "99 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "4599",
+    "location_start_date": "1978-06-04T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4087165,
+        37.781289
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0301360-01-001",
+    "uniqueid": "0301360-01-001-0301360",
+    "dba_name": "Gar May Garment Inc",
+    "ownership_name": "Gar May Garment Inc",
+    "full_business_address": "984 Mission St Fl 4",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "3100",
+    "location_start_date": "1997-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408532,
+        37.781586
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0316083-04-001",
+    "uniqueid": "0316083-04-001-0316083",
+    "dba_name": "San Francisco Chronicle",
+    "ownership_name": "Hearst Communications Inc",
+    "full_business_address": "901 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "511110",
+    "location_start_date": "2001-02-09T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.406615,
+        37.782162
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0316083-06-001",
+    "uniqueid": "0316083-06-001-0316083",
+    "dba_name": "Sfgate.Com",
+    "ownership_name": "Hearst Communications Inc",
+    "full_business_address": "901 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "511110",
+    "location_start_date": "2001-11-27T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.406615,
+        37.782162
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0316083-09-001",
+    "uniqueid": "0316083-09-001-0316083",
+    "dba_name": "West Coast Realties",
+    "ownership_name": "Hearst Communications Inc",
+    "full_business_address": "901 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "511110",
+    "location_start_date": "2010-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.406615,
+        37.782162
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0316083-16-001",
+    "uniqueid": "0316083-16-001-0316083",
+    "dba_name": "Newspaper Administration",
+    "ownership_name": "Hearst Communications Inc",
+    "full_business_address": "901 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "511110",
+    "location_start_date": "2012-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.406615,
+        37.782162
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0318928-04-001",
+    "uniqueid": "0318928-04-001-0318928",
+    "dba_name": "John W Deroy Chiropractic Corp",
+    "ownership_name": "John W De Roy Chiroprac Corp",
+    "full_business_address": "26 7th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "621310",
+    "location_start_date": "2007-05-20T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412411,
+        37.780074
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0375063-01-001",
+    "uniqueid": "0375063-01-001-0375063",
+    "dba_name": "Speed Queen Coin Laundry Inc",
+    "ownership_name": "Speed Queen Coin Laundry Inc",
+    "full_business_address": "118 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812310",
+    "location_start_date": "2004-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4085725,
+        37.780551
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0380638-02-001",
+    "uniqueid": "0380638-02-001-0380638",
+    "dba_name": "Cigarettes For Less",
+    "ownership_name": "Azar Brothers Inc",
+    "full_business_address": "1053 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445110",
+    "location_start_date": "2004-09-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.411169,
+        37.78101
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0380638-03-001",
+    "uniqueid": "0380638-03-001-0380638",
+    "dba_name": "Mid Market Mutts Pet Store",
+    "ownership_name": "Azar Brothers Inc",
+    "full_business_address": "1053 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445110",
+    "location_start_date": "2013-09-17T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.411169,
+        37.78101
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0383859-01-001",
+    "uniqueid": "0383859-01-001-0383859",
+    "dba_name": "Mcginnis Chen Associates Inc",
+    "ownership_name": "Mcginnis Chen Associates Inc",
+    "full_business_address": "1019 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541310",
+    "location_start_date": "2010-12-05T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408919,
+        37.780344
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0403437-01-002",
+    "uniqueid": "0403437-01-002-0403437",
+    "dba_name": "Bluebird Office Supplies",
+    "ownership_name": "Image Source Inc",
+    "full_business_address": "480 Clementina St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "459410",
+    "location_start_date": "2009-09-30T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.405751,
+        37.779435
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0429331-02-001",
+    "uniqueid": "0429331-02-001-0429331",
+    "dba_name": "The Warfield Theater",
+    "ownership_name": "Aeg Live LLC",
+    "full_business_address": "982 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "711300",
+    "location_start_date": "2012-12-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4100845,
+        37.782693
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0431981-01-001",
+    "uniqueid": "0431981-01-001-0431981",
+    "dba_name": "54 Mint-Winebar",
+    "ownership_name": "Troia Alimentari Italiani Inc",
+    "full_business_address": "16 Mint Plz",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2008-08-20T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4079605,
+        37.782684
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0431981-01-002",
+    "uniqueid": "0431981-01-002-0431981",
+    "dba_name": "54 Mint-Winebar",
+    "ownership_name": "Troia Alimentari Italiani Inc",
+    "full_business_address": "16 Mint Plz",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2008-08-20T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4079605,
+        37.782684
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0436160-01-001",
+    "uniqueid": "0436160-01-001-0436160",
+    "dba_name": "Oak Tree Hotel",
+    "ownership_name": "Shivangi LLC",
+    "full_business_address": "45 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721110",
+    "location_start_date": "2009-01-09T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4093195,
+        37.781766
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0445533-01-005",
+    "uniqueid": "0445533-01-005-0445533",
+    "dba_name": "Blue Bottle Coffee LLC",
+    "ownership_name": "Blue Bottle Coffee LLC",
+    "full_business_address": "66 Mint St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722515",
+    "location_start_date": "2010-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4076545,
+        37.782441
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0446800-01-001",
+    "uniqueid": "0446800-01-001-0446800",
+    "dba_name": "Sunnyside Hotel",
+    "ownership_name": "Guru Sharanam LLC",
+    "full_business_address": "135 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721110",
+    "location_start_date": "2010-02-25T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.407875,
+        37.780659
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0446962-01-001",
+    "uniqueid": "0446962-01-001-0446962",
+    "dba_name": "Law Off Michael Gurfinkel Inc",
+    "ownership_name": "Law Off Michael Gurfinkel Inc",
+    "full_business_address": "966 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541110",
+    "location_start_date": "2010-01-04T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4081045,
+        37.781793
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0457689-01-001",
+    "uniqueid": "0457689-01-001-0457689",
+    "dba_name": "Mercy Housing Ca 50 A Ca Lp",
+    "ownership_name": "Mercy Housing Ca 50 A Ca Lp",
+    "full_business_address": "1360 Mission St Fl 3",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "624229",
+    "location_start_date": "2011-03-22T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4154845,
+        37.775799
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0459824-01-001",
+    "uniqueid": "0459824-01-001-0459824",
+    "dba_name": "Mercy Housing Ca 53, A Ca Lp",
+    "ownership_name": "Mercy Housing Ca 53, A Ca Lp",
+    "full_business_address": "1360 Mission St Fl 3",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "624229",
+    "location_start_date": "2011-06-03T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4154845,
+        37.775799
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0466549-01-001",
+    "uniqueid": "0466549-01-001-0466549",
+    "dba_name": "1100 Ocean Avenue Lp",
+    "ownership_name": "1100 Ocean Avenue Lp",
+    "full_business_address": "1360 Mission St Fl 3",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "624229",
+    "location_start_date": "2011-12-22T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4154845,
+        37.775799
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0466886-01-001",
+    "uniqueid": "0466886-01-001-0466886",
+    "dba_name": "Mercy Housing Ca Xliv Ca Lp",
+    "ownership_name": "Mercy Housing Ca Xliv Ca Lp",
+    "full_business_address": "1360 Mission St Fl 3",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "624229",
+    "location_start_date": "2008-10-15T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4154845,
+        37.775799
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0467521-01-001",
+    "uniqueid": "0467521-01-001-0467521",
+    "dba_name": "Mercy Housing Ca 57 A Ca Lp",
+    "ownership_name": "Mercy Housing Ca 57 A Ca Lp",
+    "full_business_address": "1360 Mission St Fl 3",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "624229",
+    "location_start_date": "2012-02-09T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4154845,
+        37.775799
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0467522-01-001",
+    "uniqueid": "0467522-01-001-0467522",
+    "dba_name": "Third & Leconte Assoc A Ca Lp",
+    "ownership_name": "Third & Leconte Assoc A Ca Lp",
+    "full_business_address": "1360 Mission St Fl 3",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "624229",
+    "location_start_date": "2009-07-15T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4154845,
+        37.775799
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0469782-01-001",
+    "uniqueid": "0469782-01-001-0469782",
+    "dba_name": "Arista Networks Inc",
+    "ownership_name": "Arista Networks Inc",
+    "full_business_address": "1390 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "334210",
+    "location_start_date": "2012-05-15T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4174465,
+        37.777077
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0470546-01-001",
+    "uniqueid": "0470546-01-001-0470546",
+    "dba_name": "Club Omg!",
+    "ownership_name": "Club Omg! LLC",
+    "full_business_address": "43 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722410",
+    "location_start_date": "2012-07-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4093195,
+        37.781766
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0470546-02-001",
+    "uniqueid": "0470546-02-001-0470546",
+    "dba_name": "Omg!",
+    "ownership_name": "Club Omg! LLC",
+    "full_business_address": "43 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722410",
+    "location_start_date": "2012-07-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4093195,
+        37.781766
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0474382-01-001",
+    "uniqueid": "0474382-01-001-0474382",
+    "dba_name": "Barbary Coast",
+    "ownership_name": "Bcsf, Inc.",
+    "full_business_address": "952 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "459991",
+    "location_start_date": "2012-11-15T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4078705,
+        37.782063
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0478180-01-001",
+    "uniqueid": "0478180-01-001-0478180",
+    "dba_name": "Miss Saigon LLC",
+    "ownership_name": "Miss Saigon LLC",
+    "full_business_address": "100 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2013-04-05T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4087795,
+        37.780722
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0479019-01-001",
+    "uniqueid": "0479019-01-001-0479019",
+    "dba_name": "Califashions Manufacturing Inc",
+    "ownership_name": "Califashions Manufacturing Inc",
+    "full_business_address": "972 Mission St Fl 4",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "315250",
+    "location_start_date": "2012-12-04T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4083745,
+        37.781712
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0481879-01-001",
+    "uniqueid": "0481879-01-001-0481879",
+    "dba_name": "Mo'z Cafe Inc",
+    "ownership_name": "Mo'z Cafe Inc",
+    "full_business_address": "36 5th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "72",
+    "location_start_date": "2013-07-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4075285,
+        37.783386
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0483914-01-001",
+    "uniqueid": "0483914-01-001-0483914",
+    "dba_name": "Enertia Designs Inc",
+    "ownership_name": "Enertia Designs Inc",
+    "full_business_address": "1167 Mission St Fl 1",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "54131",
+    "location_start_date": "2013-10-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412213,
+        37.777743
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0486249-02-001",
+    "uniqueid": "0486249-02-001-0486249",
+    "dba_name": "15five Inc",
+    "ownership_name": "15five Inc",
+    "full_business_address": "901 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541511",
+    "location_start_date": "2013-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.406615,
+        37.782162
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0490135-01-001",
+    "uniqueid": "0490135-01-001-0490135",
+    "dba_name": "Ram's Hotel",
+    "ownership_name": "Rpsrrs LLC",
+    "full_business_address": "80 9th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721110",
+    "location_start_date": "2014-06-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415084,
+        37.776285
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "0911744-65-001",
+    "uniqueid": "0911744-65-001-0911744",
+    "dba_name": "Starbucks Coffee #6937",
+    "ownership_name": "Starbucks Corporation",
+    "full_business_address": "1390 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722515",
+    "location_start_date": "2003-09-20T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4174465,
+        37.777077
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1003080-07-141",
+    "uniqueid": "1003080-07-141-1002062",
+    "dba_name": "Hampton Inn San Francisco Downtown Convention Center",
+    "ownership_name": "Mint Development Lp",
+    "full_business_address": "942 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721110",
+    "location_start_date": "2014-07-29T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4077895,
+        37.78218
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1013186-12-141",
+    "uniqueid": "1013186-12-141-1006449",
+    "dba_name": "Hashiri",
+    "ownership_name": "Mp Planning Corp",
+    "full_business_address": "4 Mint Plz",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2014-12-02T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.407722,
+        37.783008
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1013800-12-141",
+    "uniqueid": "1013800-12-141-0098799",
+    "dba_name": "Soma Park Inn",
+    "ownership_name": "Mart Bkd LLC",
+    "full_business_address": "101 9th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721110",
+    "location_start_date": "2014-12-10T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.414292,
+        37.776213
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1015823-01-151",
+    "uniqueid": "1015823-01-151-1007592",
+    "dba_name": "Ch Parking LLC",
+    "ownership_name": "Ch Service Co Holdings LLC",
+    "full_business_address": "8 10th Street Leasing Dept",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2015-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.41703706,
+        37.775997216
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1016468-01-151",
+    "uniqueid": "1016468-01-151-0111663",
+    "dba_name": "Golden Gate Theatre",
+    "ownership_name": "Broadway San Francisco LLC",
+    "full_business_address": "1 Taylor St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "711100",
+    "location_start_date": "2001-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4108135,
+        37.782441
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1019291-02-151",
+    "uniqueid": "1019291-02-151-0307238",
+    "dba_name": "Calworks/Fu Yau Project",
+    "ownership_name": "Richmond Area Multi Serv Inc",
+    "full_business_address": "1375 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "621498",
+    "location_start_date": "2014-10-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415381,
+        37.775376
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1024600-04-151",
+    "uniqueid": "1024600-04-151-1011891",
+    "dba_name": "Chico's Pizza",
+    "ownership_name": "Sados Corporation",
+    "full_business_address": "131 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722513",
+    "location_start_date": "2015-04-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4080685,
+        37.780866
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1026779-04-151",
+    "uniqueid": "1026779-04-151-1012929",
+    "dba_name": "Steel + Lacquer",
+    "ownership_name": "Steel + Lacquer LLC",
+    "full_business_address": "14 10th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812112",
+    "location_start_date": "2015-04-23T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.417172,
+        37.776078
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1027831-05-151",
+    "uniqueid": "1027831-05-151-1013404",
+    "dba_name": "Warfield Hotel Inc",
+    "ownership_name": "Warfield Hotel Inc",
+    "full_business_address": "118 Taylor St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721110",
+    "location_start_date": "2015-05-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.410593,
+        37.783467
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1034218-07-151",
+    "uniqueid": "1034218-07-151-1006775",
+    "dba_name": "United Sf Parking Inc",
+    "ownership_name": "United Sf Parking Inc",
+    "full_business_address": "1400 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2015-07-22T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.416272,
+        37.77525
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1046949-12-151",
+    "uniqueid": "1046949-12-151-1022009",
+    "dba_name": "Tax Credit Asset Management LLC",
+    "ownership_name": "Tax Credit Asset Management LLC",
+    "full_business_address": "1 S Van Ness Ave 5th Flr",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541511",
+    "location_start_date": "2015-09-15T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.418972,
+        37.774953
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1051330-01-161",
+    "uniqueid": "1051330-01-161-1024221",
+    "dba_name": "Pdm Group Inc",
+    "ownership_name": "Pdm Group Inc",
+    "full_business_address": "1455 Market St Fl 22nd",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "54161",
+    "location_start_date": "2016-01-15T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.418054,
+        37.775862
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1051477-01-161",
+    "uniqueid": "1051477-01-161-1024298",
+    "dba_name": "Cumaica Coffee",
+    "ownership_name": "Cumaica Corp",
+    "full_business_address": "1398 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "311900",
+    "location_start_date": "2015-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415921,
+        37.775538
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1053683-02-161",
+    "uniqueid": "1053683-02-161-0307238",
+    "dba_name": "Peer Based Division",
+    "ownership_name": "Richmond Area Multi Serv Inc",
+    "full_business_address": "1282 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "621498",
+    "location_start_date": "2015-09-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.416218,
+        37.777986
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1054993-02-161",
+    "uniqueid": "1054993-02-161-0316083",
+    "dba_name": "5m Hearst",
+    "ownership_name": "Hearst Communications Inc",
+    "full_business_address": "901 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "511110",
+    "location_start_date": "2015-07-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.406615,
+        37.782162
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1056681-02-161",
+    "uniqueid": "1056681-02-161-1027813",
+    "dba_name": "Sf City Attorneys Office",
+    "ownership_name": "Cra International Inc",
+    "full_business_address": "1390 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541990",
+    "location_start_date": "2016-01-05T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4174465,
+        37.777077
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1056704-02-161",
+    "uniqueid": "1056704-02-161-0329140",
+    "dba_name": "Impark 0314",
+    "ownership_name": "Imperial Parking (Us) LLC",
+    "full_business_address": "50 8th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2016-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4142875,
+        37.777572
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1056891-03-161",
+    "uniqueid": "1056891-03-161-0329140",
+    "dba_name": "Impark 0356",
+    "ownership_name": "Imperial Parking (Us) LLC",
+    "full_business_address": "1390 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2016-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4174465,
+        37.777077
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1073189-05-161",
+    "uniqueid": "1073189-05-161-1035645",
+    "dba_name": "Constructor.Io Corporation",
+    "ownership_name": "Constructor.Io Corporation",
+    "full_business_address": "25 Taylor St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "519200",
+    "location_start_date": "2015-01-05T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4108135,
+        37.782594
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1078764-06-161",
+    "uniqueid": "1078764-06-161-0418545",
+    "dba_name": "Harvey M Rose Associates LLC",
+    "ownership_name": "Harvey M Rose Associates LLC",
+    "full_business_address": "1390 Market St Rm 1150",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "5400",
+    "location_start_date": "2016-06-24T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4174465,
+        37.777077
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1079443-06-161",
+    "uniqueid": "1079443-06-161-0401320",
+    "dba_name": "S.F. Friends Meeting, Inc.",
+    "ownership_name": "S.F. Friends Meeting, Inc.",
+    "full_business_address": "65 9th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "81311",
+    "location_start_date": "1967-03-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4149625,
+        37.776771
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1080659-07-161",
+    "uniqueid": "1080659-07-161-1002902",
+    "dba_name": "Blick Art Materials LLC",
+    "ownership_name": "Blick Art Materials LLC",
+    "full_business_address": "979 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "4445",
+    "location_start_date": "2014-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4095445,
+        37.782288
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1084069-07-161",
+    "uniqueid": "1084069-07-161-0935700",
+    "dba_name": "Asian, Inc.",
+    "ownership_name": "Asian Inc",
+    "full_business_address": "1167 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541900",
+    "location_start_date": "1971-03-30T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412213,
+        37.777743
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1085153-07-161",
+    "uniqueid": "1085153-07-161-0319827",
+    "dba_name": "Baart",
+    "ownership_name": "Addiction Resrch & Treatment Inc",
+    "full_business_address": "1111 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "621420",
+    "location_start_date": "2016-05-31T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412519,
+        37.779939
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1088753-08-161",
+    "uniqueid": "1088753-08-161-0450485",
+    "dba_name": "Sour Flour",
+    "ownership_name": "Sour Flour Corporation",
+    "full_business_address": "1182 Market St 415",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "311800",
+    "location_start_date": "2016-08-12T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4146655,
+        37.779336
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1096064-08-161",
+    "uniqueid": "1096064-08-161-0467562",
+    "dba_name": "Dough",
+    "ownership_name": "Lunch Geek LLC",
+    "full_business_address": "1455 Market St 3c",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722513",
+    "location_start_date": "2016-08-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.418054,
+        37.775862
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1119346-09-161",
+    "uniqueid": "1119346-09-161-0484458",
+    "dba_name": "Street Taco",
+    "ownership_name": "Df La Capital LLC",
+    "full_business_address": "83 9th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722513",
+    "location_start_date": "2016-09-15T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.414841,
+        37.776681
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1123854-10-161",
+    "uniqueid": "1123854-10-161-0307238",
+    "dba_name": "Richmond Area Multi Serv Inc",
+    "ownership_name": "Richmond Area Multi Serv Inc",
+    "full_business_address": "1235 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "621498",
+    "location_start_date": "2016-10-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4136485,
+        37.776897
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1124117-10-161",
+    "uniqueid": "1124117-10-161-1020981",
+    "dba_name": "Moe Greens",
+    "ownership_name": "Fmsf Inc",
+    "full_business_address": "1276 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "459991",
+    "location_start_date": "2016-10-17T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.416074,
+        37.778112
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1126947-11-161",
+    "uniqueid": "1126947-11-161-0347331",
+    "dba_name": "Pro Park America West LLC",
+    "ownership_name": "Propark America West LLC",
+    "full_business_address": "1455 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2016-11-09T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.418054,
+        37.775862
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1126972-11-161",
+    "uniqueid": "1126972-11-161-1060964",
+    "dba_name": "Geary Place LLC",
+    "ownership_name": "Geary Place LLC",
+    "full_business_address": "1023 Market St 2",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "81",
+    "location_start_date": "2016-08-15T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4106155,
+        37.781595
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1136693-02-171",
+    "uniqueid": "1136693-02-171-1006775",
+    "dba_name": "United Sf Parking Inc",
+    "ownership_name": "United Sf Parking Inc",
+    "full_business_address": "33 8th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2017-02-17T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.413392,
+        37.777878
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1137011-02-171",
+    "uniqueid": "1137011-02-171-0490623",
+    "dba_name": "Non Plus Ultra",
+    "ownership_name": "Npu Inc",
+    "full_business_address": "88 5th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "711310",
+    "location_start_date": "2017-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.407218,
+        37.782747
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1137701-02-171",
+    "uniqueid": "1137701-02-171-1066164",
+    "dba_name": "Dcmn, Inc.",
+    "ownership_name": "Dcmn, Inc.",
+    "full_business_address": "995 Market Street",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541810",
+    "location_start_date": "2015-09-18T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.409756,
+        37.78209
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1138356-03-171",
+    "uniqueid": "1138356-03-171-1066467",
+    "dba_name": "Waypoint Consulting, Inc.",
+    "ownership_name": "Waypoint Consulting, Inc",
+    "full_business_address": "1390 Market St Bldg 200",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "54161",
+    "location_start_date": "2017-01-03T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4174465,
+        37.777077
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1143037-04-171",
+    "uniqueid": "1143037-04-171-1068673",
+    "dba_name": "Sprinklr, Inc.",
+    "ownership_name": "Sprinklr, Inc.",
+    "full_business_address": "965 Mission St Bldg",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "540054",
+    "location_start_date": "2015-07-20T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.40756,
+        37.781415
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1144514-04-171",
+    "uniqueid": "1144514-04-171-1069412",
+    "dba_name": "Ossium Health, Inc.",
+    "ownership_name": "Ossium Health, Inc.",
+    "full_business_address": "25 Taylor St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "325414",
+    "location_start_date": "2016-02-08T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4108135,
+        37.782594
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1146487-05-171",
+    "uniqueid": "1146487-05-171-1070225",
+    "dba_name": "Exabyte Inc.",
+    "ownership_name": "Exabyte Inc.",
+    "full_business_address": "1160 Mission St 811",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541715",
+    "location_start_date": "2017-05-15T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4123345,
+        37.778454
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1146663-05-171",
+    "uniqueid": "1146663-05-171-1070303",
+    "dba_name": "Wpengine, Inc.",
+    "ownership_name": "Wpengine, Inc.",
+    "full_business_address": "1161 Mission Street",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541519",
+    "location_start_date": "2013-11-18T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4120105,
+        37.777905
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1146947-05-171",
+    "uniqueid": "1146947-05-171-1070435",
+    "dba_name": "San Francisco Proper Hotel",
+    "ownership_name": "Sf Hotel Master Tenant, LLC",
+    "full_business_address": "1100 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721",
+    "location_start_date": "2017-05-18T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412483,
+        37.780902
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1149359-06-171",
+    "uniqueid": "1149359-06-171-1071425",
+    "dba_name": "The Rumpus Room",
+    "ownership_name": "10 6th St. LLC",
+    "full_business_address": "10 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722410",
+    "location_start_date": "2017-06-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4101925,
+        37.781874
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1149581-06-171",
+    "uniqueid": "1149581-06-171-1071520",
+    "dba_name": "Coderpad Inc.",
+    "ownership_name": "Coderpad Inc.",
+    "full_business_address": "995 Market St 225",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "513210",
+    "location_start_date": "2015-07-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.409756,
+        37.78209
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1152776-06-171",
+    "uniqueid": "1152776-06-171-0470213",
+    "dba_name": "Mercy Housing California 51  A California Limited Partnership",
+    "ownership_name": "Mercy Housing Ca 51 A Ca Lp",
+    "full_business_address": "1009 Howard St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "624229",
+    "location_start_date": "2010-10-07T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.407254,
+        37.779498
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1158980-08-171",
+    "uniqueid": "1158980-08-171-0458135",
+    "dba_name": "The Melt",
+    "ownership_name": "Fish Six Restaurant Corp",
+    "full_business_address": "925 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "7225",
+    "location_start_date": "2017-08-23T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4084375,
+        37.783296
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1160324-09-171",
+    "uniqueid": "1160324-09-171-1075758",
+    "dba_name": "City Produce",
+    "ownership_name": "City Produce Market Inc",
+    "full_business_address": "174 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445110",
+    "location_start_date": "2017-09-07T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4078075,
+        37.77984
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1175132-01-181",
+    "uniqueid": "1175132-01-181-1081874",
+    "dba_name": "Church Of God Outpost",
+    "ownership_name": "Christian Evangelical Churches Of America Inc",
+    "full_business_address": "160 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "813110",
+    "location_start_date": "2018-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4080055,
+        37.780101
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1178131-02-181",
+    "uniqueid": "1178131-02-181-0056163",
+    "dba_name": "Conard House Inc.",
+    "ownership_name": "Conard House Inc",
+    "full_business_address": "1385 Mission St 200",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "624229",
+    "location_start_date": "1997-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415381,
+        37.775376
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1180123-02-181",
+    "uniqueid": "1180123-02-181-1068276",
+    "dba_name": "Tray.Io, Inc",
+    "ownership_name": "Tray. Io Inc",
+    "full_business_address": "1161 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541511",
+    "location_start_date": "2016-12-02T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4120105,
+        37.777905
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1188036-05-181",
+    "uniqueid": "1188036-05-181-0166284",
+    "dba_name": "A & A Legal Service, Inc.",
+    "ownership_name": "A & A Legal Service Inc",
+    "full_business_address": "1390 Market St 200",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541190",
+    "location_start_date": "2018-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4174465,
+        37.777077
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1188540-05-181",
+    "uniqueid": "1188540-05-181-1070435",
+    "dba_name": "San Francisco Proper Hotel - Villon",
+    "ownership_name": "Sf Hotel Master Tenant, LLC",
+    "full_business_address": "1100 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721",
+    "location_start_date": "2017-09-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412483,
+        37.780902
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1188541-05-181",
+    "uniqueid": "1188541-05-181-1070435",
+    "dba_name": "San Francisco Proper Hotel - Charmaine's",
+    "ownership_name": "Sf Hotel Master Tenant, LLC",
+    "full_business_address": "1100 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721",
+    "location_start_date": "2017-09-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412483,
+        37.780902
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1192496-06-181",
+    "uniqueid": "1192496-06-181-1085883",
+    "dba_name": "Celo",
+    "ownership_name": "A Protocol Inc",
+    "full_business_address": "25 Taylor St Fl 3rd",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541510",
+    "location_start_date": "2018-03-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4108135,
+        37.782594
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1193022-06-181",
+    "uniqueid": "1193022-06-181-0401308",
+    "dba_name": "National Apparel LLC",
+    "ownership_name": "National Apparel LLC",
+    "full_business_address": "1061 Market St Basement",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "315210",
+    "location_start_date": "2010-05-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4112905,
+        37.78092
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1193662-06-181",
+    "uniqueid": "1193662-06-181-1089621",
+    "dba_name": "Corporation For Supportive Housing",
+    "ownership_name": "Corporation For Supportive Housing",
+    "full_business_address": "25 Taylor St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "624229",
+    "location_start_date": "1992-12-31T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4108135,
+        37.782594
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1195222-07-181",
+    "uniqueid": "1195222-07-181-1090263",
+    "dba_name": "Washburn Housing Corporation",
+    "ownership_name": "Washburn Housing Corporation",
+    "full_business_address": "1385 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "624229",
+    "location_start_date": "1990-06-11T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415381,
+        37.775376
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1203637-10-181",
+    "uniqueid": "1203637-10-181-1094153",
+    "dba_name": "The Pawn Shop",
+    "ownership_name": "The Pawn Shop LLC",
+    "full_business_address": "993 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2018-10-23T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4083475,
+        37.781064
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1203640-10-181",
+    "uniqueid": "1203640-10-181-0111663",
+    "dba_name": "Shn",
+    "ownership_name": "Broadway San Francisco LLC",
+    "full_business_address": "1182 Market St 200",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "711100",
+    "location_start_date": "2001-01-16T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4146655,
+        37.779336
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1205598-11-181",
+    "uniqueid": "1205598-11-181-1095031",
+    "dba_name": "The Barbary Coast Pastry And Coffee",
+    "ownership_name": "Mav, Inc",
+    "full_business_address": "1408 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "72253",
+    "location_start_date": "2018-11-15T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4180855,
+        37.776339
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1210596-01-191",
+    "uniqueid": "1210596-01-191-1075008",
+    "dba_name": "Bei San Francisco",
+    "ownership_name": "Com Howard I LLC",
+    "full_business_address": "50 8th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721072",
+    "location_start_date": "2019-01-08T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4142875,
+        37.777572
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1211187-01-191",
+    "uniqueid": "1211187-01-191-1002064",
+    "dba_name": "Binis Kitchen LLC",
+    "ownership_name": "Binis Kitchen LLC",
+    "full_business_address": "1001 Howard St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722513",
+    "location_start_date": "2019-01-28T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.407191,
+        37.779552
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1212299-02-191",
+    "uniqueid": "1212299-02-191-0466105",
+    "dba_name": "Linqia, Inc.",
+    "ownership_name": "Lingia Inc",
+    "full_business_address": "965 Mission St Fl 5th",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541810",
+    "location_start_date": "2018-12-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.40756,
+        37.781415
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1216336-03-191",
+    "uniqueid": "1216336-03-191-1099715",
+    "dba_name": "Square Pie Guys",
+    "ownership_name": "Adam Madison LLC",
+    "full_business_address": "1077 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2019-03-18T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.410242,
+        37.779444
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1217645-04-191",
+    "uniqueid": "1217645-04-191-1100271",
+    "dba_name": "Electromania",
+    "ownership_name": "Sks Family Enterprises, Inc.",
+    "full_business_address": "1083 B Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "455219",
+    "location_start_date": "2019-04-02T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.411781,
+        37.780524
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1228355-07-191",
+    "uniqueid": "1228355-07-191-1104416",
+    "dba_name": "Go Go Market And Deli Inc",
+    "ownership_name": "Go Go Market And Deli Inc",
+    "full_business_address": "99 9th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "440045",
+    "location_start_date": "2019-07-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4146925,
+        37.776555
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1233217-09-191",
+    "uniqueid": "1233217-09-191-1106377",
+    "dba_name": "Haojun Sewing  LLC",
+    "ownership_name": "Haojun Sewing, LLC",
+    "full_business_address": "956 Mission St Fl 2nd",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "315210",
+    "location_start_date": "2019-09-09T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408064,
+        37.781955
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1234213-09-191",
+    "uniqueid": "1234213-09-191-1106782",
+    "dba_name": "Filipino Community Development Corporation",
+    "ownership_name": "Filipino Community Development Corporation",
+    "full_business_address": "953 Mission St 20",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "813319",
+    "location_start_date": "2019-09-18T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.40738,
+        37.781559
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1234518-09-191",
+    "uniqueid": "1234518-09-191-0359563",
+    "dba_name": "Environmental & Construction Solutions",
+    "ownership_name": "Env & Const Solutions Inc",
+    "full_business_address": "1067 Market St 6002",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541330",
+    "location_start_date": "2019-07-15T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.411475,
+        37.780767
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1236346-10-191",
+    "uniqueid": "1236346-10-191-0046324",
+    "dba_name": "Foodworks",
+    "ownership_name": "Compass Group Usa Inc",
+    "full_business_address": "901 Mission St. St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722300",
+    "location_start_date": "2019-10-14T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.406615,
+        37.782162
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1241146-12-191",
+    "uniqueid": "1241146-12-191-1098724",
+    "dba_name": "Afterburner Studios",
+    "ownership_name": "Afterburner Co",
+    "full_business_address": "1400 Mission St 1301",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "513210",
+    "location_start_date": "2019-12-24T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.416272,
+        37.77525
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1243775-01-201",
+    "uniqueid": "1243775-01-201-0204105",
+    "dba_name": "Systra Consulting, Inc.",
+    "ownership_name": "Systra Consulting, Inc",
+    "full_business_address": "995 Market St Fl 3rd",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541330",
+    "location_start_date": "2020-01-02T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.409756,
+        37.78209
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1246871-02-201",
+    "uniqueid": "1246871-02-201-0046324",
+    "dba_name": "Canteen",
+    "ownership_name": "Compass Group Usa Inc",
+    "full_business_address": "1095 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722300",
+    "location_start_date": "2020-02-21T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4120285,
+        37.780335
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1252953-06-201",
+    "uniqueid": "1252953-06-201-1012323",
+    "dba_name": "Mr Tipple's Recording Studio",
+    "ownership_name": "Angelica Root LLC",
+    "full_business_address": "39 Fell St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2015-08-08T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4185895,
+        37.776177
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1257137-08-201",
+    "uniqueid": "1257137-08-201-1024554",
+    "dba_name": "Hound Technology, Inc/Honeycomb",
+    "ownership_name": "Hound Technology Inc",
+    "full_business_address": "944 Market St Fl 6",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541511",
+    "location_start_date": "2019-10-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4089775,
+        37.783719
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1257375-08-201",
+    "uniqueid": "1257375-08-201-1075209",
+    "dba_name": "Af&Co LLC",
+    "ownership_name": "Af&Co.",
+    "full_business_address": "1160 Mission Street 2211",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541800",
+    "location_start_date": "2020-08-03T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4123345,
+        37.778454
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1257818-08-201",
+    "uniqueid": "1257818-08-201-1116612",
+    "dba_name": "Waymo LLC",
+    "ownership_name": "Waymo LLC",
+    "full_business_address": "215 Taylor St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "336100",
+    "location_start_date": "2020-07-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4111555,
+        37.784394
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1273032-03-211",
+    "uniqueid": "1273032-03-211-1122750",
+    "dba_name": "6th Street Gift & More",
+    "ownership_name": "6th Street Gift & More Inc",
+    "full_business_address": "133 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445131",
+    "location_start_date": "2021-03-29T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.407875,
+        37.780659
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1275281-04-211",
+    "uniqueid": "1275281-04-211-1084523",
+    "dba_name": "Convergeone, Inc.",
+    "ownership_name": "Convergeone, Inc.",
+    "full_business_address": "1390 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541512",
+    "location_start_date": "2021-04-21T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4174465,
+        37.777077
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1275590-04-211",
+    "uniqueid": "1275590-04-211-1071614",
+    "dba_name": "Point One Navigation Offices",
+    "ownership_name": "Point One Navigation, Inc.",
+    "full_business_address": "231 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541511",
+    "location_start_date": "2020-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4065295,
+        37.779597
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1275623-04-211",
+    "uniqueid": "1275623-04-211-0319827",
+    "dba_name": "Baart Programs Market",
+    "ownership_name": "Addiction Resrch & Treatment Inc",
+    "full_business_address": "1111 Market St Fl 1 & 2",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "621420",
+    "location_start_date": "2016-05-31T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412519,
+        37.779939
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1276329-04-211",
+    "uniqueid": "1276329-04-211-1123932",
+    "dba_name": "Studio Dental",
+    "ownership_name": "Sara Creighton Dds, Inc",
+    "full_business_address": "27 Taylor St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "621210",
+    "location_start_date": "2014-04-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4108315,
+        37.782666
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1276434-04-211",
+    "uniqueid": "1276434-04-211-1123970",
+    "dba_name": "Convalesce, Inc.",
+    "ownership_name": "Convalesce, Inc.",
+    "full_business_address": "479 Jessie St.",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541711",
+    "location_start_date": "2018-07-11T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4086985,
+        37.781721
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1278937-05-211",
+    "uniqueid": "1278937-05-211-1124899",
+    "dba_name": "The Bite",
+    "ownership_name": "Sahin Inc",
+    "full_business_address": "996 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2021-04-28T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4087165,
+        37.78128
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1278974-06-211",
+    "uniqueid": "1278974-06-211-0465629",
+    "dba_name": "Taqueria Angelicas",
+    "ownership_name": "Bay Area Mobile Catering Inc",
+    "full_business_address": "1475 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "72233",
+    "location_start_date": "2016-09-06T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4165645,
+        37.774296
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1281564-07-211",
+    "uniqueid": "1281564-07-211-1013275",
+    "dba_name": "Bait Inc",
+    "ownership_name": "Bait Inc",
+    "full_business_address": "1091 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "458210",
+    "location_start_date": "2021-07-06T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.411907,
+        37.780434
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1282809-07-211",
+    "uniqueid": "1282809-07-211-1103425",
+    "dba_name": "Tradespace",
+    "ownership_name": "Tradespace Inc",
+    "full_business_address": "1161 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "518210",
+    "location_start_date": "2019-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4120105,
+        37.777905
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1285960-09-211",
+    "uniqueid": "1285960-09-211-0314558",
+    "dba_name": "Homebridge, Inc.",
+    "ownership_name": "Homebridge Inc",
+    "full_business_address": "1035 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "621610",
+    "location_start_date": "2015-02-03T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4108,
+        37.781226
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1289222-10-211",
+    "uniqueid": "1289222-10-211-1128810",
+    "dba_name": "Monarch Beverage Catering LLC",
+    "ownership_name": "Monarch Beverage Catering LLC",
+    "full_business_address": "101 6 St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722320",
+    "location_start_date": "2017-09-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408325,
+        37.780965
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1291595-11-211",
+    "uniqueid": "1291595-11-211-1061952",
+    "dba_name": "Moesif, Inc",
+    "ownership_name": "Moesif, Inc",
+    "full_business_address": "1151 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541519",
+    "location_start_date": "2021-11-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.411826,
+        37.778049
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1293880-12-211",
+    "uniqueid": "1293880-12-211-0319827",
+    "dba_name": "Baart Programs Market Street",
+    "ownership_name": "Addiction Resrch & Treatment Inc",
+    "full_business_address": "1111 Market St Fl 4",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "621420",
+    "location_start_date": "1998-10-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412519,
+        37.779939
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1297266-02-221",
+    "uniqueid": "1297266-02-221-1099715",
+    "dba_name": "Square Pie Guys",
+    "ownership_name": "Adam Madison LLC",
+    "full_business_address": "1081 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2022-02-09T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.410242,
+        37.779444
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1298448-02-221",
+    "uniqueid": "1298448-02-221-1132452",
+    "dba_name": "G.Rabbit",
+    "ownership_name": "G.Rabbit LLC",
+    "full_business_address": "90 7th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722515",
+    "location_start_date": "2022-02-22T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.411898,
+        37.779741
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1299176-03-221",
+    "uniqueid": "1299176-03-221-1132760",
+    "dba_name": "Ikea Us Retail LLC",
+    "ownership_name": "Ikea Us Retail LLC",
+    "full_business_address": "945 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "449110",
+    "location_start_date": "2022-03-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4087885,
+        37.782891
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1301290-03-221",
+    "uniqueid": "1301290-03-221-1000817",
+    "dba_name": "Mission Hl LLC",
+    "ownership_name": "Hanna Leung Professional Law Corporation",
+    "full_business_address": "1339 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "5411",
+    "location_start_date": "2022-03-29T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415039,
+        37.77561
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1305446-05-221",
+    "uniqueid": "1305446-05-221-1135287",
+    "dba_name": "Ava 55 Ninth",
+    "ownership_name": "Where I Park Usa Inc.",
+    "full_business_address": "55 9th Street",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "54161",
+    "location_start_date": "2018-02-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4153225,
+        37.777014
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1308480-06-221",
+    "uniqueid": "1308480-06-221-1136440",
+    "dba_name": "Sf Apparel Inc",
+    "ownership_name": "Sf Apparel Inc",
+    "full_business_address": "960 Mission St Fl 2nd",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "315250",
+    "location_start_date": "2022-06-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408064,
+        37.781955
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1311614-08-221",
+    "uniqueid": "1311614-08-221-1137693",
+    "dba_name": "Golden Auto Muffler & Brake Sf Co.",
+    "ownership_name": "Golden Auto Muffler & Brake Sf Co.",
+    "full_business_address": "998 Folsom St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "81114",
+    "location_start_date": "2022-08-08T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.405607,
+        37.778814
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1313095-08-221",
+    "uniqueid": "1313095-08-221-1138341",
+    "dba_name": "Winsor Hotel",
+    "ownership_name": "20 6th Street LLC",
+    "full_business_address": "20 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722110",
+    "location_start_date": "2022-08-30T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.410116,
+        37.781676
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1316756-10-221",
+    "uniqueid": "1316756-10-221-0335856",
+    "dba_name": "Ace Parking Management Inc",
+    "ownership_name": "Ace Parking Management Inc",
+    "full_business_address": "1 S Van Ness Ave",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2022-09-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.418972,
+        37.774953
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1320063-12-221",
+    "uniqueid": "1320063-12-221-1141287",
+    "dba_name": "Soliome Inc",
+    "ownership_name": "Soliome Inc",
+    "full_business_address": "479 Jessie St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "325",
+    "location_start_date": "2022-12-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4086985,
+        37.781721
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1320080-12-221",
+    "uniqueid": "1320080-12-221-1070435",
+    "dba_name": "San Francisco Proper Hotel - La Bande",
+    "ownership_name": "Sf Hotel Master Tenant, LLC",
+    "full_business_address": "1100 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721",
+    "location_start_date": "2017-09-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412483,
+        37.780902
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1323019-02-231",
+    "uniqueid": "1323019-02-231-0046324",
+    "dba_name": "Eurest Dining-Bank Of",
+    "ownership_name": "Compass Group Usa Inc",
+    "full_business_address": "1455 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722300",
+    "location_start_date": "2023-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.418054,
+        37.775862
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1323038-02-231",
+    "uniqueid": "1323038-02-231-0046324",
+    "dba_name": "Canteen Refreshment Services",
+    "ownership_name": "Compass Group Usa Inc",
+    "full_business_address": "901 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722300",
+    "location_start_date": "2023-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.406615,
+        37.782162
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1323178-02-231",
+    "uniqueid": "1323178-02-231-0046324",
+    "dba_name": "Foodworks",
+    "ownership_name": "Compass Group Usa Inc",
+    "full_business_address": "901 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722300",
+    "location_start_date": "2023-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.406615,
+        37.782162
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1323189-02-231",
+    "uniqueid": "1323189-02-231-0046324",
+    "dba_name": "Canteen",
+    "ownership_name": "Compass Group Usa Inc",
+    "full_business_address": "1095 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722300",
+    "location_start_date": "2023-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4120285,
+        37.780335
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1323210-02-231",
+    "uniqueid": "1323210-02-231-0046324",
+    "dba_name": "Canteen @ Wework 1460 Mission Street",
+    "ownership_name": "Compass Group Usa Inc",
+    "full_business_address": "1460 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722300",
+    "location_start_date": "2023-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.416731,
+        37.774899
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1328084-03-231",
+    "uniqueid": "1328084-03-231-0446177",
+    "dba_name": "Laz Parking California, LLC",
+    "ownership_name": "Laz Parking California LLC",
+    "full_business_address": "945 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2023-04-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4087885,
+        37.782891
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1334026-05-231",
+    "uniqueid": "1334026-05-231-1147112",
+    "dba_name": "Yotel Hotel",
+    "ownership_name": "Sage Client 577 LLC",
+    "full_business_address": "1095 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721110",
+    "location_start_date": "2023-05-21T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4120285,
+        37.780335
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1337485-07-231",
+    "uniqueid": "1337485-07-231-1148498",
+    "dba_name": "Synergy Apparel2 LLC",
+    "ownership_name": "Synergy Apparel2 LLC",
+    "full_business_address": "956 Mission St Bldg G/F",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "315210",
+    "location_start_date": "2023-07-03T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408064,
+        37.781955
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1338291-07-231",
+    "uniqueid": "1338291-07-231-1148829",
+    "dba_name": "Ease Of Living Inc",
+    "ownership_name": "Ease Of Living Inc",
+    "full_business_address": "1337 Mission St 2nd Flr",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "4445",
+    "location_start_date": "2023-07-18T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415003,
+        37.775673
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1338918-07-231",
+    "uniqueid": "1338918-07-231-0370019",
+    "dba_name": "New Performance Traditions Paul Dresher Ensemble",
+    "ownership_name": "Musical Traditions Inc",
+    "full_business_address": "1446 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "7111",
+    "location_start_date": "2023-06-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4185895,
+        37.776177
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1340095-08-231",
+    "uniqueid": "1340095-08-231-1149588",
+    "dba_name": "Qua Spa",
+    "ownership_name": "Ocean Wellness Works LLC",
+    "full_business_address": "1162 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812990",
+    "location_start_date": "2023-08-09T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412317629,
+        37.778440834
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1340993-08-231",
+    "uniqueid": "1340993-08-231-1149997",
+    "dba_name": "Crazy Horse",
+    "ownership_name": "Caballo Loco, LLC",
+    "full_business_address": "980 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722410",
+    "location_start_date": "2021-07-27T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4100125,
+        37.782747
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1343442-09-231",
+    "uniqueid": "1343442-09-231-1151067",
+    "dba_name": "Big Outdoor",
+    "ownership_name": "Big Outdoor Media Holdings, LLC",
+    "full_business_address": "20 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541800",
+    "location_start_date": "2023-03-31T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.410116,
+        37.781676
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1344229-10-231",
+    "uniqueid": "1344229-10-231-1113583",
+    "dba_name": "Merchant Roots",
+    "ownership_name": "Merchant Roots, LLC.",
+    "full_business_address": "1148 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2023-10-05T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4121635,
+        37.778553
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1345683-10-231",
+    "uniqueid": "1345683-10-231-0453113",
+    "dba_name": "San Francisco Health Care",
+    "ownership_name": "Sf Health Care And Rehab Inc",
+    "full_business_address": "160 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "623110",
+    "location_start_date": "2021-05-31T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4080055,
+        37.780101
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1345684-10-231",
+    "uniqueid": "1345684-10-231-0453113",
+    "dba_name": "San Francisco Health Care",
+    "ownership_name": "Sf Health Care And Rehab Inc",
+    "full_business_address": "148 -150 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "623110",
+    "location_start_date": "2021-05-31T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408127,
+        37.780101
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1347357-11-231",
+    "uniqueid": "1347357-11-231-1115532",
+    "dba_name": "Exclusive Parking Management",
+    "ownership_name": "Exclusive Parking Management LLC",
+    "full_business_address": "8 10th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2023-08-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4172665,
+        37.775826
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1347915-12-231",
+    "uniqueid": "1347915-12-231-1153005",
+    "dba_name": "Saluhall Sf Inc.",
+    "ownership_name": "Saluhall Sf Inc.",
+    "full_business_address": "945 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "7220",
+    "location_start_date": "2023-12-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4087885,
+        37.782891
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1348229-12-231",
+    "uniqueid": "1348229-12-231-1147563",
+    "dba_name": "Golden Corner Market",
+    "ownership_name": "F & A Trading Inc",
+    "full_business_address": "35 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445110",
+    "location_start_date": "2023-12-11T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4094365,
+        37.781856
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1348515-12-231",
+    "uniqueid": "1348515-12-231-1153266",
+    "dba_name": "Orangefitness Theory",
+    "ownership_name": "Sffit Ms LLC",
+    "full_business_address": "1411 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "713940",
+    "location_start_date": "2023-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.417262,
+        37.775826
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1349350-01-241",
+    "uniqueid": "1349350-01-241-0347331",
+    "dba_name": "Propark Mobility",
+    "ownership_name": "Propark America West LLC",
+    "full_business_address": "1266 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2024-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4160695,
+        37.77831
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1350475-01-241",
+    "uniqueid": "1350475-01-241-1154082",
+    "dba_name": "The Function",
+    "ownership_name": "The Function Sf LLC",
+    "full_business_address": "1414 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722410",
+    "location_start_date": "2024-01-17T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4182295,
+        37.776339
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1350658-01-241",
+    "uniqueid": "1350658-01-241-1154175",
+    "dba_name": "Parking Management Company, LLC",
+    "ownership_name": "Parking Management Company, LLC",
+    "full_business_address": "1100 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2024-01-31T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412483,
+        37.780902
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1351158-01-241",
+    "uniqueid": "1351158-01-241-1154404",
+    "dba_name": "San Francisco Gyrotonic",
+    "ownership_name": "Christolynn LLC",
+    "full_business_address": "26 7th St Fl 4",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "713940",
+    "location_start_date": "2024-01-02T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412411,
+        37.780074
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1352668-02-241",
+    "uniqueid": "1352668-02-241-1155067",
+    "dba_name": "Supremo Pizza Inc",
+    "ownership_name": "Supremo Pizza Inc",
+    "full_business_address": "87 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722513",
+    "location_start_date": "2024-02-09T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4087165,
+        37.781289
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1357722-04-241",
+    "uniqueid": "1357722-04-241-1157109",
+    "dba_name": "Civic Center Market",
+    "ownership_name": "Civic Center Market LLC",
+    "full_business_address": "1218 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445100",
+    "location_start_date": "2024-04-08T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415453,
+        37.778589
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1358915-04-241",
+    "uniqueid": "1358915-04-241-1157618",
+    "dba_name": "Yotel San Francisco",
+    "ownership_name": "Madison Market Street Lending LLC",
+    "full_business_address": "1095 Market St Bldg",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721110",
+    "location_start_date": "2023-05-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4120285,
+        37.780335
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1361199-05-241",
+    "uniqueid": "1361199-05-241-1157887",
+    "dba_name": "Yemeni Kabab & Mediterranean",
+    "ownership_name": "Yemeni Kabab & Mediterranean Inc",
+    "full_business_address": "39 Taylor St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2024-04-30T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4108675,
+        37.782783
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1361799-05-241",
+    "uniqueid": "1361799-05-241-1158686",
+    "dba_name": "200 Channels LLC",
+    "ownership_name": "200 Channels LLC",
+    "full_business_address": "111 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "711110",
+    "location_start_date": "2024-05-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408325,
+        37.780965
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1362950-06-241",
+    "uniqueid": "1362950-06-241-1159115",
+    "dba_name": "The Rose",
+    "ownership_name": "Mercy Housing California X, Lp",
+    "full_business_address": "125 Sixth St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "624229",
+    "location_start_date": "1995-10-17T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4080685,
+        37.780866
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1364695-06-241",
+    "uniqueid": "1364695-06-241-1159763",
+    "dba_name": "Eddy St Bodega Inc",
+    "ownership_name": "Eddy St Bodega Inc",
+    "full_business_address": "200 Eddy St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445110",
+    "location_start_date": "2024-06-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.411124,
+        37.784241
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1365611-07-241",
+    "uniqueid": "1365611-07-241-1153040",
+    "dba_name": "Little Caesars",
+    "ownership_name": "Ap Foods Inc.",
+    "full_business_address": "1200 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722513",
+    "location_start_date": "2024-07-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415291,
+        37.778652
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1366016-07-241",
+    "uniqueid": "1366016-07-241-0394301",
+    "dba_name": "Nom Tl Community Benefit Corp",
+    "ownership_name": "Nom Tl Community Benefit Corp",
+    "full_business_address": "105 Turk St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "813410",
+    "location_start_date": "2024-04-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.411025,
+        37.783053
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1366550-07-241",
+    "uniqueid": "1366550-07-241-1157109",
+    "dba_name": "Civic Center Cafe & Deli",
+    "ownership_name": "Civic Center Market LLC",
+    "full_business_address": "1210 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445100",
+    "location_start_date": "2024-07-19T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415453,
+        37.778589
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1367265-07-241",
+    "uniqueid": "1367265-07-241-0307238",
+    "dba_name": "Richmond Area Multi-Services, Inc.",
+    "ownership_name": "Richmond Area Multi Serv Inc",
+    "full_business_address": "1153 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "621498",
+    "location_start_date": "2024-07-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.411826,
+        37.778049
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1368123-08-241",
+    "uniqueid": "1368123-08-241-1161166",
+    "dba_name": "415 Ebikes",
+    "ownership_name": "Mandala Global, LLC",
+    "full_business_address": "261 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "441227",
+    "location_start_date": "2024-08-09T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4060705,
+        37.779183
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1369097-08-241",
+    "uniqueid": "1369097-08-241-1161567",
+    "dba_name": "Taxgpt Inc",
+    "ownership_name": "Taxgpt Inc",
+    "full_business_address": "1151 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "513210",
+    "location_start_date": "2024-02-19T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.411826,
+        37.778049
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1370213-09-241",
+    "uniqueid": "1370213-09-241-1159115",
+    "dba_name": "The Rose - Commercial",
+    "ownership_name": "Mercy Housing California X, Lp",
+    "full_business_address": "117 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "624229",
+    "location_start_date": "2018-07-18T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4080685,
+        37.780866
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1373358-10-241",
+    "uniqueid": "1373358-10-241-1007929",
+    "dba_name": "C & Y Garment",
+    "ownership_name": "C & Y Garment Inc",
+    "full_business_address": "956 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "315210",
+    "location_start_date": "2020-01-30T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408064,
+        37.781955
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1373515-10-241",
+    "uniqueid": "1373515-10-241-1163430",
+    "dba_name": "1010 Market LLC",
+    "ownership_name": "1010 Market LLC",
+    "full_business_address": "1010 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445110",
+    "location_start_date": "2024-10-28T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4110025,
+        37.782045
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1373850-11-241",
+    "uniqueid": "1373850-11-241-1163574",
+    "dba_name": "Hotel Garrett",
+    "ownership_name": "Hg Sf Holdings LLC",
+    "full_business_address": "112 7th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721110",
+    "location_start_date": "2024-11-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4107775,
+        37.778904
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1375215-11-241",
+    "uniqueid": "1375215-11-241-1164167",
+    "dba_name": "Munchies & More Market",
+    "ownership_name": "Dean And Hakim Inc",
+    "full_business_address": "94 Turk St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "44",
+    "location_start_date": "2024-11-20T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.410593,
+        37.783467
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1375641-11-241",
+    "uniqueid": "1375641-11-241-0935700",
+    "dba_name": "Diverse Business Enterprise Center",
+    "ownership_name": "Asian Inc",
+    "full_business_address": "1167 Mission St Fl 4",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541900",
+    "location_start_date": "2024-11-27T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412213,
+        37.777743
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1376322-12-241",
+    "uniqueid": "1376322-12-241-1164492",
+    "dba_name": "Foodture",
+    "ownership_name": "First Choice Vending Inc.",
+    "full_business_address": "8 10th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445132",
+    "location_start_date": "2024-12-12T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4172665,
+        37.775826
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1376349-12-241",
+    "uniqueid": "1376349-12-241-1061913",
+    "dba_name": "Burma Love 2",
+    "ownership_name": "Burma Inc",
+    "full_business_address": "8 Mint Plz",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445",
+    "location_start_date": "2024-12-12T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.407884,
+        37.782873
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1376886-12-241",
+    "uniqueid": "1376886-12-241-1164898",
+    "dba_name": "Potter Hotel",
+    "ownership_name": "Cuz Of God, LLC",
+    "full_business_address": "1288 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721110",
+    "location_start_date": "2024-12-20T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4146925,
+        37.776555
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1377831-01-251",
+    "uniqueid": "1377831-01-251-0339974",
+    "dba_name": "Tower Valet Parking, Inc.",
+    "ownership_name": "Tower Valet Parking Inc",
+    "full_business_address": "38 8th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2025-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.414274,
+        37.777941
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1380233-02-251",
+    "uniqueid": "1380233-02-251-1034548",
+    "dba_name": "Haru By Sams",
+    "ownership_name": "Kpp Beer Inc",
+    "full_business_address": "1230 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722410",
+    "location_start_date": "2025-02-07T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4156195,
+        37.778526
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1380319-02-251",
+    "uniqueid": "1380319-02-251-1166408",
+    "dba_name": "Cleva Payments, Inc.",
+    "ownership_name": "Cleva Payments, Inc.",
+    "full_business_address": "945 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541990",
+    "location_start_date": "2024-09-03T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4087885,
+        37.782891
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1381713-02-251",
+    "uniqueid": "1381713-02-251-1006775",
+    "dba_name": "United Sf Parking, Inc.",
+    "ownership_name": "United Sf Parking Inc",
+    "full_business_address": "1023 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2025-01-22T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.409072,
+        37.780218
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1383197-03-251",
+    "uniqueid": "1383197-03-251-1167597",
+    "dba_name": "Honeybee Foods Corporation",
+    "ownership_name": "Honeybee Foods Corporation",
+    "full_business_address": "934 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2025-03-11T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408703,
+        37.783854
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1384442-03-251",
+    "uniqueid": "1384442-03-251-1148829",
+    "dba_name": "Easesf",
+    "ownership_name": "Ease Of Living Inc",
+    "full_business_address": "1337 Mission St 2nd Flr",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "4445",
+    "location_start_date": "2023-07-18T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415003,
+        37.775673
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1384539-03-251",
+    "uniqueid": "1384539-03-251-1168170",
+    "dba_name": "Glhq Inc.",
+    "ownership_name": "Glhq Inc.",
+    "full_business_address": "1338 Mission St Fl 4",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "813410",
+    "location_start_date": "2024-08-30T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415453,
+        37.776051
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1384585-03-251",
+    "uniqueid": "1384585-03-251-1168190",
+    "dba_name": "Decisional Ai, Inc.",
+    "ownership_name": "Decisional Ai, Inc.",
+    "full_business_address": "945 Market St Fl 5",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "513210",
+    "location_start_date": "2025-03-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4087885,
+        37.782891
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1386247-04-251",
+    "uniqueid": "1386247-04-251-0430263",
+    "dba_name": "North Beach Parking Services, Inc",
+    "ownership_name": "North Beach Parking Srvcs Inc",
+    "full_business_address": "1270 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2025-04-10T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.414535,
+        37.776816
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1387583-04-251",
+    "uniqueid": "1387583-04-251-1169452",
+    "dba_name": "Nursel Central Asian & Russian Cuisine",
+    "ownership_name": "Nursel LLC",
+    "full_business_address": "1200 Market St K",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722000",
+    "location_start_date": "2025-04-30T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415291,
+        37.778652
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1387735-05-251",
+    "uniqueid": "1387735-05-251-1169513",
+    "dba_name": "Frontier Fitness Center",
+    "ownership_name": "Sodi, LLC",
+    "full_business_address": "995 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541490",
+    "location_start_date": "2025-04-29T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.409756,
+        37.78209
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1388267-05-251",
+    "uniqueid": "1388267-05-251-0331813",
+    "dba_name": "Eviction Defense Collaborative",
+    "ownership_name": "Eviction Defense Collab Inc",
+    "full_business_address": "976 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541199",
+    "location_start_date": "2022-05-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4083745,
+        37.781712
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1389075-05-251",
+    "uniqueid": "1389075-05-251-1100055",
+    "dba_name": "Halal Modena Pizza",
+    "ownership_name": "Tassili Pizza Inc",
+    "full_business_address": "32 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722513",
+    "location_start_date": "2025-05-15T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4098685,
+        37.78146
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1390318-05-251",
+    "uniqueid": "1390318-05-251-1115532",
+    "dba_name": "Exclusive Parking",
+    "ownership_name": "Exclusive Parking Management LLC",
+    "full_business_address": "942 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "812930",
+    "location_start_date": "2025-04-17T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4077895,
+        37.78218
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1390588-05-251",
+    "uniqueid": "1390588-05-251-1170654",
+    "dba_name": "Salvage Studio Sf LLC",
+    "ownership_name": "Salvage Studio Sf LLC",
+    "full_business_address": "1242 Market St Fl 4",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "811490",
+    "location_start_date": "2025-05-30T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4157365,
+        37.778382
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1391007-06-251",
+    "uniqueid": "1391007-06-251-1170805",
+    "dba_name": "1277 Mission",
+    "ownership_name": "Afterdark Productions, LLC",
+    "full_business_address": "1277 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "711300",
+    "location_start_date": "2024-03-19T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.414157,
+        37.776348
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1391087-06-251",
+    "uniqueid": "1391087-06-251-1170838",
+    "dba_name": "Sepia Biosciences LLC",
+    "ownership_name": "Sepia Biosciences LLC",
+    "full_business_address": "995 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "547115",
+    "location_start_date": "2025-05-31T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.409756,
+        37.78209
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1391472-06-251",
+    "uniqueid": "1391472-06-251-1170983",
+    "dba_name": "Minna Market",
+    "ownership_name": "Minna Market Corp",
+    "full_business_address": "132 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445110",
+    "location_start_date": "2025-06-09T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408289,
+        37.780326
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1391512-06-251",
+    "uniqueid": "1391512-06-251-1171006",
+    "dba_name": "Jay's Grill",
+    "ownership_name": "Fix It Fast LLC",
+    "full_business_address": "1400 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722513",
+    "location_start_date": "2025-06-02T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.417964,
+        37.776429
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1391763-06-251",
+    "uniqueid": "1391763-06-251-1171101",
+    "dba_name": "Transparency Analytics, Inc.",
+    "ownership_name": "Transparency Analytics, Inc.",
+    "full_business_address": "945 Market St Rm 084",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541519",
+    "location_start_date": "2025-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4087885,
+        37.782891
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1392009-06-251",
+    "uniqueid": "1392009-06-251-0390092",
+    "dba_name": "Ross Dress For Less #2154",
+    "ownership_name": "Ross Dress For Less Inc",
+    "full_business_address": "901 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "458110",
+    "location_start_date": "2025-06-16T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408055,
+        37.783476
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1394699-07-251",
+    "uniqueid": "1394699-07-251-1172338",
+    "dba_name": "Industrious",
+    "ownership_name": "Taara Connect, Inc.",
+    "full_business_address": "945 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "334220",
+    "location_start_date": "2025-05-12T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4087885,
+        37.782891
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1397018-08-251",
+    "uniqueid": "1397018-08-251-1173337",
+    "dba_name": "The Ballroom",
+    "ownership_name": "Deep Screw LLC",
+    "full_business_address": "1349 Mission St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "713990",
+    "location_start_date": "2025-08-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.41521,
+        37.775502
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1397630-08-251",
+    "uniqueid": "1397630-08-251-1173610",
+    "dba_name": "The Vita Brevis Club",
+    "ownership_name": "Vbc Sf LLC",
+    "full_business_address": "969 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "453920",
+    "location_start_date": "2025-08-08T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.409243,
+        37.782522
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1402027-10-251",
+    "uniqueid": "1402027-10-251-1175497",
+    "dba_name": "Sumfer Market Sf LLC",
+    "ownership_name": "Sumfer Market Sf LLC",
+    "full_business_address": "1200 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722513",
+    "location_start_date": "2025-10-14T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.415291,
+        37.778652
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1406147-12-251",
+    "uniqueid": "1406147-12-251-1153989",
+    "dba_name": "Everself",
+    "ownership_name": "Bariendo Inc",
+    "full_business_address": "945 Market St 501",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541614",
+    "location_start_date": "2025-12-16T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4087885,
+        37.782891
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1409715-02-261",
+    "uniqueid": "1409715-02-261-1178919",
+    "dba_name": "Pump.Co",
+    "ownership_name": "Pump Billing Inc",
+    "full_business_address": "1455 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541611",
+    "location_start_date": "2022-01-06T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.418054,
+        37.775862
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1414937-03-261",
+    "uniqueid": "1414937-03-261-0307238",
+    "dba_name": "Richmond Area Multi-Services, Inc. Caap",
+    "ownership_name": "Richmond Area Multi Serv Inc",
+    "full_business_address": "1455 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "621498",
+    "location_start_date": "2026-03-11T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.418054,
+        37.775862
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1425252-06-261",
+    "uniqueid": "1425252-06-261-1167597",
+    "dba_name": "Honeybee Foods Corporation Dba Jollibee",
+    "ownership_name": "Honeybee Foods Corporation",
+    "full_business_address": "934 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2026-06-12T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408703,
+        37.783854
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1426142-06-261",
+    "uniqueid": "1426142-06-261-1185859",
+    "dba_name": "Most Mini Mart",
+    "ownership_name": "Most Mini Mart LLC",
+    "full_business_address": "39 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "445110",
+    "location_start_date": "2026-06-25T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.409378,
+        37.781811
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1426328-06-261",
+    "uniqueid": "1426328-06-261-1185940",
+    "dba_name": "Mi Cocina",
+    "ownership_name": "Ucs Dungaree And Co Inc.",
+    "full_business_address": "992 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "315990",
+    "location_start_date": "2026-05-26T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.410314,
+        37.782495
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1427191-07-261",
+    "uniqueid": "1427191-07-261-1186319",
+    "dba_name": "Satoru Labs",
+    "ownership_name": "Eof Security LLC",
+    "full_business_address": "26 7th St Rm 202",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "513210",
+    "location_start_date": "2026-07-03T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.412411,
+        37.780074
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1427600-07-261",
+    "uniqueid": "1427600-07-261-1186488",
+    "dba_name": "Metro By T-Mobile",
+    "ownership_name": "Techno Ca LLC",
+    "full_business_address": "923 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "517122",
+    "location_start_date": "2025-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408379,
+        37.783341
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1427604-07-261",
+    "uniqueid": "1427604-07-261-1186490",
+    "dba_name": "Metro By T-Mobile",
+    "ownership_name": "Techno Ca LLC",
+    "full_business_address": "923 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "517122",
+    "location_start_date": "2024-12-31T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408379,
+        37.783341
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1427610-07-261",
+    "uniqueid": "1427610-07-261-1186494",
+    "dba_name": "Metro By T-Mobile",
+    "ownership_name": "Techno Ca LLC",
+    "full_business_address": "923 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "517122",
+    "location_start_date": "2025-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408379,
+        37.783341
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1427612-07-261",
+    "uniqueid": "1427612-07-261-1186495",
+    "dba_name": "Metro By T-Mobile",
+    "ownership_name": "Techno Ca LLC",
+    "full_business_address": "923 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "517122",
+    "location_start_date": "2025-01-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408379,
+        37.783341
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1429133-08-261",
+    "uniqueid": "1429133-08-261-1187155",
+    "dba_name": "Risely Ai, Inc.",
+    "ownership_name": "Risely Ai, Inc.",
+    "full_business_address": "929 Market St Fl 3",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "513210",
+    "location_start_date": "2026-06-20T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.408271,
+        37.783107
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1429677-08-261",
+    "uniqueid": "1429677-08-261-1187392",
+    "dba_name": "Taqueria Mexico 1986",
+    "ownership_name": "Azteci LLC",
+    "full_business_address": "998 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722513",
+    "location_start_date": "2026-08-11T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.410377,
+        37.782441
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1431389-09-261",
+    "uniqueid": "1431389-09-261-1188106",
+    "dba_name": "Soma Park Inn",
+    "ownership_name": "Riddhi Hospitality LLC",
+    "full_business_address": "101 9th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "721110",
+    "location_start_date": "2026-09-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.414292,
+        37.776213
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1431599-09-261",
+    "uniqueid": "1431599-09-261-1188196",
+    "dba_name": "Replica Ai, Inc.",
+    "ownership_name": "Replica Ai, Inc.",
+    "full_business_address": "219 6th St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "541512",
+    "location_start_date": "2026-01-11T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.406651,
+        37.779633
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1433137-09-261",
+    "uniqueid": "1433137-09-261-1188879",
+    "dba_name": "Nexor Ai",
+    "ownership_name": "Nexor Ai, Inc.",
+    "full_business_address": "989 Market St Fl 2",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "513210",
+    "location_start_date": "2026-07-31T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4095445,
+        37.782288
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1435114-10-261",
+    "uniqueid": "1435114-10-261-1189759",
+    "dba_name": "Mi Cocina Cafe Con Leche",
+    "ownership_name": "Mi Cocina Cafe Con Leche LLC",
+    "full_business_address": "992 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722515",
+    "location_start_date": "2026-10-01T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.410314,
+        37.782495
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  },
+  {
+    "ttxid": "1435354-10-261",
+    "uniqueid": "1435354-10-261-1189856",
+    "dba_name": "Haru",
+    "ownership_name": "Kebiso Inc.",
+    "full_business_address": "1230 Market St",
+    "business_corridor": "Central Market",
+    "self_reported_naics_code": "722511",
+    "location_start_date": "2026-10-10T00:00:00.000",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -122.4156195,
+        37.778526
+      ]
+    },
+    "data_as_of": "2026-10-20T00:00:00.000"
+  }
+]

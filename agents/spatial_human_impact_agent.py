@@ -62,6 +62,9 @@ class SpatialHumanImpactAgent:
         and 200m spatial cluster critical-mass evaluations across all applicants.
         """
         apps = applicants if applicants is not None else get_canonical_applicants()
+        if any(app.get("data_mode") == "source_review" for app in apps):
+            return {"agent": self.agent_name, "status": "EVIDENCE_ONLY",
+                    "note": "Registry locations support spatial display; jobs saved, residents served, sole-provider status and vacancy prevention require additional measured evidence."}
         impact_reports: Dict[str, Dict[str, Any]] = {}
 
         for app in apps:

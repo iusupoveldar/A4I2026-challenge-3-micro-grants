@@ -1,62 +1,27 @@
-# data/
+# Data sources and review
 
-### Quick Guides & Documentation
-* 📘 [Dataset Guide & Business Questions](DATASET_DOCUMENTATION.md) — What is real vs modeled, schemas, and analytical question guides.
-* 🚀 [BigQuery Property Graph Exploration & Visualization](EXPLORING_BIGQUERY_GRAPH.md) — Setup DDL, GQL traversals, fixing the `Not found: Property graph` error, and visualization tips.
-* 📥 [Loading Data into BigQuery](HOW_TO_LOAD_BIGQUERY.md) — Step-by-step console and CLI table upload instructions.
+Read [TASK_2_3_REVIEW.md](TASK_2_3_REVIEW.md) for current counts, depth sensitivity,
+industry variety, source corrections and limitations. Inspect
+[task_2_3_review.json](task_2_3_review.json) for the complete reproducible payload.
 
----
+- `verified_registry.json`: 232 public SF location records retrieved as of
+  2026-10-20, limited to IDs in the inherited cohort plus the three previously
+  manually excluded IDs. Coordinates and location start dates are observed.
+- `bea_direct_requirements.csv` and `bea_naics_concordance.csv`: pinned national
+  input-output coefficients/crosswalk. They model industry inputs, not contracts.
+- `industry_failure_rates.csv`: generated only by the validation notebook; absent
+  until exported from a real run. Four-digit → two-digit → state fallback.
+- `custom_bq_upload/*.csv`: **legacy derived artifacts, not authoritative sources**.
+  The 218-row summary has name-based dedup, rewritten NAICS, inferred tenure and
+  manually entered priors. Its 232-row all-locations version is used only to
+  identify the inherited registry cohort, not to establish financial facts.
+  The matched-loan CSV is not an independently address-verified ledger.
+- `backup_original/`: historical copies, not current analytical inputs.
 
-## `bea_direct_requirements.csv`
+The reviewed model has 293 links under 0.015/500m/top-five assumptions. The
+starter's 0.005/1200m model is separate and reproduced in the sensitivity report.
+Do not combine counts from different graphs or call branch counts unique firms.
 
-The published rates that make this challenge's supply edges a modeling choice rather than an
-invention.
-
-Each row says: **businesses in industry A buy this many cents of input from industry B, per
-dollar of A's output.** Those numbers come from the Bureau of Economic Analysis Input-Output
-Accounts, built from survey and tax data. They are measured, not estimated by us.
-
-| Column | Meaning |
-|---|---|
-| `buyer_naics4` | The purchasing industry, 4-digit NAICS |
-| `supplier_naics4` | The supplying industry, 4-digit NAICS |
-| `coefficient` | Cents of input per dollar of buyer output |
-
-**Read it.** You should not trust generated edges you cannot inspect, and neither should a judge.
-Everything the supply-edge generator knows is in this file plus four constants at the top of
-Section 7 of the notebook: a coefficient floor, a distance limit, a generic-supplier cutoff and a
-cap on suppliers per buyer. There is no randomness and nothing hidden.
-
-**Be clear about what it does and does not say.** It says restaurants buy from food wholesalers
-at a measurable rate. It does **not** say that *this* restaurant buys from *that* wholesaler.
-The notebook makes that assignment, using industry match plus walking distance, and that
-assignment is ours. When judges check which half is real, that sentence is the answer.
-
-Improving the allocation rule is one of the best add-ons available in this challenge. The rule we
-ship is deliberately simple so that beating it is possible.
-
-## `bea_naics_concordance.csv`
-
-BEA uses its own industry codes, not NAICS. This is the mapping used to translate them, written
-out alongside the coefficients so the translation is auditable rather than implied. BEA states
-its summary level "generally corresponds to" 4-digit NAICS—note *generally*. The correspondence
-is not perfectly one-to-one, and a few BEA industries have no NAICS analogue at all.
-
-## Why these are committed rather than downloaded
-
-BEA's API requires a free registration key. That is fine for one person and a bad idea for a room
-of 150 people on event morning. We fetched it once and pinned the result.
-
-`scripts/fetch_bea.py` is the generator. It discovers BEA's table id at runtime rather than
-hardcoding one, because BEA does not publish a list of table ids—so if you regenerate, you get
-whatever BEA calls Direct Requirements today rather than whatever it called it in 2023.
-
-**License:** public domain. BEA states: *"Unless stated otherwise, the information posted on the
-BEA web site is in the public domain and may be used or reproduced without specific permission."*
-(https://bea.gov/help/faq/145)
-
-## Everything else
-
-The businesses, the loans, the job counts and the demographics are all pulled live by the
-notebook. They are not in this folder, and `.gitignore` keeps stray CSVs out so the repo stays
-cloneable on conference wifi.
+Run `python3 scripts/review_tasks_2_3.py` to rebuild all review outputs without
+cloud access. The JSON contains source hashes and model parameters. A missing
+rate, debt balance or resident catchment stays unknown; no placeholder is inserted.

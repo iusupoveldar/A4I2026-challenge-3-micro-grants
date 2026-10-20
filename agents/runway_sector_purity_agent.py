@@ -67,6 +67,9 @@ class RunwaySectorPurityAgent:
         and small-business purity evaluations across all applicants.
         """
         apps = applicants if applicants is not None else get_canonical_applicants()
+        if any(app.get("data_mode") == "source_review" for app in apps):
+            return {"agent": self.agent_name, "status": "EVIDENCE_ONLY",
+                    "note": "Current cash, operating burn, ownership and grant effectiveness require applicant evidence; do not infer them from NAICS or historical charge-off."}
         reports: Dict[str, Dict[str, Any]] = {}
 
         for app in apps:
