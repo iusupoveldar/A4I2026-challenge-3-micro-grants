@@ -37,16 +37,33 @@ The dataset models two hyper-local San Francisco commercial corridors (**Central
 
 | Table | Rows | Graph Role | Origin | Real vs. Modeled & Key Columns |
 |---|---:|---|---|---|
-| [`businesses`](#businesses) | **218** | **Node (`Business`)** | SF Open Data (`data.sf.gov`, `g8m3-pdis`) | **100% Real.** Deduplicated storefronts (`b_0`–`b_217`), `name`, `legal_name`, `address`, `zip`, `naics4`, `corridor`, `latitude`, `longitude`, `registration_year`, `tenure_years`, `corridor_alternatives`. |
+| [`businesses`](#businesses) | **218** | **Node (`Business`)** | SF Open Data (`data.sf.gov`, `g8m3-pdis`) | **100% Real.** Deduplicated storefronts (`business_id`), `name`, `legal_name`, `address`, `zip`, `naics4`, `industry_type`, `corridor`, `latitude`, `longitude`, `registration_year`, `tenure_years`, `corridor_alternatives`. |
 | [`employer_blocks`](#employer_blocks) | **186** | **Node (`Employer`)** | US Census LEHD (LODES 8, 2023) | **100% Real.** Workplace census blocks (`block_id`), `tract`, daytime worker headcounts (`jobs`), `lat`, `lon`. |
 | [`lenders`](#lenders) | **6** | **Node (`Lender`)** | SBA 7(a) & 504 FOIA (`data.sba.gov`) | **100% Real.** Verified SBA lending institutions (`bank_name`), `corridor_loan_count`, `corridor_businesses_funded`, `total_capital_deployed`, `defaulted_loans`. |
 | [`supplies`](#supplies) | **2,703** | **Edge (`Supplies`)** | BEA Use Table + Proximity ($\le 500\text{m}$) | **Modeled.** `supplier_id`, `buyer_id`, BEA input-output `intensity` ($\ge 0.015$), walking distance `metres`, `corridor_alternatives`, and `decayed_intensity = intensity * EXP(-metres / 400.0)`. |
 | [`draws_footfall_from`](#draws_footfall_from) | **30,455** | **Edge (`DrawsFootfall`)** | LEHD LODES 8 + Distance ($\le 800\text{m}$) | **Modeled.** `block_id`, `business_id`, `worker_share` (`jobs / nearby_businesses`), `metres`, `edge_id`. |
 | [`borrowed_from`](#borrowed_from) | **8** | **Edge (`BorrowedFrom`)** | SBA 7(a) & 504 FOIA (`data.sba.gov`) | **100% Real.** Verified bank-to-borrower loans (`edge_id`, `business_id`, `bank_name`, `program_type`, `loan_amount`, `approval_date`, `term_months`, `jobs_supported`, `is_charged_off`, `charge_off_amount`, `monthly_debt_est`). |
-| [`business_sba_summary`](#business_sba_summary) | **218** | **Summary (1-to-1)** | Aggregated SBA + Registry + EB Priors | **100% Real.** 1 row per deduplicated `business_id` with SBA loan totals, `registration_year`, `tenure_years`, `corridor_alternatives`, `p_fail_shrunk`, and `median_jobs_naics4`. |
+| [`business_sba_summary`](#business_sba_summary) | **218** | **Summary (1-to-1)** | Aggregated SBA + Registry + EB Priors | **100% Real.** 1 row per deduplicated `business_id` with `naics4`, `industry_type`, SBA loan totals, `registration_year`, `tenure_years`, `corridor_alternatives`, `p_fail_shrunk`, and `median_jobs_naics4`. |
 | [`business_sba_summary_all_locations`](#business_sba_summary_all_locations) | **232** | **Backup (All Branches)** | Pre-deduplication branch records | **100% Real.** Preserves all 232 physical branch rows (including multi-location entities such as 14 `Philz Coffee` branches and 2 `Cumaica Coffee` branches). |
-| [`sba_industry_failure_rates`](#sba_industry_failure_rates) | **55** | **Prior Lookup** | 113,270 CA SBA 7(a) Loans (1991–2024) | **100% Real.** Empirical Bayes shrunk 48-month failure rate (`p_fail_shrunk`), 90% credible interval (`p_fail_lo90`, `p_fail_hi90`), and `median_jobs_supported` across all 55 4-digit NAICS sectors. |
+| [`sba_industry_failure_rates`](#sba_industry_failure_rates) | **55** | **Prior Lookup** | 113,270 CA SBA 7(a) Loans (1991–2024) | **100% Real.** `naics4`, `industry_type`, Empirical Bayes shrunk 48-month failure rate (`p_fail_shrunk`), 90% credible interval (`p_fail_lo90`, `p_fail_hi90`), and `median_jobs_supported` across all 55 4-digit NAICS sectors. |
 | [`tract_demographics`](#tract_demographics) | **243** | **Attributes** | US Census ACS 5-Year (`2024`) | **100% Real.** Census tract `geo_id`, `total_pop`, `median_income`, `poverty_rate`, `no_vehicle_rate`, `assistance_rate`, `lat`, `lon`. |
+
+### 2.1 Industry Type Breakdown Across the 218 Corridor Businesses (`industry_type`)
+
+Every business in `businesses`, `business_sba_summary`, and `sba_industry_failure_rates` is mapped to its official NAICS sector category (`industry_type`):
+
+| Industry type (`industry_type`) | NAICS prefixes represented | Businesses |
+|---|---|---:|
+| Food Services — restaurants, bars, catering | 722 | **46** |
+| Professional, Scientific, and Technical Services — legal, IT, consulting, design | 54 | **38** |
+| Retail Trade — groceries, clothing, furniture, other stores | 44–45 | **29** |
+| Certain Services — repairs, personal care, laundry, parking, community organizations | 811, 812, 813 | **27** |
+| Private Education and Health Services — our records cover health care and social assistance | 62 | **24** |
+| Information — publishing, software, telecommunications, hosting | 51 | **16** |
+| Manufacturing — food, apparel, pharmaceuticals, equipment | 31–33 | **15** |
+| Accommodations — hotels and lodging | 721 | **12** |
+| Arts, Entertainment and Recreation — theaters, events, fitness | 71 | **11** |
+| **Total** | | **218** |
 
 ---
 

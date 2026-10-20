@@ -62,7 +62,7 @@ CREATE OR REPLACE PROPERTY GRAPH {dataset}.LocalEconomy
   NODE TABLES (
     {dataset}.businesses
       KEY (business_id)
-      LABEL Business PROPERTIES (business_id, name, legal_name, naics4, zip, latitude, longitude, registration_year, tenure_years, corridor_alternatives),
+      LABEL Business PROPERTIES (business_id, name, legal_name, naics4, industry_type, zip, latitude, longitude, registration_year, tenure_years, corridor_alternatives),
     {dataset}.employer_blocks
       KEY (block_id)
       LABEL Employer PROPERTIES (block_id, jobs),
@@ -211,6 +211,30 @@ ORDER BY COALESCE(s2.hop2_buyers, 0) DESC, COALESCE(s1.direct_buyers, 0) DESC
 # HELPER: DETERMINISTIC MAPPING OF RAW CORRIDOR ROWS TO SCORING ENGINE SCHEMA
 # ============================================================================
 
+def classify_industry_type(naics4: str) -> str:
+    """Map 4-digit NAICS code to the 9 official corridor industry types."""
+    s = str(naics4 or "").strip()
+    if s.startswith("722"):
+        return "Food Services — restaurants, bars, catering"
+    if s.startswith("54"):
+        return "Professional, Scientific, and Technical Services — legal, IT, consulting, design"
+    if s.startswith(("44", "45")):
+        return "Retail Trade — groceries, clothing, furniture, other stores"
+    if s.startswith(("811", "812", "813")) or s.startswith("81"):
+        return "Certain Services — repairs, personal care, laundry, parking, community organizations"
+    if s.startswith("62"):
+        return "Private Education and Health Services — health care and social assistance"
+    if s.startswith("51"):
+        return "Information — publishing, software, telecommunications, hosting"
+    if s.startswith(("31", "32", "33")):
+        return "Manufacturing — food, apparel, pharmaceuticals, equipment"
+    if s.startswith("721"):
+        return "Accommodations — hotels and lodging"
+    if s.startswith("71"):
+        return "Arts, Entertainment and Recreation — theaters, events, fitness"
+    return "Other"
+
+
 def _map_corridor_row_to_applicant(
     row: Dict[str, Any],
     sba_lookup: Dict[str, Dict[str, Any]],
@@ -224,6 +248,7 @@ def _map_corridor_row_to_applicant(
     legal_name = str(row.get("legal_name") or name)
     naics4 = str(row.get("naics4") or "7225")[:4]
     naics2 = naics4[:2]
+    industry_type = str(row.get("industry_type") or classify_industry_type(naics4))
 
     sba_info = sba_lookup.get(biz_id, {})
     has_sba = str(sba_info.get("has_sba_history", row.get("has_sba_history", "False"))).lower() == "true"
@@ -359,6 +384,7 @@ def _map_corridor_row_to_applicant(
         "name": name,
         "legal_name": legal_name,
         "category": category_label,
+        "industry_type": industry_type,
         "address": str(row.get("address") or "Central Market Corridor, SF"),
         "lat": lat,
         "lon": lon,

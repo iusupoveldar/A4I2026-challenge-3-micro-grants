@@ -23,7 +23,7 @@ CREATE OR REPLACE PROPERTY GRAPH a4i_econ.LocalEconomy
       KEY (business_id)
       LABEL Business
       PROPERTIES (
-        business_id, name, legal_name, naics4, zip,
+        business_id, name, legal_name, naics4, industry_type, zip,
         latitude, longitude, registration_year, tenure_years, corridor_alternatives
       ),
     a4i_econ.employer_blocks
