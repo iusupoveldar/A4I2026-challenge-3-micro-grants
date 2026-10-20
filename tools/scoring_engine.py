@@ -2097,29 +2097,56 @@ def compute_sensitivity_and_robust_awardees(
 
 
 OUT_OF_SCHEMA_KEYWORDS = {
-    "landlord_or_building_sale": ["landlord", "building sold", "eviction", "lease renewal", "property owner"],
-    "personal_credit_or_tax_liens": ["credit score", "fico", "tax lien", "personal bankruptcy", "divorce"],
-    "pending_litigation_or_permits": ["lawsuit", "litigation", "health department closure", "permit revoked"],
-    "unrecorded_cash_or_family_loans": ["under the table", "family loan", "unreported cash", "crypto"],
-    "owner_demographics": ["race", "gender", "ethnicity", "immigration status", "political"],
+    "landlord_or_building_sale": [
+        "landlord", "building sold", "building sale", "lease", "eviction", "rent hike", "property owner"
+    ],
+    "personal_credit_or_tax_liens": [
+        "credit score", "fico", "tax lien", "personal bankruptcy", "divorce", "bank balance", "tax return", "pos revenue"
+    ],
+    "pending_litigation_or_permits": [
+        "lawsuit", "litigation", "health department closure", "permit revoked"
+    ],
+    "unrecorded_cash_or_family_loans": [
+        "under the table", "family loan", "unreported cash", "crypto", "invoice", "contract"
+    ],
+    "owner_demographics": [
+        "race", "gender", "ethnicity", "immigration status", "political", "minority", "women-owned", "veteran", "bipoc"
+    ],
 }
 
 
 def audit_context_and_simulate_what_if(
+    officer_question: str = "What does $8,000 actually change for Sour Flour?",
     applicant_id: str = "cm_01",
     hypothetical_grant_amount: float = 8000.0,
     officer_question_or_context: str = "",
 ) -> Dict[str, Any]:
     """
-    1. Simulates arbitrary 'What-If' grant amounts (e.g., 'What does $8,000 change vs. $10,000?')
-       showing both continuous survival lift and Category 1 Indivisible Capital Cliff step behavior.
-    2. Audits natural-language Grant Officer context for Out-of-Schema factors (landlord eviction,
-       building sale, personal credit, owner demographics) and returns explicit blind-spot warnings
-       and verification actions instead of hallucinating.
+    Universal Anti-Hallucination & Counterfactual Tool:
+      1. Simulates arbitrary 'What-If' grant amounts (e.g., 'What does $8,000 change vs. $10,000?')
+         showing both continuous survival lift and Category 1 Indivisible Capital Cliff step behavior.
+      2. Audits natural-language Grant Officer context for Out-of-Schema factors (landlord eviction,
+         building sale, personal credit, owner demographics) and returns explicit blind-spot warnings
+         and verification actions instead of hallucinating.
     """
     apps = {a["id"]: a for a in get_canonical_applicants()}
     name_map = {a["name"].lower(): a for a in apps.values()}
-    app = apps.get(applicant_id) or name_map.get(applicant_id.lower()) or apps["cm_01"]
+
+    # Support both (officer_question, applicant_id, amount) and (applicant_id, amount, officer_question_or_context)
+    if str(officer_question) in apps or str(officer_question).lower() in name_map:
+        actual_app_id = str(officer_question)
+        if isinstance(applicant_id, (int, float)):
+            actual_amount = float(applicant_id)
+            actual_question = str(officer_question_or_context or "")
+        else:
+            actual_amount = float(hypothetical_grant_amount)
+            actual_question = str(officer_question_or_context or applicant_id or "")
+    else:
+        actual_question = str(officer_question_or_context or officer_question or "")
+        actual_app_id = str(applicant_id)
+        actual_amount = float(hypothetical_grant_amount)
+
+    app = apps.get(actual_app_id) or name_map.get(actual_app_id.lower()) or apps["cm_01"]
 
     runway = float(app["runway_quarters"])
     burn = float(app["burn_rate"])
@@ -2127,21 +2154,23 @@ def audit_context_and_simulate_what_if(
     is_cat1 = "Category 1" in str(app.get("shock_category", ""))
 
     p_no_grant = logistic_survival_probability(runway)
-    p_with_hypothetical = logistic_survival_probability(runway + float(hypothetical_grant_amount) / max(burn, 1.0))
+    p_with_hypothetical = logistic_survival_probability(runway + float(actual_amount) / max(burn, 1.0))
     p_with_full_10k = logistic_survival_probability(runway + 10000.0 / max(burn, 1.0))
+    months_added = (actual_amount / max(burn, 1.0)) * 3.0
 
     # Category 1 Indivisible Capital Cliff evaluation
-    clears_capital_cliff = (not is_cat1) or (hypothetical_grant_amount >= req)
-    unfunded_cliff_gap = max(0.0, req - hypothetical_grant_amount) if is_cat1 else 0.0
+    clears_capital_cliff = (not is_cat1) or (actual_amount >= req)
+    unfunded_cliff_gap = max(0.0, req - actual_amount) if is_cat1 else 0.0
 
     # Out-of-Schema Context Detection
-    q_lower = officer_question_or_context.lower()
+    q_lower = actual_question.lower()
     detected_blind_spots: List[Dict[str, str]] = []
     for category, kw_list in OUT_OF_SCHEMA_KEYWORDS.items():
         matched = [kw for kw in kw_list if kw in q_lower]
         if matched:
             detected_blind_spots.append(
                 {
+                    "topic": category,
                     "blind_spot_category": category,
                     "matched_terms": ", ".join(matched),
                     "schema_limitation": (
@@ -2159,8 +2188,14 @@ def audit_context_and_simulate_what_if(
         "applicant_id": app["id"],
         "applicant_name": app["name"],
         "shock_category": app.get("shock_category"),
-        "hypothetical_grant_amount": hypothetical_grant_amount,
+        "hypothetical_grant_amount": actual_amount,
+        "hypothetical_grant_tested": actual_amount,
         "requested_full_amount": req,
+        "months_of_runway_purchased": round(months_added, 2),
+        "survival_prob_without_grant": round(p_no_grant, 4),
+        "survival_prob_with_grant": round(p_with_hypothetical, 4),
+        "marginal_survival_lift_delta_p": round(p_with_hypothetical - p_no_grant, 4),
+        "out_of_schema_blind_spots": detected_blind_spots,
         "survival_simulation": {
             "baseline_12m_survival_prob": round(p_no_grant, 4),
             "hypothetical_grant_survival_prob": round(p_with_hypothetical, 4),
@@ -2174,11 +2209,11 @@ def audit_context_and_simulate_what_if(
                 else 0.0
             ),
             "what_if_verdict": (
-                f"PASS: ${hypothetical_grant_amount:,.0f} clears the working-capital/equipment threshold "
+                f"PASS: ${actual_amount:,.0f} clears the working-capital/equipment threshold "
                 f"and lifts 12-month survival by +{(p_with_hypothetical - p_no_grant)*100:.1f} percentage points."
                 if clears_capital_cliff
                 else f"WARNING [Category 1 Capital Cliff]: {app['name']} requires ${req:,.0f} for an indivisible "
-                f"equipment/lease cliff. A partial ${hypothetical_grant_amount:,.0f} grant leaves a "
+                f"equipment/lease cliff. A partial ${actual_amount:,.0f} grant leaves a "
                 f"${unfunded_cliff_gap:,.0f} gap (0% cliff resolution unless paired with a verified "
                 f"${unfunded_cliff_gap:,.0f} vendor/landlord co-pay)."
             ),
