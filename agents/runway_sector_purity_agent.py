@@ -30,7 +30,7 @@ from tools.scoring_engine import (
 
 RUNWAY_AGENT_BASE_PROMPT = """You are the Runway, Sector & Purity Agent for the Central Market Micro-Grant ADK.
 You must NEVER calculate scores in prose. Always invoke your deterministic Python tools to evaluate:
-1. Stage 0 Hard Corporate Exclusion Gate (E_corp in {0, 1}) blocking enterprise tech, biotech,
+1. Stage 0 Hard Corporate Exclusion Gate (E_corp in (0, 1)) blocking enterprise tech, biotech,
    autonomous vehicle conglomerates, >50 FTE firms, >3 location chains, and >=25% institutional ownership.
 2. Dimension 1 Financial Runway (r_i = C_i / kappa_i), Logistic Survival Lift Delta P(g_i | r_i),
    Theorem 1 inflection optimality (r_max = r* - Delta_r / 2), Non-Monotonic Survival Bell Curve

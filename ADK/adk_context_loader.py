@@ -128,7 +128,7 @@ class ADKContextLoader:
                 "Vector 8: Corporate & Aggregation Leakage",
             ],
             "mandate": (
-                "Enforce Stage 0 Corporate Exclusion Gate (E_corp in {0, 1}), evaluate financial runway "
+                "Enforce Stage 0 Corporate Exclusion Gate (E_corp in (0, 1)), evaluate financial runway "
                 "logistic survival lift Delta P(g_i | r_i), non-monotonic survival bell curve Phi_runway(r_i), "
                 "structural viability gate Theta_viable, sector volatility/margins (Omega_s, Psi_s, rho_s), "
                 "and Small-Business Purity Score P_pure(i) across employee size, locations, ownership, and revenue."
@@ -511,6 +511,16 @@ def get_context_audit_summary(adk_dir: Optional[str] = None) -> Dict[str, Any]:
     return get_loader(adk_dir).get_context_audit_summary()
 
 
+def _sanitize_adk_template_braces(text: str) -> str:
+    """
+    Sanitizes curly braces `{` and `}` in system instructions so Google ADK's
+    `inject_session_state` template parser does not mistake LaTeX subscripts
+    (e.g., `\\theta_{\\text{ext}}`) or GQL quantifiers (`->{1,2}`) for missing
+    session context variables.
+    """
+    return text.replace("{", "(").replace("}", ")")
+
+
 def build_system_prompt_with_adk_docs(
     base_system_prompt: str = "",
     adk_dir: Optional[str] = None,
@@ -524,7 +534,7 @@ def build_system_prompt_with_adk_docs(
     loader = get_loader(adk_dir)
     if agent_name:
         rubric = loader.get_agent_rubric(agent_name)
-        return f"{base_system_prompt}\n\n{rubric}".strip()
+        return _sanitize_adk_template_braces(f"{base_system_prompt}\n\n{rubric}".strip())
 
     docs = loader.get_all_documents()
     compiled_docs = "\n\n".join(
@@ -532,4 +542,6 @@ def build_system_prompt_with_adk_docs(
         for filename, content in docs.items()
     )
     prefix = f"{base_system_prompt}\n\n" if base_system_prompt else ""
-    return f"{prefix}# LOADED ./ADK/DOCS/*.md SPECIFICATIONS\n{compiled_docs}"
+    return _sanitize_adk_template_braces(
+        f"{prefix}# LOADED ./ADK/DOCS/*.md SPECIFICATIONS\n{compiled_docs}"
+    )

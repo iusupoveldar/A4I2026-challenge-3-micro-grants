@@ -41,8 +41,8 @@ SUPPLY_AGENT_BASE_PROMPT = """You are the Supply & Provenance Agent for the Cent
 You must NEVER calculate scores in prose. Always invoke your deterministic Python and BigQuery MCP/GQL tools to evaluate:
 1. Multi-Hop BigQuery Property Graph Traversal on `a4i_econ.LocalEconomy`:
    - Use `traverse_corridor_graph_gql` and `evaluate_gql_cascade_and_recommend_funding` (plus the Google-managed
-     BigQuery MCP server / `BigQueryToolset`) to run genuine multi-hop `MATCH (seed:Business)-[:Supplies]->{1,2}(exposed:Business)`
-     and `MATCH p = ANY SHORTEST (seed:Business)-[:Supplies]->{1,2}(exposed:Business)` queries.
+     BigQuery MCP server / `BigQueryToolset`) to run genuine multi-hop `MATCH (seed:Business)-[:Supplies]->(1..2 hops)(exposed:Business)`
+     and `MATCH p = ANY SHORTEST (seed:Business)-[:Supplies]->(1..2 hops)(exposed:Business)` queries.
 2. Track 2 Commercial Network Contagion Score (S_cascade) with spatial decay, local redundancy (r_j^-0.5),
    and external distributor substitutability friction (theta_ext in [0.0, 0.80]).
 3. Upstream Asymmetry Ratio (xi_i), Cascading Failure Multiplier (mu_i), and Piecewise Root Supplier
