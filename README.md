@@ -1,45 +1,97 @@
 # Community Economic Resilience & Micro-Grants
 
-A research prototype for reviewing connected shocks to San Francisco businesses.
-The current source review covers the **232 registry locations** matched from the
-local all-locations cohort. It preserves same-name branches and does not certify
-real grant awards, jobs saved or avoided closures.
+A research prototype for deciding where small-business stabilization funding
+could reduce connected harm to a commercial corridor. We separate **who is
+exposed** through a modeled graph, **industry loan charge-off likelihood** from
+SBA outcomes, and **what a grant could change** under explicit assumptions.
 
-Read the [source review](data/TASK_2_3_REVIEW.md) and use the notebook and agent
-tools below to inspect the graph. The 11-applicant benchmark is an illustrative
-policy scenario; its financial inputs and beneficiary totals are assumptions.
+**Implemented:** a reproducible source audit, upstream/downstream traversal
+through eight hops, BigQuery property-graph queries, SBA validation notebooks,
+four cooperating agent modules, deterministic scoring, three funding regimes,
+sensitivity checks, and structured audit reports.
 
-## What was corrected in Tasks 2 and 3
+**Exercised locally:** the 232-record registry review, 293-link supply model,
+22 regression and integration tests, the deterministic four-agent benchmark, and the real-source
+`EVIDENCE_ONLY` workflow. The benchmark runs all three funding regimes and passes
+its ten scenario audit checks. Its financials and beneficiary totals are assumed;
+these checks do not establish real grant effectiveness.
 
-See the [reproducible review](data/TASK_2_3_REVIEW.md) and
-[record-level audit](data/task_2_3_review.json).
+**Awaiting cloud validation:** the revised BigQuery SQL, canonical rate export
+and new notebook diagnostics need an authenticated rerun. Live Google ADK/cloud
+execution also needs verification. Earlier saved statistical results are
+identified separately below.
 
-- **Depth:** cycle-safe distinct destination counts at hops 1–8, default 2 for
-  the decision baseline. The reviewed local model gains no new destinations
-  after hop 3. This is a finding about this graph, not a universal cutoff.
-- **Consequence:** distance-decayed edge products, buyer-specific modeled input
-  alternatives, and one strongest exposure per destination. Raw reach is shown
-  as a baseline; repeated paths do not multiply businesses or direct intensity.
-- **Variety:** cohort, exposed businesses and the cascade shortlist are compared
-  by industry. The source has nine named activity groups plus one unspecified
-  `72` record. The earlier 218-business counts described a name-deduplicated
-  artifact, not the complete set of registered locations.
-- **Connected problems:** local supply disruption, lost upstream orders, lost
-  worker demand, debt pressure and essential-service access. The analysis distinguishes
-  traversable modeled supply links from mechanisms needing additional evidence.
-- **Keystone band:** 5–25 distinct businesses within 2 hops is an explicit policy
-  shortlist. It is not an empirical proof or an automatic denial outside the band.
-- **Sources:** registry coordinates and location start dates replace invented
-  positions and account-number tenure. Short NAICS codes remain broad. Branches
-  are retained; duplicate keys fail with an actionable audit.
-- **Priors:** only the notebook's `industry_failure_rates` is accepted. The legacy
-  hand-entered `sba_industry_failure_rates.csv` is excluded from runtime consumers.
-- **Loans:** same-street-address matches only. The saved notebook's eight
-  previously 'trusted' loans included one with no street number; seven had an
-  actual same-street-address check. No corridor default is established in that run.
-- **Grant sensitivity:** an $8,000 debt-bridge scenario can vary by verified current
-  debt; absent debt and causal effectiveness remain unknown. A flat 25% assumption
-  cannot change rank, and no fixed winner is forced by the revised analysis.
+Read the [reproducible review](data/TASK_2_3_REVIEW.md) and
+[record-level audit](data/task_2_3_review.json) for current findings and source
+corrections. Registry records are not necessarily distinct firms or physical
+storefronts; possible duplicate filings remain visible for resolution.
+
+## Task 2 — implemented graph work
+
+| Capability | Implementation and evidence | Validation status |
+|---|---|---|
+| Three node types and three relationship types | `Business`, `Employer`, `Lender`; `Supplies`, `DrawsFootfall`, `BorrowedFrom` in [graph DDL and SQL](data/custom_bq_upload/schema_and_queries.sql) and the [connector](tools/bigquery_connector.py). One canonical graph: `a4i_econ.LocalEconomy`. | Revised cloud definitions implemented; execution pending. |
+| Multi-hop impact and depth sensitivity | [Graph engine](tools/resilience_analysis.py) returns upstream/downstream reach for 1–8 hops, new/cumulative destinations, shortest explanation paths, and strongest weighted paths. GQL uses `ANY SHORTEST`; cycles and repeated paths cannot inflate unique reach. | Local traversal tested, including a six-hop chain; revised cloud GQL pending. |
+| Keystone shortlist and hub comparison | Two-hop **5–25 destination** policy band, raw-reach baseline, weighted exposure, and GQL `NEXT ... FILTER` in [query B](data/custom_bq_upload/schema_and_queries.sql). Businesses outside the band remain eligible for a separate direct-relief/access review. | Local shortlist and hub-loss counterexample tested; cloud query pending. |
+| Duplicate and branch audit | [Review builder](scripts/review_tasks_2_3.py) records IDs, legal names and addresses; [load notebook](notebooks/c3_01_load_explore.ipynb) stops on conflicting location keys. Same-name records are not silently merged or manually pinned. | Local review: nine same-name groups; four possible duplicate-filing groups remain unresolved. |
+| Registry tenure and NAICS precision | Location start dates and coordinates come from the SF registry. Short/nonstandard NAICS values retain their precision and use sector fallback, rather than being guessed into groceries or restaurants. | Local source corrections checked; cloud loader updated. |
+| Downstream debt and lender exposure | Address-checked loan edges and [query E](data/custom_bq_upload/schema_and_queries.sql) link exposed businesses to loan/lender evidence, retaining businesses without a match as **unknown debt**. | SQL implemented; revised cloud results pending. |
+| Two-direction employer shock | [Query D](data/custom_bq_upload/schema_and_queries.sql) follows employer demand loss to storefronts and upstream suppliers. Footfall is aggregated before supplier joins to prevent multiplication. | SQL implemented; employer/footfall sources are not available locally. |
+
+Two hops is the decision baseline; depths 3–8 test additional exposure. In the
+current local model, seven roots gain new destinations at hop 3 and none at
+hops 4–8. For Cumaica Coffee, cumulative reach is **27 → 51 → 55** at hops 1–3,
+then stays at 55. This is a model-specific finding, not a universal impact limit.
+
+## Task 3 — implemented analysis work
+
+| Capability | Implementation and evidence | Validation status |
+|---|---|---|
+| Canonical failure priors and industry job proxies | [Validation notebook](notebooks/Challenge3.ipynb), section 8: horizon-controlled SBA outcomes, hierarchical beta-binomial shrinkage, uncertainty intervals, and computed loan-cohort median jobs. Exact-detail → sector → state fallback. Only `industry_failure_rates` is accepted. | Historical validation exists; the revised full export is pending and is not present locally. Industry jobs are not measured storefront employment. |
+| Buyer-specific input alternatives | [Graph engine](tools/resilience_analysis.py) and enriched SQL count other same-input modeled suppliers connected to each buyer within 500m. A corridor-wide peer count is kept separate from buyer substitution. | Local counterexamples tested; these remain modeled options, not verified vendor substitutability. |
+| Distance-decay sensitivity | Edge weights use `intensity × exp(-metres / 400) / (1 + buyer_input_alternatives)`. Path weights multiply; each endpoint contributes its strongest exposure once. Before/after ranks include all industries. | Local ranks generated; no named winner is forced. Revised cloud comparison pending. |
+| Charge-off confusion matrix | Notebook section 10b evaluates a fixed 3% threshold on the SF holdout using rates fitted outside SF. | Implemented; new diagnostic has no saved result until rerun. |
+| Industry variety and equity audit | Local cohort/shortlist counts, shares and concentration; notebook coverage and poverty/zero-vehicle comparisons using a labeled nearest-workplace-tract proxy. | Industry audit checked locally; revised ACS/footfall equity results pending. |
+| Sole-proprietor selection-bias report | The saved SBA run reports **18,698 excluded individual/sole-proprietor loans**. Source rules keep missing SBA history separate from zero need. | Historical exclusion count documented; no claim that this validates unbanked or excluded businesses. |
+
+The current source has **nine named industry groups plus one unspecified `72`
+record**. The 20-record cascade shortlist covers only three groups: food services
+are **70.0% of the shortlist versus 21.6% of the cohort**. This identifies the
+supply model's sector bias; it does not justify a complete grant portfolio.
+Retail, health care and other access-oriented cases need their own review.
+
+## Other implemented modules
+
+These capabilities already exist in the repository in addition to Tasks 2 and 3:
+
+| Module | What is implemented | Scope |
+|---|---|---|
+| Four-agent coordination and selection | [Orchestrator](agents/regime_orchestrator_agent.py) coordinates [supply/provenance](agents/supply_provenance_agent.py), [runway/sector/purity](agents/runway_sector_purity_agent.py), and [spatial/human impact](agents/spatial_human_impact_agent.py). Named selectors, standalone agent packages, Google ADK factories and a [root entrypoint](agent/agent.py) are wired in code. | All four deterministic selectors and their source gates tested; live model-backed execution not verified in this review. |
+| Five scoring dimensions | [Scoring engine](tools/scoring_engine.py): financial runway and marginal survival lift; sector volatility; people-helped/efficiency scores combining direct workers, network workers, commuters and residents; small-business ownership/size purity; upstream/root-supplier importance. Community-anchor and ACS equity multipliers are also implemented. | Scenario calculations; current applicant finances and service reach are not inferred from registry data. |
+| Eligibility and provenance rules | Supplied ownership, headcount, location and storefront inputs; NAICS-81 scenario filters; modeled/verified tags; invoice-request flags; zero-cascade comparison. | Policy/model assumptions. A verification flag is not an inspected invoice or a statutory eligibility determination. |
+| Funding regime comparison | Full-grant threshold (A), concave bridge (B), and tiered hybrid (C), with budget limits, indivisible-shock handling and alternate-routing fields. Regime C reserves a community-anchor slot and attempts cluster top-ups. | Priority-based scenario allocation. Despite the `optimize_portfolio_knapsack` name, this is not an exact knapsack solver or a guarantee that every cluster can reach critical mass. |
+| Overlap, spatial and bottleneck diagnostics | Jaccard downstream overlap penalties, proximity/critical-mass checks, and unapplied-supplier alert dossiers. | Overlap is reported after allocation; cluster selection uses a heuristic with a final spatial audit. Legacy bottleneck alerts use fixture/industry assumptions, not source-verified supplier discovery. |
+| Sensitivity analysis | Four policy-weight configurations plus a 51-point cascade/anchor sweep; reports intersections and sampled ranking intervals. | Sampled scenario checks, not a proof across all weights. The returned `0.72` crossover narrative is fixture metadata. |
+| Audit reports and context tools | [Reporter](tools/compliance_reporter.py) evaluates ten scenario attack vectors and a five-step field checklist, then generates a Markdown determination-style report. [Context loader](ADK/adk_context_loader.py) indexes seven documents, equations, agent rubrics and defense sections, including the merged refactor guide. | Benchmark report generation exercised; no independent audit certificate or actual award approval. |
+| Source-evidence safeguards | Real-source agent records return `EVIDENCE_ONLY`; missing finances, ownership and invoices are not fabricated. The source loader never silently falls back to the illustrative benchmark. | Source-mode behavior and refusal to score incomplete source records tested. |
+| Live traversal, comparison and MCP wiring | [Connector](tools/bigquery_connector.py) exposes named shortest paths, graph traversal, applicant comparison and funding entrypoints; [MCP toolsets](tools/mcp_bigquery_toolset.py) and [toolbox definitions](tools.yaml) wire Google-managed BigQuery access. | Integration tests cover live-query failure, eight-hop/timeout propagation and evidence gates. A failed cloud call returns no invented paths; explicit local mode identifies BFS results separately. Authenticated MCP/GQL calls remain unverified. |
+| Runtime and deployment sources | [Server](server/app.py), [runtime deployment](scripts/deploy_agent_runtime.py), [deployment script](scripts/deploy.sh) and [Dockerfile](Dockerfile) provide the merged service/deployment entrypoints. See the [refactor and verification guide](ADK/docs/04_ADK_REFACTOR_AND_TEST_GUIDE.md). | Source code present; no deployment or live service verification performed in this review. |
+
+The [source-evidence rules](ADK/docs/04_SOURCE_EVIDENCE_AND_REVIEW.md) take priority
+over numerical examples and policy assumptions in the earlier design documents.
+
+## Five linked community problems
+
+| Problem | Connected mechanism | Current evidence |
+|---|---|---|
+| Input disruption | Supplier loss → buyers → further buyers | Traversable in the local modeled supply graph. |
+| Lost upstream orders | Storefront demand loss → its suppliers | Traversable in reverse; order losses are not measured. |
+| Lost worker demand | Employer block → storefronts → upstream suppliers | Cloud source/query support implemented; no local footfall snapshot. |
+| Debt pressure | Exposed business → matched loan → lender | Strict-match SQL implemented; historical borrowing does not establish current distress. |
+| Essential-service access | Affected food/health/community services → residents | Industry exposure proxy; catchment and resident-reach evidence still needed. |
+
+Graph depth and the number of social mechanisms are different. A four-hop path
+does not by itself establish four independently measured community harms.
 
 ## Reproduce locally
 
@@ -48,7 +100,22 @@ No third-party Python dependency or cloud credential is needed for the source re
 ```sh
 python3 scripts/review_tasks_2_3.py
 python3 -m unittest discover -s tests -v
+python3 run_adk_test.py --mode local_csv
 ```
+
+Run the assumed-input benchmark separately to exercise all four agent modules,
+the three funding regimes, sensitivity analysis and audit-report generation:
+
+```sh
+python3 run_adk_test.py --mode canonical
+python3 run_adk_test.py --list-agents
+python3 run_adk_test.py --agent Supply_Provenance_Agent --mode local_csv
+```
+
+The local tests cover long-chain/reverse traversal, cycles, convergent paths,
+strongest-versus-shortest paths, buyer alternatives, decay, invalid graph inputs,
+the keystone band, NAICS precision, prior fallback, missing financial evidence,
+all four agent selectors, connector timeouts and failure handling.
 
 The generated Markdown review and JSON audit include source coordinates, both
 traversal directions, depth through eight hops, industry concentration and missing
@@ -90,7 +157,28 @@ The public cloud snapshot requires credentials unavailable in this environment.
 The SQL and revised cloud notebook cells require execution in the authenticated
 project before their new results can be cited.
 
+## What remains before a real deployment or grant decision
+
+- Execute the revised SQL/notebook cells in the authenticated project and retain
+  their outputs, including the full canonical rate export, confusion matrix,
+  equity coverage and actual GQL/table-traversal agreement.
+- Resolve the four possible duplicate-filing groups against source records;
+  the review deliberately reports registry IDs rather than confirmed unique firms.
+- Supply current applicant cash, operating burn, debt payments, ownership,
+  eligibility and vendor evidence. The $8,000 debt-bridge function is implemented,
+  but its causal effectiveness is assumed and missing debt stays unknown.
+- Validate live Google ADK/Vertex AI execution, a consumed Google-managed MCP
+  integration, and cloud deployment. Their operational completion is not verified
+  by this checkout or the deterministic benchmark.
+
 ## Evidence for failure likelihood
+
+The [validation notebook](notebooks/Challenge3.ipynb) implements loan-term,
+approval-year, age and franchise controls; training outside SF with an SF
+holdout; cross-fitted industry priors; statewide five-fold cross-validation;
+paired bootstrap AUC intervals; industry-clustered odds ratios; calibration
+checks; and 24/36/48/60-month horizon sensitivity. These methods are part of the
+implemented validation work, alongside the new diagnostics listed under Task 3.
 
 The saved notebook analyzed 58,647 eligible California SBA 7(a) loans with a
 48-month horizon (1,570 charge-offs), holding out 1,490 SF loans with 34 failures.
