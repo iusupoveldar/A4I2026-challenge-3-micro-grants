@@ -11,7 +11,7 @@ four cooperating agent modules, deterministic scoring, three funding regimes,
 sensitivity checks, and structured audit reports.
 
 **Exercised locally:** the 232-record registry review, 293-link supply model,
-22 regression and integration tests, the deterministic four-agent benchmark, and the real-source
+30 regression and integration tests, the deterministic four-agent benchmark, and the real-source
 `EVIDENCE_ONLY` workflow. The benchmark runs all three funding regimes and passes
 its ten scenario audit checks. Its financials and beneficiary totals are assumed;
 these checks do not establish real grant effectiveness.
@@ -115,7 +115,8 @@ python3 run_adk_test.py --agent Supply_Provenance_Agent --mode local_csv
 The local tests cover long-chain/reverse traversal, cycles, convergent paths,
 strongest-versus-shortest paths, buyer alternatives, decay, invalid graph inputs,
 the keystone band, NAICS precision, prior fallback, missing financial evidence,
-all four agent selectors, connector timeouts and failure handling.
+all four agent selectors, connector timeouts, business-ID/name lookup, ambiguous
+branches, scenario-ID separation and failure handling.
 
 The generated Markdown review and JSON audit include source coordinates, both
 traversal directions, depth through eight hops, industry concentration and missing
@@ -204,3 +205,10 @@ compares the cohort and cascade shortlist. Source-based records return
 `EVIDENCE_ONLY` from the orchestrator until financial/eligibility evidence exists.
 The named 11-applicant benchmark remains available explicitly as an illustrative
 scenario; it is never a silent fallback for real data.
+
+Call `find_corridor_businesses("Sour Flour")` before tracing: the registry ID is
+`1088753-08-161`; the illustrative `cm_01` is a separate scenario ID. A unique
+exact business/legal name is also accepted. Unknown, ambiguous, partial and
+scenario identifiers return structured statuses and candidate locations; only
+`status == "OK"` contains a completed traversal. Same-name branches require
+selecting a registry ID using its address.

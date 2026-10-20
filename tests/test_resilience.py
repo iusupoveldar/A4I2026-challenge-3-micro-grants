@@ -5,7 +5,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 from tools.resilience_analysis import (CorridorGraph, grant_scenario, industry_variety,
-                                      lookup_failure_rate, naics_detail, rank_consequences)
+                                      lookup_failure_rate, naics_detail, rank_consequences,
+                                      analyze_corridor_impact, find_corridor_businesses)
 from tools.bigquery_connector import get_gql_multihop_cascade_sql, load_corridor_applicants
 from tools.scoring_engine import compute_applicant_utility
 from tools.bigquery_connector import (BigQueryGraphConnector, _build_local_fallback_gql_rows,
@@ -133,6 +134,84 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(sum(d["industry_variety"]["counts"].values()),len(d["nodes"]))
         self.assertTrue(all(n["latitude"] and n["location_start_date"] for n in d["nodes"]))
         self.assertTrue(all(r["p_fail"] is None for r in d["ranking"]) if not d["sources"]["rates"] else True)
+
+
+class AgentBusinessLookupTests(unittest.TestCase):
+    def test_registry_id_and_unique_names_trace_same_location(self):
+        expected = analyze_corridor_impact("1088753-08-161", 6)
+        self.assertEqual(expected["status"], "OK")
+        for query in (" 1088753-08-161 ", " sour flour ", "Sour Flour Corporation"):
+            with self.subTest(query=query):
+                result = analyze_corridor_impact(query, 6)
+                self.assertEqual(result["status"], "OK")
+                self.assertEqual(result["root"], expected["root"])
+                self.assertEqual(result["endpoints"], expected["endpoints"])
+
+    def test_unknown_id_returns_recoverable_result_without_zero_reach(self):
+        result = analyze_corridor_impact("not-a-registry-id")
+        self.assertEqual(result["status"], "UNKNOWN_BUSINESS")
+        self.assertIn("find_corridor_businesses", result["message"])
+        self.assertNotIn("reach", result)
+        self.assertEqual(result["matches"], [])
+
+    def test_scenario_ids_require_explicit_registry_selection(self):
+        result = analyze_corridor_impact(" cm_01 ")
+        self.assertEqual(result["status"], "SCENARIO_ID")
+        self.assertNotIn("reach", result)
+        self.assertEqual(result["matches"][0]["business_id"], "1088753-08-161")
+        # This illustrative grocer has no matching registry location.
+        invented = analyze_corridor_impact("cm_03")
+        self.assertEqual(invented["status"], "SCENARIO_ID")
+        self.assertEqual(invented["matches"], [])
+
+    def test_partial_names_are_suggestions_not_automatic_traversals(self):
+        result = analyze_corridor_impact("Sour Flo")
+        self.assertEqual(result["status"], "UNKNOWN_BUSINESS")
+        self.assertEqual(result["matched_by"], "partial")
+        self.assertEqual(result["matches"][0]["name"], "Sour Flour")
+        self.assertNotIn("reach", result)
+
+    def test_same_name_branches_are_not_silently_merged(self):
+        nodes = [{**node(i), "name": "Same Name", "address": f"{i} Market St"} for i in (1, 2)]
+        with patch("tools.resilience_analysis._load_corridor_review", return_value={"nodes": nodes}):
+            result = analyze_corridor_impact("same name")
+        self.assertEqual(result["status"], "AMBIGUOUS_BUSINESS")
+        self.assertEqual({n["business_id"] for n in result["matches"]}, {"1", "2"})
+        self.assertNotIn("reach", result)
+
+    def test_bad_tool_arguments_return_structured_feedback(self):
+        for kwargs in ({"business_id": None}, {"business_id": ""},
+                       {"max_hops": 0}, {"max_hops": 9}, {"max_hops": True},
+                       {"max_hops": "6"}, {"direction": "sideways"}):
+            with self.subTest(kwargs=kwargs):
+                result = analyze_corridor_impact(**{"business_id": "1088753-08-161", **kwargs})
+                self.assertEqual(result["status"], "INVALID_ARGUMENT")
+                self.assertNotIn("reach", result)
+
+    def test_lookup_supports_address_and_bounded_discovery(self):
+        result = find_corridor_businesses("1398 Mission St")
+        self.assertIn("1051477-01-161", {r["business_id"] for r in result["matches"]})
+        listed = find_corridor_businesses(limit=2)
+        self.assertEqual(listed["total_matches"], 232)
+        self.assertEqual(len(listed["matches"]), 2)
+        self.assertTrue(listed["truncated"])
+        self.assertEqual(find_corridor_businesses(limit=0)["status"], "INVALID_ARGUMENT")
+
+    def test_lookup_tool_is_registered_with_both_adk_agents(self):
+        import sys
+        from types import ModuleType, SimpleNamespace
+        from agents.supply_provenance_agent import create_supply_provenance_adk_agent
+        from agents.regime_orchestrator_agent import create_orchestrator_adk_pipeline
+        fake_agents = ModuleType("google.adk.agents")
+        fake_agents.Agent = lambda **kwargs: SimpleNamespace(**kwargs)
+        with patch.dict(sys.modules, {"google": ModuleType("google"),
+                                      "google.adk": ModuleType("google.adk"),
+                                      "google.adk.agents": fake_agents}):
+            agents = [create_supply_provenance_adk_agent(include_mcp_toolsets=False),
+                      create_orchestrator_adk_pipeline(include_mcp_toolsets=False)]
+        for agent in agents:
+            self.assertIn(find_corridor_businesses, agent.tools)
+            self.assertIn(analyze_corridor_impact, agent.tools)
 
 
 class ConnectorIntegrationTests(unittest.TestCase):

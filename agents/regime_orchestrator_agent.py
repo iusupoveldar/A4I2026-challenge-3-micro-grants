@@ -64,13 +64,16 @@ from tools.scoring_engine import (
     optimize_portfolio_knapsack,
     run_all_regimes_comparison,
 )
-from tools.resilience_analysis import analyze_corridor_impact, review_industry_variety, industry_variety
+from tools.resilience_analysis import analyze_corridor_impact, find_corridor_businesses, review_industry_variety, industry_variety
 
 
 ORCHESTRATOR_BASE_PROMPT = """You are the Regime Stress-Test & Orchestrator Agent (Chief Municipal Economist)
 for the San Francisco Central Market Micro-Grant ADK.
 Evidence rule: ADK financial examples and legacy priors are illustrative scenarios.
 For source_review records, use analyze_corridor_impact (1–8 hops) and review_industry_variety.
+Call find_corridor_businesses to obtain a registry location ID by name/address before tracing.
+cm_* IDs are illustrative scenario IDs, not registry keys. Check status == OK before
+reporting tool reach; use candidate IDs to resolve unknown or ambiguous businesses.
 Do not optimize grants when cash, current debt, eligibility or canonical rates are missing.
 Read data/TASK_2_3_REVIEW.md for corrected source claims. Never promise jobs saved from reach.
 You must NEVER perform arithmetic in prose. You orchestrate:
@@ -240,6 +243,7 @@ def create_orchestrator_adk_pipeline(
         get_gql_multihop_cascade_sql,
         get_gql_shortest_path_trace_sql,
         analyze_corridor_impact,
+        find_corridor_businesses,
         review_industry_variety,
     ]
     if include_mcp_toolsets:

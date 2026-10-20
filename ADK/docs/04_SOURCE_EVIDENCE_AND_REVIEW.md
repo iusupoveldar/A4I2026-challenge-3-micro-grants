@@ -12,6 +12,12 @@ floor of 0.015, distance <=500m, and up to five suppliers per buyer. This is a
 different, explicitly labeled model from the starter's 0.005/1200m graph.
 
 Use `analyze_corridor_impact` for one through eight hops in either direction.
+First call `find_corridor_businesses(query)` to select the registry location ID
+using its name and address. The `cm_*` IDs in the illustrative benchmark are not
+registry keys. A unique exact business/legal name also resolves, but partial or
+ambiguous names require selecting a candidate ID. Check `status == "OK"` before
+reporting reach; unknown, ambiguous and scenario IDs return a structured response,
+not zero exposure or an inferred business match.
 Count distinct destinations and exclude the source. Default to two hops for
 decisions, with three through eight as sensitivity. Do not claim longer impact
 where the observed graph stops gaining destinations. Use strongest weighted

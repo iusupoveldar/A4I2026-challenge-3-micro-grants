@@ -9,6 +9,9 @@ specialists. The updated source rules are in
   or invoices are inferred from NAICS, historical approval or charge-off.
 - `analyze_corridor_impact` traverses the **local reviewed** graph through 1–8 hops
   in either direction, with unique reach, weighted exposure and explanation paths.
+- `find_corridor_businesses(query)` finds registry location IDs by name/address.
+  Select a location before tracing; `cm_*` scenario IDs are a separate namespace.
+  Unknown/ambiguous IDs return a status and candidates, without crashing or guessing reach.
 - `review_industry_variety` reports the local cohort and cascade-band composition.
 - `BigQueryGraphConnector.query_gql_multihop_cascade(max_hops=1..8)` traverses the
   **cloud** LocalEconomy graph using GQL. Do not substitute local graph counts.

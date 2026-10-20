@@ -35,12 +35,15 @@ from tools.scoring_engine import (
     supply_cascade_score,
     upstream_asymmetry_and_cascade_multiplier,
 )
-from tools.resilience_analysis import analyze_corridor_impact, review_industry_variety
+from tools.resilience_analysis import analyze_corridor_impact, find_corridor_businesses, review_industry_variety
 
 
 SUPPLY_AGENT_BASE_PROMPT = """You are the Supply & Provenance Agent for the Central Market Micro-Grant ADK.
 Source evidence takes priority over illustrative benchmark narratives. Use analyze_corridor_impact
 for local 1–8 hop paths in either direction; 2 hops is the decision baseline, deeper hops are sensitivity.
+Use find_corridor_businesses first to select the registry location ID by name/address.
+cm_* IDs are scenario IDs. Check tool status; on an unknown or ambiguous business,
+use the returned candidates to select a location instead of inventing an ID or reach.
 Use traverse_corridor_graph_gql for live BigQuery paths, and identify the graph in every result.
 Never create edges from a degree count or call modeled options confirmed substitutability.
 You must NEVER calculate scores in prose. Invoke deterministic Python and BigQuery MCP/GQL tools to evaluate:
@@ -92,6 +95,9 @@ class SupplyProvenanceAgent:
             traces = []
             for app in apps:
                 result = analyze_corridor_impact(app["id"], max_hops)
+                if result.get("status") != "OK":
+                    traces.append(result)
+                    continue
                 traces.append({**{k:v for k,v in result.items() if k != "endpoints"},
                                "example_endpoints": sorted(result["endpoints"], key=lambda e:-e["hop"])[:3]})
             return {"agent": self.agent_name, "status": "EVIDENCE_ONLY",
@@ -202,6 +208,7 @@ def create_supply_provenance_adk_agent(
         filter_naics_81_b2b_links,
         discover_unapplied_bottlenecks,
         analyze_corridor_impact,
+        find_corridor_businesses,
         review_industry_variety,
     ]
     if include_mcp_toolsets:

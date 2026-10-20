@@ -274,18 +274,109 @@ def rank_consequences(graph, rates=(), grant=8000, debt_by_id=None):
     return sorted(rows, key=lambda r: (not r["cascade_case"], -r["weighted_after_decay"], r["business_id"]))
 
 
-def analyze_corridor_impact(business_id: str, max_hops: int = 2, direction: str = "downstream") -> dict:
-    """Agent tool: trace a real registry location through 1–8 modeled supply hops.
-
-    Returns distinct exposure, a shortest explanation path, strongest weighted
-    exposure, industry variety and explicit gaps. This never certifies job savings.
-    """
+def _load_corridor_review():
     import json
     from pathlib import Path
     path = Path(__file__).resolve().parents[1]/"data/task_2_3_review.json"
-    data = json.loads(path.read_text())
+    return json.loads(path.read_text())
+
+
+def _normalize_business_name(value):
+    import unicodedata
+    return re.sub(r"[^\w]+", "", unicodedata.normalize("NFKC", value).casefold())
+
+
+def _business_identity(node):
+    return {key: node.get(key) for key in ("business_id", "name", "legal_name", "address", "naics4")}
+
+
+def _find_registry_businesses(nodes, query):
+    """Exact IDs/names first; partial matches are suggestions, never selected roots."""
+    query = query.strip()
+    exact_ids = [n for n in nodes if str(n["business_id"]).casefold() == query.casefold()]
+    if exact_ids:
+        return exact_ids, "business_id"
+    normalized = _normalize_business_name(query)
+    if not normalized:
+        return [], None
+    for field in ("name", "legal_name"):
+        matches = [n for n in nodes if _normalize_business_name(n.get(field) or "") == normalized]
+        if matches:
+            return matches, field
+    matches = [n for n in nodes if any(
+        normalized in _normalize_business_name(str(n.get(field) or ""))
+        for field in ("business_id", "name", "legal_name", "address"))]
+    return matches, "partial" if matches else None
+
+
+def _scenario_business(query):
+    """Identify fixture IDs to explain their namespace, without treating them as registry keys."""
+    if not re.fullmatch(r"cm_\d+", query.strip(), re.I):
+        return None
+    from tools.scoring_engine import CANONICAL_CENTRAL_MARKET_APPLICANTS
+    return next((a for a in CANONICAL_CENTRAL_MARKET_APPLICANTS
+                 if a["id"].casefold() == query.strip().casefold()), None)
+
+
+def find_corridor_businesses(query: str = "", limit: int = 10) -> dict:
+    """Find real local registry IDs before tracing a business.
+
+    Search by ID, business/legal name, or address. Empty query lists available
+    locations. Return separate candidates for same-name branches; use their
+    business_id to select a location. cm_* IDs belong to an illustrative scenario,
+    not this registry graph; any same-name registry results require explicit selection.
+    """
+    if not isinstance(query, str) or type(limit) is not int or not 1 <= limit <= 50:
+        return {"status": "INVALID_ARGUMENT", "message": "query must be text and limit an integer in 1..50."}
+    data = _load_corridor_review()
+    scenario = _scenario_business(query)
+    search = scenario["name"] if scenario else query
+    matches, matched_by = _find_registry_businesses(data["nodes"], search) if search.strip() else (data["nodes"], "list")
+    matches = sorted(matches, key=lambda n: (n["name"].casefold(), n["business_id"]))
+    result = {"status": "SCENARIO_ID" if scenario else "OK" if matches else "UNKNOWN_BUSINESS",
+              "query": query, "data_source": "LOCAL_REVIEW", "matched_by": matched_by,
+              "total_matches": len(matches), "matches": [_business_identity(n) for n in matches[:limit]],
+              "truncated": len(matches) > limit,
+              "message": "Select a registry business_id and call analyze_corridor_impact. Same-name locations remain separate."}
+    if scenario:
+        result.update(scenario_business={k: scenario.get(k) for k in ("id", "name", "address")},
+                      message="This is an illustrative scenario ID, not a registry ID. Same-name matches are candidates only; choose a registry business_id explicitly for source analysis.")
+    return result
+
+
+def analyze_corridor_impact(business_id: str, max_hops: int = 2, direction: str = "downstream") -> dict:
+    """Trace a local registry location through 1–8 modeled supply hops.
+
+    business_id should be a registry location ID from find_corridor_businesses;
+    a unique exact business/legal name also works. cm_* scenario IDs, unknown IDs,
+    partial names and ambiguous branches return a status/message and candidates,
+    without tracing a guessed business. Check status == OK before using reach.
+    Returns distinct exposure, paths, industry variety and gaps, never job savings.
+    """
+    if not isinstance(business_id, str) or not business_id.strip():
+        return {"status": "INVALID_ARGUMENT", "message": "business_id must be a nonempty registry ID or exact business name. Use find_corridor_businesses to look it up."}
+    if type(max_hops) is not int or not 1 <= max_hops <= MAX_HOPS:
+        return {"status": "INVALID_ARGUMENT", "message": f"max_hops must be an integer in 1..{MAX_HOPS}."}
+    if not isinstance(direction, str) or direction.strip().casefold() not in ("downstream", "upstream"):
+        return {"status": "INVALID_ARGUMENT", "message": "direction must be downstream or upstream."}
+    direction = direction.strip().casefold()
+    lookup = find_corridor_businesses(business_id)
+    matches = lookup["matches"]
+    if lookup["status"] == "SCENARIO_ID" or lookup["matched_by"] == "partial" or lookup["total_matches"] != 1:
+        status = ("SCENARIO_ID" if lookup["status"] == "SCENARIO_ID" else
+                  "AMBIGUOUS_BUSINESS" if lookup["matched_by"] != "partial" and lookup["total_matches"] > 1 else
+                  "UNKNOWN_BUSINESS")
+        message = (lookup["message"] if status == "SCENARIO_ID" else
+                   "Multiple registry locations share that name. Choose a business_id using its address." if status == "AMBIGUOUS_BUSINESS" else
+                   "No exact registry ID or name matched. Use find_corridor_businesses, then select a registry business_id; partial matches below are suggestions only.")
+        return {**lookup, "status": status, "requested_business": business_id,
+                "message": message, "max_hops": max_hops, "direction": direction}
+    data = _load_corridor_review()
     graph = CorridorGraph(data["nodes"], data["edges"])
-    return {**graph.trace(business_id, max_hops, direction), "provenance": data["model"],
+    root = matches[0]["business_id"]
+    return {**graph.trace(root, max_hops, direction), "status": "OK",
+            "requested_business": business_id, "root_business": matches[0],
+            "matched_by": lookup["matched_by"], "data_source": "LOCAL_REVIEW", "provenance": data["model"],
             "linked_problems": data["linked_problems"],
             "evidence_gaps": {k:data["audit"][k] for k in ("rates_status", "loans_status", "footfall_status", "grant_status", "counting_unit")}}
 
