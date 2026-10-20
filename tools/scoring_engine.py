@@ -1675,11 +1675,96 @@ def optimize_portfolio_knapsack(
 
     else:
         # Regime C: Canonical OEWD Tiered Hybrid Portfolio (3 x $10k Tier-1 + 4 x $5k Tier-2 = $50k)
-        # Re-routes non-profit clinic with >2.0q philanthropic runway to CDBG Public Services
+        # Enforces Dual-Track Tier-1 Reservation (Vector 7: Track 2 Root Suppliers + Track 1 Zero-Cascade Anchor),
+        # Spatial Walkshed Critical Mass (Vector 6: >=3 co-located storefronts per active cluster),
+        # and re-routes non-profit clinics with >=2.0q philanthropic runway to CDBG Public Services.
+        max_tier1_slots = max(1, int(budget // 10000.0) - 2) if budget >= 30000.0 else int(budget // 10000.0)
+        tier1_candidates = [
+            item for item in ranked
+            if item["eligible"]
+            and not (app_by_id[item["id"]].get("alternate_funding_routing") and float(app_by_id[item["id"]].get("runway_quarters", 0.0)) >= 2.0)
+            and "Category 1" in str(app_by_id[item["id"]].get("shock_category", ""))
+            and 0.25 <= float(app_by_id[item["id"]].get("runway_quarters", 0.0)) < 2.0
+        ]
+        track1_zero_b2b = [
+            item for item in tier1_candidates
+            if float(item["s_cascade"]) == 0.0 and float(item["s_anchor"]) >= 85.0
+        ]
+        track2_root_b2b = [
+            item for item in tier1_candidates
+            if float(item["s_cascade"]) > 0.0
+        ]
+
+        selected_tier1_ids = set()
+        if track1_zero_b2b and max_tier1_slots >= 1:
+            selected_tier1_ids.add(track1_zero_b2b[0]["id"])
+        for item in track2_root_b2b:
+            if len(selected_tier1_ids) >= max_tier1_slots:
+                break
+            selected_tier1_ids.add(item["id"])
+        for item in tier1_candidates:
+            if len(selected_tier1_ids) >= max_tier1_slots:
+                break
+            selected_tier1_ids.add(item["id"])
+
+        tier1_budget_used = sum(
+            float(app_by_id[tid].get("requested_amount", 10000.0)) for tid in selected_tier1_ids
+        )
+        tier2_slots = max(0, int((budget - tier1_budget_used) // 5000.0))
+
+        tier2_candidates = [
+            item for item in ranked
+            if item["eligible"]
+            and item["id"] not in selected_tier1_ids
+            and not (app_by_id[item["id"]].get("alternate_funding_routing") and float(app_by_id[item["id"]].get("runway_quarters", 0.0)) >= 2.0)
+            and "Category 1" not in str(app_by_id[item["id"]].get("shock_category", ""))
+            and 0.25 <= float(app_by_id[item["id"]].get("runway_quarters", 0.0)) <= 1.5
+        ]
+
+        # Count cluster membership of selected Tier-1 awardees to satisfy Vector 6 Critical Mass (>= 3)
+        cluster_counts: Dict[str, int] = {}
+        for tid in selected_tier1_ids:
+            cid = app_by_id[tid].get("cluster_id", "central_market_default")
+            cluster_counts[cid] = cluster_counts.get(cid, 0) + 1
+
+        selected_tier2_ids = set()
+        # First pass: top up any active cluster with 1 or 2 storefronts to reach >= 3 critical mass
+        for cid, cnt in list(cluster_counts.items()):
+            if 0 < cnt < 3:
+                needed = 3 - cnt
+                for item in tier2_candidates:
+                    if len(selected_tier2_ids) >= tier2_slots or needed <= 0:
+                        break
+                    if item["id"] not in selected_tier2_ids and app_by_id[item["id"]].get("cluster_id", "central_market_default") == cid:
+                        selected_tier2_ids.add(item["id"])
+                        cluster_counts[cid] = cluster_counts.get(cid, 0) + 1
+                        needed -= 1
+
+        # Second pass: fill remaining Tier-2 slots by rank without stranding a single isolated storefront in a new cluster
+        for item in tier2_candidates:
+            if len(selected_tier2_ids) >= tier2_slots:
+                break
+            if item["id"] in selected_tier2_ids:
+                continue
+            cid = app_by_id[item["id"]].get("cluster_id", "central_market_default")
+            curr_cnt = cluster_counts.get(cid, 0)
+            slots_left = tier2_slots - len(selected_tier2_ids)
+            if curr_cnt == 0 and slots_left < 3:
+                # Avoid starting a new cluster if fewer than 3 slots remain
+                continue
+            selected_tier2_ids.add(item["id"])
+            cluster_counts[cid] = curr_cnt + 1
+
+        # Fallback if any slots still remain
+        for item in tier2_candidates:
+            if len(selected_tier2_ids) >= tier2_slots:
+                break
+            if item["id"] not in selected_tier2_ids:
+                selected_tier2_ids.add(item["id"])
+
         for item in ranked:
             raw_app = app_by_id[item["id"]]
             req = float(raw_app.get("requested_amount", 10000.0))
-            is_indivisible = "Category 1" in str(raw_app.get("shock_category", ""))
             alt_routing = raw_app.get("alternate_funding_routing")
 
             if not item["eligible"]:
@@ -1698,7 +1783,7 @@ def optimize_portfolio_knapsack(
                     "realized_utility": 0.0,
                     "direct_jobs_preserved": 0,
                 })
-            elif is_indivisible and remaining_budget >= req:
+            elif item["id"] in selected_tier1_ids and remaining_budget >= req:
                 remaining_budget -= req
                 allocations.append({
                     **item,
@@ -1707,7 +1792,7 @@ def optimize_portfolio_knapsack(
                     "realized_utility": item["composite_utility_U_i"],
                     "direct_jobs_preserved": int(raw_app["direct_employees"]),
                 })
-            elif remaining_budget >= 5000.0 and float(raw_app.get("runway_quarters", 0.0)) <= 1.5:
+            elif item["id"] in selected_tier2_ids and remaining_budget >= 5000.0:
                 remaining_budget -= 5000.0
                 concave_factor = (5000.0 / req) ** 0.60
                 allocations.append({
@@ -1836,16 +1921,16 @@ def compute_sensitivity_and_robust_awardees(
     vertex_top3_sets: Dict[str, List[str]] = {}
 
     for v_name, w_vec in simplex_vertices.items():
-        ranked = evaluate_all_applicants(
-            apps,
-            w_cascade=w_vec["w_cascade"],
-            w_anchor=w_vec["w_anchor"],
-            w_people=w_vec["w_people"],
-            w_purity=w_vec["w_purity"],
+        port_v = optimize_portfolio_knapsack(
+            applicants=apps,
+            budget=budget,
+            regime="C",
+            weights=w_vec,
         )
-        eligible_ranked = [r for r in ranked if r["eligible"]]
-        vertex_top3_sets[v_name] = [r["name"] for r in eligible_ranked[:3]]
-        vertex_top7_sets[v_name] = [r["name"] for r in eligible_ranked[:7]]
+        funded_allocs_v = [a for a in port_v["allocations"] if a["award_amount"] > 0]
+        tier1_allocs_v = [a for a in funded_allocs_v if a["award_amount"] >= 10000.0]
+        vertex_top3_sets[v_name] = [a["name"] for a in tier1_allocs_v[:3]]
+        vertex_top7_sets[v_name] = [a["name"] for a in funded_allocs_v[:7]]
 
     # Intersection across all simplex vertices
     robust_tier1 = set(vertex_top3_sets["V1_Cascade_Emphasis"])

@@ -1,0 +1,106 @@
+# Google MCP Toolbox for Databases (`https://github.com/googleapis/mcp-toolbox`)
+# Run with:
+#   toolbox --tools-file tools/mcp_toolbox_bigquery.yaml --port 5000
+# Or let `tools/bigquery_connector.py` connect directly to Google's managed
+# BigQuery MCP server at `https://bigquery.googleapis.com/mcp` via ADK `MCPToolset`.
+
+sources:
+  a4i_bigquery:
+    kind: bigquery
+    project: ${GOOGLE_CLOUD_PROJECT:-qwiklabs-gcp-04-486b161c6a8e}
+    location: US
+
+tools:
+  traverse_supply_cascade_gql:
+    kind: bigquery-sql
+    source: a4i_bigquery
+    description: >-
+      Execute a 1-to-2 hop GQL Property Graph traversal (`GRAPH_TABLE(a4i_econ.LocalEconomy MATCH ...)`)
+      along `Supplies` edges to identify upstream root suppliers and quantify their downstream reach
+      and cumulative BEA purchase intensity.
+    statement: |
+      SELECT
+        business_id,
+        business_name,
+        naics4,
+        direct_buyers,
+        two_hop_exposed,
+        ROUND(total_direct_intensity, 4) AS total_direct_intensity
+      FROM GRAPH_TABLE(
+        a4i_econ.LocalEconomy
+        MATCH (seed:Business)-[e1:Supplies]->(hop1:Business)
+        OPTIONAL MATCH (hop1)-[e2:Supplies]->(hop2:Business)
+        WHERE hop2.business_id IS NULL OR hop2.business_id != seed.business_id
+        RETURN
+          seed.business_id AS business_id,
+          seed.name AS business_name,
+          seed.naics4 AS naics4,
+          COUNT(DISTINCT hop1.business_id) AS direct_buyers,
+          COUNT(DISTINCT COALESCE(hop2.business_id, hop1.business_id)) AS two_hop_exposed,
+          SUM(e1.intensity) AS total_direct_intensity
+        GROUP BY seed.business_id, seed.name, seed.naics4
+      )
+      WHERE two_hop_exposed >= 2
+      ORDER BY two_hop_exposed DESC, total_direct_intensity DESC;
+
+  traverse_anchor_closure_gql:
+    kind: bigquery-sql
+    source: a4i_bigquery
+    description: >-
+      Execute a bidirectional GQL Property Graph traversal on `a4i_econ.LocalEconomy`:
+      forward along `DrawsFootfall` (`Employer -> Business`) and backward along
+      `Supplies` (`Business <- Business`) to detect hidden upstream supplier exposure
+      when a major employer block closes.
+    statement: |
+      SELECT
+        employer_block_id,
+        employer_jobs,
+        exposed_storefront_id,
+        exposed_storefront_name,
+        ROUND(worker_share_lost, 2) AS worker_share_lost,
+        upstream_supplier_id,
+        upstream_supplier_name,
+        ROUND(supply_intensity_at_risk, 4) AS supply_intensity_at_risk
+      FROM GRAPH_TABLE(
+        a4i_econ.LocalEconomy
+        MATCH (emp:Employer)-[df:DrawsFootfall]->(shop:Business)<-[sup:Supplies]-(upstream:Business)
+        WHERE emp.jobs >= 100 AND upstream.business_id != shop.business_id
+        RETURN
+          emp.block_id AS employer_block_id,
+          emp.jobs AS employer_jobs,
+          shop.business_id AS exposed_storefront_id,
+          shop.name AS exposed_storefront_name,
+          df.worker_share AS worker_share_lost,
+          upstream.business_id AS upstream_supplier_id,
+          upstream.name AS upstream_supplier_name,
+          sup.intensity AS supply_intensity_at_risk
+      )
+      ORDER BY employer_jobs DESC, worker_share_lost DESC, supply_intensity_at_risk DESC
+      LIMIT 25;
+
+  inspect_sba_chargeoffs:
+    kind: bigquery-sql
+    source: a4i_bigquery
+    description: >-
+      Query real FOIA SBA 7(a) loan and historical charge-off records in `a4i_econ.borrowed_from`
+      joined with `a4i_econ.businesses` to validate financial fragility against ground-truth failures.
+    statement: |
+      SELECT
+        b.business_id,
+        b.name AS business_name,
+        b.naics4,
+        bf.bank_name,
+        bf.loan_amount,
+        bf.jobs_supported,
+        bf.loan_status,
+        bf.is_charged_off
+      FROM `a4i_econ.borrowed_from` bf
+      JOIN `a4i_econ.businesses` b
+        ON b.business_id = bf.business_id
+      ORDER BY bf.is_charged_off DESC, bf.loan_amount DESC;
+
+toolsets:
+  corridor_resilience_mcp:
+    - traverse_supply_cascade_gql
+    - traverse_anchor_closure_gql
+    - inspect_sba_chargeoffs

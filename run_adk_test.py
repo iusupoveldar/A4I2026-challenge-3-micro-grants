@@ -22,6 +22,8 @@ from adk_context_loader import get_context_audit_summary
 from agents.regime_orchestrator_agent import RegimeStressTestOrchestratorAgent
 from tools.bigquery_connector import (
     BigQueryGraphConnector,
+    get_bigquery_mcp_status,
+    get_gql_anchor_closure_cascade_sql,
     get_gql_multihop_cascade_sql,
     get_property_graph_ddl,
     load_corridor_applicants,
@@ -59,11 +61,16 @@ def main(argv: Optional[list[str]] = None) -> int:
         action="store_true",
         help="Print the BigQuery Property Graph DDL and GQL traversal SQL.",
     )
+    parser.add_argument(
+        "--run-gql",
+        action="store_true",
+        help="Also execute live CREATE OR REPLACE PROPERTY GRAPH and GRAPH_TABLE queries on the Enterprise reservation.",
+    )
     args = parser.parse_args(argv)
 
     print("=" * 80)
     print("A4I 2026 MICRO-GRANT ADK — END-TO-END VERIFICATION SUITE")
-    print("=" * 80)
+    print("=" * 80, flush=True)
 
     # 1. Test Module 1: Dynamic Context Loader
     audit = get_context_audit_summary()
@@ -79,11 +86,21 @@ def main(argv: Optional[list[str]] = None) -> int:
     if args.print_gql:
         print("\n[BIGQUERY GQL] Property Graph DDL:")
         print(get_property_graph_ddl(args.dataset))
-        print("\n[BIGQUERY GQL] Multi-Hop Cascade Traversal:")
+        print("\n[BIGQUERY GQL] Multi-Hop Cascade Traversal (Forward Supplies):")
         print(get_gql_multihop_cascade_sql(args.dataset))
+        print("\n[BIGQUERY GQL] Bidirectional Anchor Closure Traversal (Forward DrawsFootfall -> Backward Supplies):")
+        print(get_gql_anchor_closure_cascade_sql(args.dataset), flush=True)
+
+    mcp_info = get_bigquery_mcp_status(project_id=args.project)
+    print(f"\n[MCP TOOLSET] Google-Managed BigQuery MCP & Toolbox Integration")
+    print(f"  MCP Server Type  : {mcp_info['mcp_server_type']}")
+    print(f"  MCP Endpoint URL : {mcp_info['mcp_endpoint_url']}")
+    print(f"  Property Graph   : {mcp_info['property_graph']}")
+    print(f"  Toolbox Spec     : {mcp_info['toolbox_yaml_path']} (exists={mcp_info['toolbox_yaml_exists']})")
+    print(f"  ADK Toolset Class: {mcp_info['adk_mcp_toolset_class']}", flush=True)
 
     # 2. Load Applicants from selected data mode
-    print(f"\n[DATA CONNECTOR] Loading applicants in mode='{args.mode}'...")
+    print(f"\n[DATA CONNECTOR] Loading applicants in mode='{args.mode}'...", flush=True)
     if args.mode == "bigquery":
         connector = BigQueryGraphConnector(project_id=args.project, dataset=args.dataset)
         conn_status = connector.check_connection()
@@ -94,6 +111,28 @@ def main(argv: Optional[list[str]] = None) -> int:
         print(f"  Connected to BigQuery `{conn_status['project_id']}.{conn_status['dataset']}`:")
         for tbl_name, row_count in conn_status.get("tables", {}).items():
             print(f"    - {tbl_name:<24} : {row_count:,} rows")
+        print(
+            "  Executing BigQuery corridor join query (note: if the `a4i-graph` 0-baseline slot reservation is cold, BigQuery autoscaling 0->50 slots takes ~30-60s)...",
+            flush=True,
+        )
+        if args.run_gql:
+            try:
+                pg_status = connector.ensure_property_graph()
+                print(f"  Property Graph   : `{pg_status['graph']}` ({pg_status['status']})", flush=True)
+                gql_rows = connector.query_gql_multihop_cascade(min_exposed=2)
+                print(
+                    f"  Live GQL Cascade : {len(gql_rows)} upstream suppliers with >= 2 two-hop exposed buyers",
+                    flush=True,
+                )
+                for gr in gql_rows[:5]:
+                    print(
+                        f"    * {str(gr.get('business_name')):<32} | NAICS {gr.get('naics4')} "
+                        f"| 1-hop: {gr.get('direct_buyers'):>3} | 2-hop: {gr.get('two_hop_exposed'):>3} "
+                        f"| intensity: {gr.get('total_direct_intensity')}",
+                        flush=True,
+                    )
+            except Exception as gql_exc:  # noqa: BLE001
+                print(f"  [i] Live GQL traversal note: {gql_exc}", flush=True)
 
     applicants, source_label = load_corridor_applicants(
         mode=args.mode,
@@ -102,14 +141,14 @@ def main(argv: Optional[list[str]] = None) -> int:
         limit=args.limit,
     )
     print(f"  Source    : {source_label}")
-    print(f"  Loaded    : {len(applicants)} applicant records")
+    print(f"  Loaded    : {len(applicants)} applicant records", flush=True)
 
     # 3. Run Multi-Agent Pipeline & Deterministic Scoring Engine
-    print("\n[MODULES 2-4] Running 4-Agent Pipeline + Knapsack Optimizer + Red-Team Auditor...")
+    print("\n[MODULES 2-4] Running 4-Agent Pipeline + Knapsack Optimizer + Red-Team Auditor...", flush=True)
     orchestrator = RegimeStressTestOrchestratorAgent()
     pipeline_output = orchestrator.run_pipeline(applicants=applicants)
 
-    print("\n" + pipeline_output["red_team_compliance_report_markdown"])
+    print("\n" + pipeline_output["red_team_compliance_report_markdown"], flush=True)
     return 0
 
 

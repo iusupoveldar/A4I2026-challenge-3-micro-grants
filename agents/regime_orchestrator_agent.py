@@ -39,6 +39,12 @@ from tools.compliance_reporter import (
     format_red_team_compliance_report_markdown,
 )
 from tools.bigquery_connector import (
+    create_bigquery_mcp_toolset,
+    ensure_bigquery_property_graph,
+    execute_gql_anchor_closure_cascade,
+    execute_gql_multihop_cascade,
+    get_bigquery_mcp_status,
+    get_gql_anchor_closure_cascade_sql,
     get_gql_multihop_cascade_sql,
     get_property_graph_ddl,
     load_corridor_applicants,
@@ -138,6 +144,7 @@ class RegimeStressTestOrchestratorAgent:
         return {
             "orchestrator": self.agent_name,
             "context_audit": context_audit,
+            "mcp_and_graph_status": get_bigquery_mcp_status(),
             "supply_agent_output": supply_output,
             "runway_agent_output": runway_output,
             "spatial_agent_output": spatial_output,
@@ -155,7 +162,8 @@ def create_orchestrator_adk_pipeline(
 ) -> Any:
     """
     Constructs the root Google ADK `Agent` coordinating the 3 sub-agents and all
-    deterministic scoring, regime stress-testing, and Red-Team compliance tools.
+    deterministic scoring, regime stress-testing, Red-Team compliance tools,
+    live BigQuery Property Graph (GQL) traversal tools, and Google-managed BigQuery `MCPToolset`.
     """
     from google.adk.agents import Agent
 
@@ -169,6 +177,31 @@ def create_orchestrator_adk_pipeline(
         agent_name="regime_orchestrator_agent",
     )
 
+    agent_tools: List[Any] = [
+        compute_applicant_utility,
+        evaluate_all_applicants,
+        jaccard_similarity,
+        optimize_portfolio_knapsack,
+        run_all_regimes_comparison,
+        compute_sensitivity_and_robust_awardees,
+        evaluate_red_team_compliance,
+        format_red_team_compliance_report_markdown,
+        get_red_team_defenses,
+        get_scoring_formulas,
+        load_corridor_applicants,
+        get_property_graph_ddl,
+        get_gql_multihop_cascade_sql,
+        get_gql_anchor_closure_cascade_sql,
+        ensure_bigquery_property_graph,
+        execute_gql_multihop_cascade,
+        execute_gql_anchor_closure_cascade,
+        get_bigquery_mcp_status,
+    ]
+
+    bq_mcp_toolset = create_bigquery_mcp_toolset()
+    if bq_mcp_toolset is not None:
+        agent_tools.append(bq_mcp_toolset)
+
     return Agent(
         name="central_market_micro_grant_orchestrator",
         model=model,
@@ -178,19 +211,5 @@ def create_orchestrator_adk_pipeline(
         ),
         instruction=prompt,
         sub_agents=[supply_sub, runway_sub, spatial_sub],
-        tools=[
-            compute_applicant_utility,
-            evaluate_all_applicants,
-            jaccard_similarity,
-            optimize_portfolio_knapsack,
-            run_all_regimes_comparison,
-            compute_sensitivity_and_robust_awardees,
-            evaluate_red_team_compliance,
-            format_red_team_compliance_report_markdown,
-            get_red_team_defenses,
-            get_scoring_formulas,
-            load_corridor_applicants,
-            get_property_graph_ddl,
-            get_gql_multihop_cascade_sql,
-        ],
+        tools=agent_tools,
     )

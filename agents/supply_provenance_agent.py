@@ -12,6 +12,12 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 from ADK.adk_context_loader import build_system_prompt_with_adk_docs, get_agent_rubric
+from tools.bigquery_connector import (
+    create_bigquery_mcp_toolset,
+    ensure_bigquery_property_graph,
+    execute_gql_anchor_closure_cascade,
+    execute_gql_multihop_cascade,
+)
 from tools.scoring_engine import (
     PROVENANCE_MODELED,
     discover_unapplied_bottlenecks,
@@ -146,6 +152,20 @@ def create_supply_provenance_adk_agent(
         adk_dir=adk_dir,
         agent_name="supply_provenance_agent",
     )
+    supply_tools: List[Any] = [
+        supply_cascade_score,
+        upstream_asymmetry_and_cascade_multiplier,
+        piecewise_root_supplier_multiplier,
+        filter_naics_81_b2b_links,
+        discover_unapplied_bottlenecks,
+        ensure_bigquery_property_graph,
+        execute_gql_multihop_cascade,
+        execute_gql_anchor_closure_cascade,
+    ]
+    bq_mcp = create_bigquery_mcp_toolset()
+    if bq_mcp is not None:
+        supply_tools.append(bq_mcp)
+
     return Agent(
         name="supply_provenance_agent",
         model=model,
@@ -155,11 +175,5 @@ def create_supply_provenance_adk_agent(
             "and 1-invoice provenance verification gates."
         ),
         instruction=prompt,
-        tools=[
-            supply_cascade_score,
-            upstream_asymmetry_and_cascade_multiplier,
-            piecewise_root_supplier_multiplier,
-            filter_naics_81_b2b_links,
-            discover_unapplied_bottlenecks,
-        ],
+        tools=supply_tools,
     )
