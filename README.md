@@ -11,7 +11,7 @@ four cooperating agent modules, deterministic scoring, three funding regimes,
 sensitivity checks, and structured audit reports.
 
 **Exercised locally:** the 232-record registry review, 293-link supply model,
-30 regression and integration tests, the deterministic four-agent benchmark, and the real-source
+33 regression and integration tests, the deterministic four-agent benchmark, and the real-source
 `EVIDENCE_ONLY` workflow. The benchmark runs all three funding regimes and passes
 its ten scenario audit checks. Its financials and beneficiary totals are assumed;
 these checks do not establish real grant effectiveness.
@@ -117,6 +117,10 @@ strongest-versus-shortest paths, buyer alternatives, decay, invalid graph inputs
 the keystone band, NAICS precision, prior fallback, missing financial evidence,
 all four agent selectors, connector timeouts, business-ID/name lookup, ambiguous
 branches, scenario-ID separation and failure handling.
+With `requirements.txt` installed, startup checks also load the real ADK
+entrypoint and run a mock-model chat through the actual ADK runner. These checks
+catch import and tool-registration failures; they do not validate cloud credentials
+or replace a smoke test against the deployed Gemini/BigQuery environment.
 
 The generated Markdown review and JSON audit include source coordinates, both
 traversal directions, depth through eight hops, industry concentration and missing

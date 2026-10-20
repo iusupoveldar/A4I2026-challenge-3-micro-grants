@@ -225,7 +225,7 @@ class ConnectorIntegrationTests(unittest.TestCase):
 
     def test_timeout_and_eight_hop_query_are_both_preserved(self):
         from unittest.mock import Mock
-        connector = BigQueryGraphConnector()
+        connector = BigQueryGraphConnector(project_id="test-project")
         connector._client = Mock()
         connector._client.query.return_value.result.return_value = []
         connector.query_gql_multihop_cascade(max_hops=8, timeout=5.0)

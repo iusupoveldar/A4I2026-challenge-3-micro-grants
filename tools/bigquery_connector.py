@@ -124,288 +124,43 @@ def classify_industry_type(naics4: str) -> str:
 
 
 
-def _map_corridor_row_to_applicant(
-    row: Dict[str, Any],
-    sba_lookup: Dict[str, Dict[str, Any]],
-) -> Dict[str, Any]:
+def _map_corridor_row_to_applicant(row: Dict[str, Any], sba_lookup: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+    """Return source evidence only. Registry/SBA records do not measure cash runway.
+
+    Grant scoring requires applicant-supplied financial inputs. Do not fabricate
+    employees, invoices, ownership, resident counts or cash from an industry code.
     """
-    Map a raw BigQuery (`a4i_econ`) or local CSV (`business_sba_summary.csv`)
-    row into the exact applicant dictionary schema used by `tools/scoring_engine.py`.
-    """
-    biz_id = str(row.get("business_id", ""))
-    name = str(row.get("business_name") or row.get("name") or biz_id)
-    legal_name = str(row.get("legal_name") or name)
-    naics4 = str(row.get("naics4") or "7225")[:4]
-    naics2 = naics4[:2]
-    industry_type = str(row.get("industry_type") or classify_industry_type(naics4))
+    return {**row, "id": str(row["business_id"]),
+            "name": row.get("name") or row.get("business_name"),
+            "data_mode": "source_review", "decision_ready": False,
+            "provenance_status": "REGISTRY OBSERVED / SUPPLY MODELED",
+            "verified_invoices_count": 0,
+            "missing_decision_inputs": ["current cash and operating burn", "applicant eligibility and ownership",
+                                        "verified vendor invoices", "causal grant effectiveness"]}
 
-    sba_info = sba_lookup.get(biz_id, {})
-    has_sba = str(sba_info.get("has_sba_history", row.get("has_sba_history", "False"))).lower() == "true"
-    has_chargeoff = str(
-        sba_info.get("has_historical_charge_off", row.get("has_historical_charge_off", "False"))
-    ).lower() == "true"
-    total_borrowed = float(sba_info.get("total_borrowed_amount", row.get("total_borrowed_amount", 0.0)) or 0.0)
-    reported_jobs = int(float(sba_info.get("reported_jobs_supported", row.get("reported_jobs_supported", 0)) or 0))
-    annual_debt_service = float(
-        sba_info.get("estimated_annual_debt_service", row.get("estimated_annual_debt_service", 0.0)) or 0.0
-    )
-
-    out_deg = int(row.get("direct_buyers", 0) or 0)
-    hop2_buyers = int(row.get("hop2_buyers", 0) or 0)
-    in_deg = int(row.get("upstream_suppliers", 1) or 1)
-
-    # Sector volatility and category label by NAICS family
-    sector_vol_map = {
-        "72": (1.25, "Food Services & Drinking Places"),
-        "31": (1.15, "Artisan Food & Craft Manufacturing"),
-        "32": (1.10, "Local Print & Craft Manufacturing"),
-        "33": (1.10, "Small-Scale Maker & Fabrication"),
-        "44": (1.12, "Neighborhood Retail & Grocery"),
-        "45": (1.12, "Specialty Neighborhood Retail"),
-        "71": (1.30, "Performing Arts & Live Cultural Venue"),
-        "81": (1.08, "Repair & Neighborhood Personal Services"),
-        "62": (0.95, "Community Health & Social Assistance"),
-        "54": (0.85, "Professional & Technical Services"),
-        "51": (0.80, "Information & Media Services"),
-    }
-    sector_volatility, category_label = sector_vol_map.get(naics2, (1.05, "Corridor Commercial Enterprise"))
-
-    # Substitutability friction theta_ext (lower = harder to replace locally)
-    if naics2 in ("31", "32", "33"):
-        theta_ext = 0.20
-    elif naics4 in ("8113", "8123", "4451", "7111"):
-        theta_ext = 0.25
-    elif naics2 in ("72", "44", "45"):
-        theta_ext = 0.45
-    else:
-        theta_ext = 0.65
-
-    # Runway in quarters and monthly/quarterly burn rate
-    direct_employees = reported_jobs if reported_jobs > 0 else (10 if naics2 in ("72", "31", "44", "71") else 5)
-    burn_rate = max(6000.0, float(direct_employees) * 1200.0 + (annual_debt_service / 4.0))
-    if has_chargeoff:
-        runway_quarters = 0.15  # Historical charge-off / structural insolvency floor (< 0.25q)
-    elif has_sba and annual_debt_service > 12000:
-        runway_quarters = 0.85  # High-leverage critical triage sweet spot
-    elif naics2 in ("31", "72", "71", "44"):
-        runway_quarters = 0.95  # Active storefront triage sweet spot
-    elif naics2 in ("54", "51"):
-        runway_quarters = 2.60  # Professional services buffer
-    else:
-        runway_quarters = 1.25
-
-    liquid_cash = round(runway_quarters * burn_rate, 2)
-    annual_revenue = max(220000.0, float(direct_employees) * 62000.0, total_borrowed * 2.2)
-
-    # Stage 0 Corporate Exclusion check
-    is_excluded_corp = (
-        naics4 in EXCLUDED_CORPORATE_NAICS4
-        or direct_employees > 50
-        or any(tok in legal_name.lower() for tok in ("holdings", "global", "national", "ventures"))
-    )
-
-    ownership_type = "corporate_conglomerate" if is_excluded_corp else (
-        "nonprofit_501c3" if naics2 == "62" else "sole_or_family_local"
-    )
-    purity_res = small_business_purity_score(
-        fte_count=float(direct_employees),
-        location_count=1,
-        ownership_type=ownership_type,
-        annual_revenue=annual_revenue,
-    )
-
-    # Parent supplier weight & cascade score
-    # B2C essential grocers/markets (4451/4452) and consumer-only personal care (8121/8129)
-    # have zero B2B supply cascade (Vector 7 & Vector 8) and compete on Track 1 Anchor & Human Impact
-    if naics4 in ("4451", "4452", "8121", "8129"):
-        out_deg = 0
-        hop2_buyers = 0
-        omega_parent = 1.00
-        parent_weight = 1.00
-        cascade_score = 0.0
-    else:
-        omega_parent = piecewise_root_supplier_multiplier(out_deg, in_deg)
-        parent_weight = round(omega_parent + min(0.65, 0.08 * out_deg + 0.03 * hop2_buyers), 2)
-        direct_intensity = float(row.get("direct_intensity_sum", 0.0) or 0.0)
-        corridor_alts = int(row.get("corridor_alternatives", 1) or 1)
-        alt_redundancy_discount = 1.0 / (1.0 + 0.04 * max(0, corridor_alts - 3))
-        cascade_score = min(
-            98.0,
-            round(
-                (out_deg * 11.5 + hop2_buyers * 4.5 + direct_intensity * 120.0)
-                * (1.0 - 0.5 * theta_ext)
-                * alt_redundancy_discount,
-                1,
-            ),
-        )
-
-    # Community anchor & equity multiplier
-    poverty_rate = float(row.get("poverty_rate", 0.28) or 0.28)
-    no_vehicle_rate = float(row.get("no_vehicle_rate", 0.65) or 0.65)
-    m_equity = round(census_equity_multiplier(poverty_rate, no_vehicle_rate), 2)
-    is_sole_essential = naics4 in ("4451", "4452", "6214")
-    anchor_res = community_anchor_score(
-        transit_gravity=92.0 if is_sole_essential else (75.0 if naics2 in ("44", "72", "71", "62") else 45.0),
-        pedestrian_gravity=90.0 if is_sole_essential else (72.0 if naics2 in ("44", "72", "71", "81") else 40.0),
-        is_sole_essential_within_400m=is_sole_essential,
-        equity_multiplier=1.0,
-    )
-
-    worker_footfall = float(row.get("worker_footfall_jobs", 140.0) or 140.0)
-    daily_commuters = int(max(30.0, round(worker_footfall)) + (90 if is_sole_essential else 0))
-    network_workers = int(out_deg * 5 + hop2_buyers * 2)
-    vulnerable_residents = int(165 if is_sole_essential else (55 if naics2 in ("72", "44", "81", "62") else 20))
-
-    lat = float(row.get("latitude") or 37.7785)
-    lon = float(row.get("longitude") or -122.4145)
-    cluster_id = "mid_market_7th_8th" if lon >= -122.4150 else "mid_market_9th_10th"
-    cluster_name = (
-        "Mid-Market & 7th/8th Street Walkshed Cluster"
-        if cluster_id == "mid_market_7th_8th"
-        else "9th & 10th Street Mission/Market Cluster"
-    )
-    cluster_vacancy = 0.38 if cluster_id == "mid_market_7th_8th" else 0.32
-
-    is_true_root_manufacturer_or_anchor = (
-        is_sole_essential
-        or naics2 in ("31", "32", "33")
-        or (naics4 in ("8113", "8123", "4244") and out_deg >= 3)
-    )
-    shock_category = (
-        "Category 1: Indivisible Capital Cliff"
-        if is_true_root_manufacturer_or_anchor
-        else "Category 2: Flexible Working Capital Bridge"
-    )
-
-    downstream_ids = row.get("downstream_ids") or [f"dep_{biz_id}_{k}" for k in range(out_deg)]
-    upstream_ids = row.get("upstream_ids") or [f"sup_{biz_id}_{k}" for k in range(in_deg)]
-
-    return {
-        "id": biz_id,
-        "name": name,
-        "legal_name": legal_name,
-        "category": category_label,
-        "industry_type": industry_type,
-        "address": str(row.get("address") or "Central Market Corridor, SF"),
-        "lat": lat,
-        "lon": lon,
-        "cluster_id": cluster_id,
-        "cluster_name": cluster_name,
-        "cluster_vacancy_rate": cluster_vacancy,
-        "naics": naics4,
-        "requested_amount": 10000.0,
-        "liquid_cash": liquid_cash,
-        "burn_rate": round(burn_rate, 2),
-        "runway_quarters": runway_quarters,
-        "sector_volatility": sector_volatility,
-        "direct_employees": direct_employees,
-        "network_workers": network_workers,
-        "daily_commuters": daily_commuters,
-        "vulnerable_residents": vulnerable_residents,
-        "small_biz_purity": round(purity_res["p_pure"], 1),
-        "location_count": 1,
-        "ownership_type": ownership_type,
-        "annual_revenue": round(annual_revenue, 2),
-        "out_degree": out_deg,
-        "in_degree": in_deg,
-        "substitutability_theta": theta_ext,
-        "parent_supplier_weight": parent_weight,
-        "cascade_score": cascade_score,
-        "anchor_score": round(anchor_res["base_anchor_score"], 1),
-        "equity_multiplier": m_equity,
-        "tract_id": "06075012502",
-        "tract_poverty_rate": poverty_rate,
-        "tract_zero_vehicle_share": no_vehicle_rate,
-        "shock_category": shock_category,
-        "shock_description": (
-            "SBA-verified equipment/facility capital stabilization"
-            if has_sba
-            else "Corridor operating & supplier retention stabilization"
-        ),
-        "provenance_status": PROVENANCE_VERIFIED if has_sba else PROVENANCE_MODELED,
-        "verified_invoices_count": int(sba_info.get("loan_count", 1) or 1) if has_sba else 0,
-        "downstream_dependents": list(downstream_ids),
-        "upstream_suppliers": list(upstream_ids),
-        "eligible": (not is_excluded_corp) and (not has_chargeoff),
-        "storefront_certified": not is_excluded_corp,
-        "institutional_ownership_pct": 100.0 if is_excluded_corp else 0.0,
-        "has_sba_history": has_sba,
-        "has_historical_charge_off": has_chargeoff,
-        "total_borrowed_amount": total_borrowed,
-        "data_source": str(row.get("data_source", "LOCAL_CSV")),
-    }
 
 
 # ============================================================================
 # LOCAL CSV SNAPSHOT LOADER (232 REAL CENTRAL MARKET BUSINESSES)
 # ============================================================================
 
-def load_applicants_from_local_csv(
-    limit: Optional[int] = None,
-    only_sba_or_suppliers: bool = False,
-) -> List[Dict[str, Any]]:
-    """
-    Load the 232 real Central Market corridor businesses directly from
-    `data/custom_bq_upload/business_sba_summary.csv`, `borrowed_from.csv`, and
-    `data/bea_direct_requirements.csv` without needing BigQuery credentials.
-    """
-    if not LOCAL_SBA_SUMMARY_CSV.exists():
-        return [copy.deepcopy(a) for a in CANONICAL_CENTRAL_MARKET_APPLICANTS]
-
-    rows: List[Dict[str, Any]] = []
-    with LOCAL_SBA_SUMMARY_CSV.open("r", encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            rows.append(r)
-
-    # Load BEA direct requirements to infer industry-level supply reach within the corridor
-    bea_by_supplier: Dict[str, List[Tuple[str, float]]] = {}
-    if LOCAL_BEA_CSV.exists():
-        with LOCAL_BEA_CSV.open("r", encoding="utf-8") as fh:
-            for r in csv.DictReader(fh):
-                coeff = float(r.get("coefficient", 0.0) or 0.0)
-                if coeff >= 0.005:
-                    sup = str(r.get("supplier_naics4", ""))[:3]
-                    buy = str(r.get("buyer_naics4", ""))[:3]
-                    bea_by_supplier.setdefault(sup, []).append((buy, coeff))
-
-    naics3_counts: Dict[str, int] = {}
-    for r in rows:
-        n3 = str(r.get("naics4", ""))[:3]
-        if n3:
-            naics3_counts[n3] = naics3_counts.get(n3, 0) + 1
-
-    sba_lookup = {str(r.get("business_id", "")): r for r in rows}
-
-    enriched_rows: List[Dict[str, Any]] = []
-    for idx, r in enumerate(rows):
-        n3 = str(r.get("naics4", ""))[:3]
-        sup_pairs = bea_by_supplier.get(n3, [])
-        direct_buyers = 0
-        direct_intensity = 0.0
-        for buy_n3, coeff in sup_pairs[:5]:
-            if buy_n3 in naics3_counts:
-                matched_buyers = min(naics3_counts[buy_n3], 2)
-                direct_buyers += matched_buyers
-                direct_intensity += coeff * matched_buyers
-        hop2_buyers = min(direct_buyers * 2, 10) if direct_buyers >= 2 else 0
-
-        raw_enriched = dict(r)
-        raw_enriched["direct_buyers"] = direct_buyers
-        raw_enriched["direct_intensity_sum"] = round(direct_intensity, 4)
-        raw_enriched["hop2_buyers"] = hop2_buyers
-        raw_enriched["upstream_suppliers"] = 2 if n3 in ("722", "445", "711", "812") else 1
-        # Assign walkable Central Market coordinates across the 2 sub-clusters
-        raw_enriched["latitude"] = 37.7780 + (idx % 12) * 0.0003
-        raw_enriched["longitude"] = -122.4140 - (idx % 2) * 0.0022
-        raw_enriched["data_source"] = "LOCAL_CSV_232_CENTRAL_MARKET"
-        enriched_rows.append(raw_enriched)
-
+def load_applicants_from_local_csv(limit: Optional[int] = None,
+                                   only_sba_or_suppliers: bool = False) -> List[Dict[str, Any]]:
+    """Load the reviewed registry cohort, without synthetic locations or reach."""
+    import json
+    path = REPO_ROOT / "data/task_2_3_review.json"
+    if not path.exists():
+        raise FileNotFoundError("Run python3 scripts/review_tasks_2_3.py to build the source review")
+    data = json.loads(path.read_text())
+    by_id = {r["business_id"]: r for r in data["ranking"]}
+    rows = [{**n, **by_id[n["business_id"]], "data_source": "LOCAL_REVIEW:registry_BEA_0.015_500m"} for n in data["nodes"]]
     if only_sba_or_suppliers:
         suppliers = {e["supplier_id"] for e in data["edges"]}
         rows = [r for r in rows if r["business_id"] in suppliers]
     if limit is not None:
         rows = rows[:limit]
     return [_map_corridor_row_to_applicant(r, {}) for r in rows]
+
 
 
 # ============================================================================
@@ -578,350 +333,46 @@ def load_corridor_applicants(
 
 
 def trace_applicant_multihop_paths_and_compare(
-    primary_business: str = "Sour Flour",
-    comparison_business: str = "Cumaica Coffee",
-    hypothetical_grant_usd: float = 8000.0,
-    project_id: Optional[str] = None,
-    dataset: str = "a4i_econ",
+    primary_business: str = "Sour Flour", comparison_business: str = "Cumaica Coffee",
+    hypothetical_grant_usd: float = 8000.0, project_id: Optional[str] = None,
+    dataset: str = "a4i_econ", mode: str = "auto", max_hops: int = 2,
 ) -> Dict[str, Any]:
+    """Compare named source paths, or explicitly calculate scenario grant effects.
+
+    Source comparisons do not attach fixture finances or hardcoded cloud hub
+    statistics to registered businesses. Unknown/ambiguous names require an ID.
     """
-    Answers the 7 Grant Officer conversational questions from `README.md` by
-    combining live multi-hop GQL path traces (`Seed -> Hop 1 -> Hop 2` with named
-    businesses, BEA `intensity`, and `metres`) with downstream fragility checks,
-    un-applied upstream bottleneck discovery, explicit grant probability assumptions
-    (e.g., what $8,000 vs. $10,000 actually changes), Census tract demographics,
-    and head-to-head applicant comparison.
+    from tools.scoring_engine import compute_applicant_utility
+    get_gql_multihop_cascade_sql(dataset, max_hops=max_hops)
+    applicants, source = load_corridor_applicants(mode, project_id, dataset)
 
-    Args:
-        primary_business: Name or ID of the primary applicant (default `'Sour Flour'`).
-        comparison_business: Name or ID of the runner-up to compare against (default `'Cumaica Coffee'`).
-        hypothetical_grant_usd: Grant amount to test against Indivisible Capital Cliff assumptions (default `8000.0`).
-        project_id: Optional GCP project ID.
-        dataset: BigQuery dataset containing `LocalEconomy` (default `'a4i_econ'`).
-    """
-    from tools.scoring_engine import (
-        compute_applicant_utility,
-        discover_unapplied_bottlenecks,
-        jaccard_similarity,
-        logistic_survival_probability,
-        marginal_survival_lift,
-    )
+    def resolve(query):
+        exact = [a for a in applicants if a["id"].lower() == query.strip().lower()]
+        matches = exact or [a for a in applicants if a["name"].lower() == query.strip().lower()]
+        if len(matches) != 1:
+            raise ValueError(f"Business {query!r} is unknown or ambiguous; specify its registry ID")
+        return matches[0]
 
-    canonical_by_name = {a["name"].lower(): a for a in CANONICAL_CENTRAL_MARKET_APPLICANTS}
-    canonical_by_id = {a["id"].lower(): a for a in CANONICAL_CENTRAL_MARKET_APPLICANTS}
+    selected = [resolve(primary_business), resolve(comparison_business)]
+    if mode == "canonical":
+        return {"status": "ILLUSTRATIVE_BENCHMARK", "data_source": source,
+                "gql_execution_mode": "NOT_EXECUTED (scenario comparison)",
+                "hypothetical_grant_usd": hypothetical_grant_usd,
+                "comparison": [{"id": a["id"], "name": a["name"],
+                                "scenario_result": compute_applicant_utility(a, grant_amount=hypothetical_grant_usd)}
+                               for a in selected]}
+    result = {"status": "EVIDENCE_ONLY", "data_source": source,
+              "selected_businesses": [{k: a.get(k) for k in ("id", "name", "address", "naics4")} for a in selected],
+              "message": "Modeled exposure is not a closure probability, verified fragility or jobs saved. Current grant-decision evidence is pending."}
+    if source.startswith("LOCAL_REVIEW"):
+        graph = _load_local_review_graph()
+        result.update(gql_execution_mode="LOCAL_REVIEW_BFS (not executed GQL)",
+                      comparison=[_named_local_trace(graph, a["id"], max_hops) for a in selected])
+    else:
+        result["traversal"] = traverse_corridor_graph_gql(
+            min_exposed=0, project_id=project_id, dataset=dataset, max_hops=max_hops)
+    return result
 
-    def _resolve_app(query_str: str, fallback_idx: int) -> Dict[str, Any]:
-        q = query_str.strip().lower()
-        if q in canonical_by_id:
-            return canonical_by_id[q]
-        if q in canonical_by_name:
-            return canonical_by_name[q]
-        for app in CANONICAL_CENTRAL_MARKET_APPLICANTS:
-            if q in app["name"].lower() or q in app["id"].lower():
-                return app
-        return CANONICAL_CENTRAL_MARKET_APPLICANTS[fallback_idx]
-
-    app_a = _resolve_app(primary_business, 0)
-    app_b = _resolve_app(comparison_business, 1)
-
-    score_a = compute_applicant_utility(app_a, grant_amount=10000.0)
-    score_b = compute_applicant_utility(app_b, grant_amount=10000.0)
-
-    # Query live named 2-hop GQL paths from BigQuery LocalEconomy if available
-    connector = BigQueryGraphConnector(project_id=project_id, dataset=dataset)
-    live_paths_a: List[Dict[str, Any]] = []
-    live_paths_b: List[Dict[str, Any]] = []
-    direct_cross_edge: Optional[Dict[str, Any]] = None
-    gql_mode = "LIVE_BIGQUERY_GQL"
-
-    try:
-        client = connector._get_client()
-        name_a_sql = app_a["name"].replace("'", "\\'")
-        name_b_sql = app_b["name"].replace("'", "\\'")
-        path_sql = f"""
-        SELECT
-          seed_name,
-          hop1_name,
-          hop1_naics,
-          ROUND(e1_int, 4) AS hop1_intensity,
-          ROUND(e1_m, 1) AS hop1_metres,
-          hop2_name,
-          hop2_naics,
-          ROUND(e2_int, 4) AS hop2_intensity,
-          ROUND(e1_int * e2_int, 5) AS compounded_2hop_intensity,
-          ROUND(e2_m, 1) AS hop2_metres
-        FROM GRAPH_TABLE(
-          {connector.dataset}.LocalEconomy
-          MATCH (seed:Business WHERE seed.name IN ('{name_a_sql}', '{name_b_sql}'))
-                -[e1:Supplies]->(hop1:Business)
-                -[e2:Supplies]->(hop2:Business)
-          WHERE hop2.business_id != seed.business_id
-          RETURN
-            seed.name AS seed_name,
-            hop1.name AS hop1_name,
-            hop1.naics4 AS hop1_naics,
-            e1.intensity AS e1_int,
-            e1.metres AS e1_m,
-            hop2.name AS hop2_name,
-            hop2.naics4 AS hop2_naics,
-            e2.intensity AS e2_int,
-            e2.metres AS e2_m
-        )
-        ORDER BY e1_int DESC, e1_m ASC, e2_int DESC
-        LIMIT 30
-        """
-        for r in client.query(path_sql).result():
-            item = dict(r.items())
-            if item["seed_name"].lower() == app_a["name"].lower():
-                if len(live_paths_a) < 8:
-                    live_paths_a.append(item)
-                if item["hop1_name"].lower() == app_b["name"].lower() and direct_cross_edge is None:
-                    direct_cross_edge = item
-            elif item["seed_name"].lower() == app_b["name"].lower():
-                if len(live_paths_b) < 8:
-                    live_paths_b.append(item)
-    except Exception as exc:  # noqa: BLE001
-        gql_mode = f"OFFLINE_FALLBACK ({exc})"
-
-    if not live_paths_a:
-        live_paths_a = [
-            {
-                "seed_name": "Sour Flour",
-                "hop1_name": "Cumaica Coffee",
-                "hop1_naics": "3119",
-                "hop1_intensity": 0.2080,
-                "hop1_metres": 436.5,
-                "hop2_name": "Civic Center Cafe & Deli",
-                "hop2_naics": "4451",
-                "hop2_intensity": 0.0117,
-                "compounded_2hop_intensity": 0.00243,
-                "hop2_metres": 341.7,
-            },
-            {
-                "seed_name": "Sour Flour",
-                "hop1_name": "Sumfer Market Sf LLC",
-                "hop1_naics": "7225",
-                "hop1_intensity": 0.0961,
-                "hop1_metres": 93.8,
-                "hop2_name": "Bei San Francisco",
-                "hop2_naics": "7211",
-                "hop2_intensity": 0.0356,
-                "compounded_2hop_intensity": 0.00342,
-                "hop2_metres": 149.0,
-            },
-            {
-                "seed_name": "Sour Flour",
-                "hop1_name": "Little Caesars",
-                "hop1_naics": "7225",
-                "hop1_intensity": 0.0961,
-                "hop1_metres": 93.8,
-                "hop2_name": "Richmond Area Multi Serv Inc",
-                "hop2_naics": "6214",
-                "hop2_intensity": 0.0248,
-                "compounded_2hop_intensity": 0.00238,
-                "hop2_metres": 242.7,
-            },
-        ]
-        direct_cross_edge = live_paths_a[0]
-
-    if not live_paths_b:
-        live_paths_b = [
-            {
-                "seed_name": "Cumaica Coffee",
-                "hop1_name": "Canteen @ Wework 1460 Mission Street",
-                "hop1_naics": "7223",
-                "hop1_intensity": 0.0961,
-                "hop1_metres": 100.6,
-                "hop2_name": "Calworks/Fu Yau Project",
-                "hop2_naics": "6214",
-                "hop2_intensity": 0.0248,
-                "compounded_2hop_intensity": 0.00238,
-                "hop2_metres": 130.0,
-            },
-            {
-                "seed_name": "Cumaica Coffee",
-                "hop1_name": "Canteen @ Wework 1460 Mission Street",
-                "hop1_naics": "7223",
-                "hop1_intensity": 0.0961,
-                "hop1_metres": 100.6,
-                "hop2_name": "Washburn Housing Corporation",
-                "hop2_naics": "6242",
-                "hop2_intensity": 0.0161,
-                "compounded_2hop_intensity": 0.00155,
-                "hop2_metres": 130.0,
-            },
-        ]
-
-    # Check fragility of downstream applicants in the 11-applicant queue
-    downstream_fragility_report = []
-    for dep_id in app_a.get("downstream_dependents", []):
-        dep_app = canonical_by_id.get(str(dep_id).lower())
-        if dep_app:
-            p_base = logistic_survival_probability(dep_app["runway_quarters"])
-            downstream_fragility_report.append(
-                {
-                    "id": dep_app["id"],
-                    "name": dep_app["name"],
-                    "address": dep_app["address"],
-                    "naics4": dep_app["naics"],
-                    "runway_quarters": dep_app["runway_quarters"],
-                    "baseline_12m_survival_prob": round(p_base, 3),
-                    "closure_risk_without_grant": round(1.0 - p_base, 3),
-                    "is_already_fragile": dep_app["runway_quarters"] <= 1.2,
-                    "direct_employees": dep_app["direct_employees"],
-                    "provenance": dep_app["provenance_status"],
-                }
-            )
-
-    # Check shared customer overlap between A and B
-    deps_a = list(app_a.get("downstream_dependents", []))
-    deps_b = list(app_b.get("downstream_dependents", []))
-    shared_ids = sorted(set(deps_a).intersection(set(deps_b)))
-    shared_names = [
-        canonical_by_id[sid]["name"] if sid in canonical_by_id else sid for sid in shared_ids
-    ]
-    overlap_j = round(jaccard_similarity(deps_a, deps_b), 4)
-
-    # Evaluate hypothetical grant (e.g., $8,000 vs $10,000) and state explicit assumptions
-    p_base_a = logistic_survival_probability(app_a["runway_quarters"])
-    delta_p_hyp = marginal_survival_lift(
-        runway_quarters=app_a["runway_quarters"],
-        grant_amount=hypothetical_grant_usd,
-        quarterly_burn_rate=app_a["burn_rate"],
-    )
-    delta_p_10k = marginal_survival_lift(
-        runway_quarters=app_a["runway_quarters"],
-        grant_amount=10000.0,
-        quarterly_burn_rate=app_a["burn_rate"],
-    )
-    is_cat1_cliff = "Category 1" in str(app_a.get("shock_category", ""))
-
-    # Un-applied upstream corridor bottlenecks
-    unapplied_bottlenecks = discover_unapplied_bottlenecks(CANONICAL_CENTRAL_MARKET_APPLICANTS)
-
-    return {
-        "gql_execution_mode": gql_mode,
-        "q1_unfunded_closure_damage": {
-            "most_damaging_closure": f"{app_a['name']} ({app_a['id']}, {app_a['address']}, NAICS {app_a['naics']})",
-            "why_not_raw_centrality_hubs": (
-                "In live BigQuery GQL (`a4i_econ.LocalEconomy`), corporate tech/biotech nodes like "
-                "Tradespace (NAICS 5182, 194 2-hop exposed), Ossium Health (NAICS 3254, 150 2-hop exposed), "
-                "and Wpengine, Inc. (NAICS 5415, 123 2-hop exposed) have more raw edges, but they are "
-                "well-capitalized corporate hubs (Stage 0 Excluded, E_corp = 0, marginal survival lift ~ 0) "
-                "that will not close without a $10,000 city grant. Meanwhile, Market Street Legacy Print Shop "
-                "(cm_08, r_i = 0.15q) has a historical SBA charge-off and is structurally insolvent."
-            ),
-            "live_gql_reach_summary": {
-                "direct_hop1_buyers_in_graph": 84,
-                "two_hop_exposed_businesses_in_graph": 145,
-                "total_hop1_bea_intensity": 38.5977,
-                "total_hop2_compounded_intensity": 1.6753,
-                "avg_hop1_walking_distance_metres": 439.1,
-            },
-            "applicant_cohort_cascade_damage": {
-                "direct_corridor_applicant_buyers_disrupted": app_a["out_degree"],
-                "direct_jobs_lost": app_a["direct_employees"],
-                "downstream_network_jobs_exposed": app_a["network_workers"],
-                "total_corridor_jobs_at_risk": app_a["direct_employees"] + app_a["network_workers"],
-                "daily_commuters_impacted": app_a["daily_commuters"],
-                "runway_quarters": app_a["runway_quarters"],
-                "baseline_12m_closure_probability_without_grant": round(1.0 - p_base_a, 4),
-                "composite_utility_score_u_i": score_a["composite_utility_U_i"],
-            },
-        },
-        "q2_why_this_one_and_not_runner_up": {
-            "primary_applicant": f"{app_a['name']} ({app_a['id']}, {app_a['address']}, NAICS {app_a['naics']})",
-            "runner_up_applicant": f"{app_b['name']} ({app_b['id']}, {app_b['address']}, NAICS {app_b['naics']})",
-            "direct_graph_dependency_between_them": (
-                f"In `a4i_econ.LocalEconomy`, {app_a['name']} (NAICS 3118) directly supplies "
-                f"{app_b['name']} (NAICS 3119) at Hop 1 (`intensity = 0.2080`, `436.5 metres`), meaning "
-                f"{app_a['name']} is upstream of {app_b['name']} itself!"
-                if direct_cross_edge
-                else f"{app_a['name']} sits higher in the trophic supply chain (in_degree={app_a['in_degree']}) than {app_b['name']} (in_degree={app_b['in_degree']})."
-            ),
-            "named_2hop_gql_paths_primary": live_paths_a,
-            "named_2hop_gql_paths_runner_up": live_paths_b,
-            "head_to_head_structural_differences": {
-                "1_trophic_root_status_and_reach": (
-                    f"{app_a['name']} has 6 direct cohort buyers (out_degree=6, in_degree=1 pure root supplier, "
-                    f"avg Hop-1 distance 439.1m, mu_i={score_a['parent_multiplier_mu_i']}) vs. {app_b['name']}'s "
-                    f"5 direct cohort buyers (out_degree=5, in_degree=2 intermediate supplier, avg Hop-1 distance "
-                    f"596.4m, mu_i={score_b['parent_multiplier_mu_i']})."
-                ),
-                "2_substitutability_friction_theta_ext": (
-                    f"{app_a['name']} has lower external substitutability (theta_ext={app_a['substitutability_theta']} — "
-                    f"fresh daily par-baked artisan bread cannot be substituted from outside the corridor without "
-                    f"immediate menu/margin loss) vs. {app_b['name']} (theta_ext={app_b['substitutability_theta']} — "
-                    f"roasted coffee beans have longer shelf storage). This yields S_cascade={score_a['s_cascade']} vs. {score_b['s_cascade']}."
-                ),
-                "3_runway_urgency_and_survival_lift": (
-                    f"{app_a['name']} has only {app_a['runway_quarters']} quarters of cash remaining "
-                    f"(baseline survival P={p_base_a:.1%}, $10k survival lift Delta_P=+{score_a['marginal_survival_lift_delta_p']:.1%}, "
-                    f"LiftFactor={score_a['lift_factor']:.4f}) vs. {app_b['name']}'s {app_b['runway_quarters']} quarters "
-                    f"(Delta_P=+{score_b['marginal_survival_lift_delta_p']:.1%}, LiftFactor={score_b['lift_factor']:.4f})."
-                ),
-                "4_shared_buyer_overlap_and_portfolio_outcome": (
-                    f"They share {len(shared_ids)} downstream buyers ({', '.join(shared_names)}), giving a Jaccard overlap "
-                    f"of J={overlap_j:.3f} (submodular overlap penalty -$19.92). Under Regime C ($50,000 budget), "
-                    f"BOTH {app_a['name']} and {app_b['name']} receive full $10,000 Tier-1 grants because together "
-                    f"they co-anchor the entire Central Market food/hospitality ecosystem."
-                ),
-            },
-        },
-        "q3_downstream_fragility_and_sba_history": {
-            "question": f"Does {app_a['name']} have downstream buyers that are already fragile?",
-            "named_downstream_buyers_in_cohort": downstream_fragility_report,
-            "sba_charge_off_ground_truth_note": (
-                "In `a4i_econ.borrowed_from` / `corridor_loan_outcomes`, historical SBA 7(a) charge-offs "
-                "confirm that under-capitalized corridor food/print borrowers with high debt service and "
-                "<0.25q runway actually failed. Among downstream buyers of Sour Flour, Chico's Pizza (r_i=0.7q), "
-                "G.Rabbit (r_i=0.9q), Monarch Beverage Catering (r_i=1.0q), and The Pawn Shop (r_i=1.2q) are "
-                "all in the fragile triage window (0.5q-1.2q) and receive $5,000 Tier-2 bridge grants in Regime C."
-            ),
-        },
-        "q4_unapplied_bottlenecks_who_did_not_apply": {
-            "question": "Nobody at the far end / upstream of that chain applied. Should they have?",
-            "unapplied_corridor_bottlenecks": unapplied_bottlenecks,
-        },
-        "q5_what_does_grant_amount_actually_change_assumptions": {
-            "hypothetical_grant_tested_usd": hypothetical_grant_usd,
-            "explicit_modeling_assumptions": (
-                "Data alone cannot prove what a grant changes; we state two explicit mathematical assumptions: "
-                "(1) Logistic Survival Shift: A grant G extends cash runway by Delta_r = G / BurnRate_quarterly, "
-                "shifting 12-month survival probability along P(r) = 1 / (1 + exp(-2.5 * (r - 0.75))). "
-                f"For {app_a['name']} (burn rate ${app_a['burn_rate']:,.0f}/quarter, r_i={app_a['runway_quarters']}q), "
-                f"an ${hypothetical_grant_usd:,.0f} grant adds +{hypothetical_grant_usd / app_a['burn_rate']:.2f} quarters "
-                f"of runway (continuous Delta_P = +{delta_p_hyp:.1%}), whereas a $10,000 grant adds "
-                f"+{10000.0 / app_a['burn_rate']:.2f} quarters (Delta_P = +{delta_p_10k:.1%}). "
-                "(2) Indivisible Capital Cliff Step-Function (Vector 5): Because Sour Flour faces a Category 1 "
-                "Indivisible Capital Cliff ($10,000 commercial deck oven replacement), an $8,000 partial grant "
-                "leaves a $2,000 unfunded equipment gap—unless paired with a verified $2,000 vendor/landlord match, "
-                "an $8,000 award fails to clear the $10,000 threshold and risks 100% equipment failure."
-            ),
-        },
-        "q6_whose_neighborhood_does_this_help": {
-            "tract_id": app_a["tract_id"],
-            "corridor": "Central Market (7 Census Tracts, SF)",
-            "tract_poverty_rate": f"{app_a['tract_poverty_rate']:.1%} (corridor average ~22-28%)",
-            "tract_zero_vehicle_household_share": f"{app_a['tract_zero_vehicle_share']:.1%}",
-            "census_equity_multiplier_m_equity": score_a["equity_multiplier_m_equity"],
-            "human_impact_summary": (
-                f"Located in Census Tract {app_a['tract_id']} ({app_a['tract_poverty_rate']:.0%} poverty rate, "
-                f"{app_a['tract_zero_vehicle_share']:.0%} zero-vehicle households), protecting {app_a['direct_employees']} "
-                f"direct jobs, {app_a['network_workers']} downstream network workers, {app_a['daily_commuters']} daily "
-                f"foot-traffic commuters, and {app_a['vulnerable_residents']} low-mobility residents."
-            ),
-        },
-        "honest_provenance_and_limitations_statement": (
-            "HONEST PROVENANCE DISCLOSURE: Businesses, addresses, NAICS codes (SF Data PDDL), ACS Census tract "
-            "demographics, and SBA 7(a) loan & charge-off records (`borrowed_from`) are real measured government data. "
-            "However, two of the three graph edge types—`Supplies` (BEA national industry purchase coefficients "
-            "assigned by walking distance) and `DrawsFootfall` (Census LEHD LODES block worker counts allocated "
-            "across nearby storefronts)—are MODELED, and per-business employment counts are not published in public "
-            "US registries. Therefore, modeled edges are discounted (0.65x) and any award relying >30% on B2B cascade "
-            "must pass a mandatory 1-Invoice Pre-Disbursement Gate before funds are released."
-        ),
-    }
 
 
 def trace_multihop_consequence_chains(
@@ -1081,4 +532,153 @@ def trace_multihop_consequence_chains(
         },
     }
 
+
+def get_gql_shortest_path_trace_sql(dataset: str = "a4i_econ", limit: int = 40,
+                                   max_hops: int = 2) -> str:
+    """Serialize actual shortest supply paths on the reviewed cloud graph."""
+    # Reuse the identifier and hop validation of the reach query.
+    get_gql_multihop_cascade_sql(dataset, max_hops=max_hops)
+    if not isinstance(limit, int) or limit < 1:
+        raise ValueError("limit must be a positive integer")
+    return f"""
+SELECT * FROM GRAPH_TABLE(
+  {dataset}.LocalEconomy
+  MATCH p = ANY SHORTEST (seed:Business)-[:Supplies]->{{1,{max_hops}}}(exposed:Business)
+  WHERE seed.business_id != exposed.business_id
+  RETURN seed.business_id AS seed_id, seed.name AS seed_name,
+         seed.naics4 AS seed_naics4, exposed.business_id AS exposed_id,
+         exposed.name AS exposed_name, exposed.naics4 AS exposed_naics4,
+         TO_JSON(p) AS supply_path
+)
+ORDER BY seed_id, exposed_id
+LIMIT {limit}
+""".strip()
+
+
+
+def ensure_bigquery_property_graph(project_id: Optional[str] = None,
+                                  dataset: str = "a4i_econ") -> Dict[str, Any]:
+    """Install the reviewed graph, or return its DDL with an explicit execution error."""
+    connector = BigQueryGraphConnector(project_id=project_id, dataset=dataset)
+    try:
+        return connector.ensure_property_graph()
+    except Exception as exc:
+        return {"status": "DDL_NOT_EXECUTED", "error": str(exc),
+                "graph": f"{connector.project_id}.{connector.dataset}.LocalEconomy",
+                "ddl": get_property_graph_ddl(connector.dataset)}
+
+
+
+def _load_local_review_graph():
+    import json
+    from tools.resilience_analysis import CorridorGraph
+    review = json.loads((REPO_ROOT / "data/task_2_3_review.json").read_text())
+    return CorridorGraph(review["nodes"], review["edges"])
+
+
+
+def _named_local_trace(graph, business_id: str, max_hops: int) -> Dict[str, Any]:
+    trace = graph.trace(business_id, max_hops=max_hops)
+    for endpoint in trace["endpoints"]:
+        endpoint["named_path"] = [
+            {k: graph.nodes[bid].get(k) for k in ("business_id", "name", "address", "naics4")}
+            for bid in endpoint["path"]
+        ]
+    return trace
+
+
+
+def _build_local_fallback_gql_rows(min_exposed: int = 2, max_hops: int = 2) -> List[Dict[str, Any]]:
+    """Compatibility name: explicitly local BFS results, never claimed as executed GQL."""
+    get_gql_multihop_cascade_sql(min_exposed=min_exposed, max_hops=max_hops)
+    graph = _load_local_review_graph()
+    rows = []
+    for bid, node in graph.nodes.items():
+        trace = graph.trace(bid, max_hops=max_hops)
+        if trace["reach"] < min_exposed:
+            continue
+        rows.append({"business_id": bid, "business_name": node["name"],
+                     "naics4": node["naics4"], "direct_buyers": len(graph.adj[bid]),
+                     "exposed_businesses": trace["reach"],
+                     "two_hop_exposed": graph.trace(bid, max_hops=2)["reach"],
+                     "total_direct_intensity": sum(e["intensity"] for e in graph.adj[bid]),
+                     "weighted_exposure": trace["weighted_exposure"], "max_hops": max_hops,
+                     "data_source": "LOCAL_REVIEW:registry_BEA_0.015_500m"})
+    return sorted(rows, key=lambda row: (-row["exposed_businesses"], row["business_id"]))
+
+
+
+def traverse_corridor_graph_gql(min_exposed: int = 2, include_shortest_paths: bool = True,
+                                project_id: Optional[str] = None, dataset: str = "a4i_econ",
+                                max_hops: int = 2, mode: str = "bigquery") -> Dict[str, Any]:
+    """Run live GQL, or explicitly request local reviewed BFS using mode=local_csv.
+
+    Failed cloud queries return no fabricated paths. Local counts use different
+    graph parameters and are never substituted for a live GQL result.
+    """
+    connector = BigQueryGraphConnector(project_id=project_id, dataset=dataset)
+    sql = get_gql_multihop_cascade_sql(dataset, min_exposed=min_exposed, max_hops=max_hops)
+    shortest_sql = get_gql_shortest_path_trace_sql(dataset, limit=25, max_hops=max_hops)
+    if mode not in ("bigquery", "local_csv"):
+        raise ValueError("mode must be bigquery or local_csv")
+    result = {"property_graph": f"{connector.project_id}.{dataset}.LocalEconomy" if mode == "bigquery" else None,
+              "gql_multihop_query": sql,
+              "gql_shortest_path_query": shortest_sql if include_shortest_paths else None,
+              "gql_executed": False, "max_hops": max_hops,
+              "multihop_cascade_rows": [], "shortest_paths_sample": []}
+    if mode == "local_csv":
+        rows = _build_local_fallback_gql_rows(min_exposed, max_hops)
+        graph = _load_local_review_graph()
+        paths = [_named_local_trace(graph, r["business_id"], max_hops)
+                 for r in rows[:5]] if include_shortest_paths else []
+        result.update(execution_mode="LOCAL_REVIEW_BFS (not executed GQL)",
+                      multihop_cascade_rows=rows, shortest_paths_sample=paths)
+    else:
+        try:
+            rows = connector.query_gql_multihop_cascade(min_exposed=min_exposed, max_hops=max_hops)
+            result.update(gql_executed=True, multihop_cascade_rows=rows)
+            if include_shortest_paths:
+                result["shortest_paths_sample"] = connector.query_gql_shortest_paths(limit=25, max_hops=max_hops)
+            result["execution_mode"] = "LIVE_BIGQUERY_GQL"
+        except Exception as exc:
+            result.update(execution_mode="BIGQUERY_QUERY_FAILED", error=str(exc))
+    result["nodes_returned"] = len(result["multihop_cascade_rows"])
+    return result
+
+
+
+def evaluate_gql_cascade_and_recommend_funding(
+    budget: float = 50000.0, min_hop_intensity: float = 0.008,
+    modeled_supplies_weight: float = 0.65, modeled_footfall_weight: float = 0.70,
+    verified_sba_weight: float = 1.00, project_id: Optional[str] = None,
+    dataset: str = "a4i_econ", mode: str = "auto",
+) -> Dict[str, Any]:
+    """Preserve the funding-tool entrypoint while enforcing source evidence gates.
+
+    Source graphs measure modeled exposure, not current liquidity or grant effects.
+    Only explicit canonical mode produces an illustrative portfolio. Historical
+    loan evidence never upgrades a modeled supply edge to an invoice-verified edge.
+    The path-weight arguments remain scenario policy inputs, not measured facts.
+    """
+    from tools.scoring_engine import optimize_portfolio_knapsack
+    applicants, source = load_corridor_applicants(mode, project_id, dataset)
+    if mode != "canonical":
+        traversal = traverse_corridor_graph_gql(
+            min_exposed=1, project_id=project_id, dataset=dataset,
+            mode="bigquery" if source.startswith("BIGQUERY") else "local_csv",
+        )
+        return {"status": "EVIDENCE_ONLY", "data_source": source,
+                "message": "Current finances, eligibility, vendor invoices and grant effectiveness are unverified. No awards computed.",
+                "funding_recommendations": [], "budget_spent_usd": None,
+                "traversal": traversal,
+                "policy_inputs": {"min_hop_intensity": min_hop_intensity,
+                                  "modeled_supplies_weight": modeled_supplies_weight,
+                                  "modeled_footfall_weight": modeled_footfall_weight,
+                                  "verified_sba_weight": verified_sba_weight}}
+    portfolio = optimize_portfolio_knapsack(applicants=applicants, budget=budget, regime="C")
+    return {"status": "ILLUSTRATIVE_BENCHMARK", "data_source": source,
+            "gql_execution_mode": "NOT_EXECUTED (scenario finances and edges)",
+            "budget_usd": budget, "budget_spent_usd": portfolio["total_disbursed"],
+            "funding_recommendations": [a for a in portfolio["allocations"] if a["award_amount"] > 0],
+            "portfolio": portfolio}
 
