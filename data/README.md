@@ -1,5 +1,12 @@
 # data/
 
+### Quick Guides & Documentation
+* 📘 [Dataset Guide & Business Questions](DATASET_DOCUMENTATION.md) — What is real vs modeled, schemas, and analytical question guides.
+* 🚀 [BigQuery Property Graph Exploration & Visualization](EXPLORING_BIGQUERY_GRAPH.md) — Setup DDL, GQL traversals, fixing the `Not found: Property graph` error, and visualization tips.
+* 📥 [Loading Data into BigQuery](HOW_TO_LOAD_BIGQUERY.md) — Step-by-step console and CLI table upload instructions.
+
+---
+
 ## `bea_direct_requirements.csv`
 
 The published rates that make this challenge's supply edges a modeling choice rather than an
