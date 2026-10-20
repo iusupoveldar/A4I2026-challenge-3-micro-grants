@@ -1,233 +1,219 @@
 business_id,business_name,legal_name,corridor,naics4,has_sba_history,loan_count,total_borrowed_amount,has_historical_charge_off,total_charge_off_amount,reported_jobs_supported,estimated_annual_debt_service,lenders_list
-1301290-03-221,Mission Hl LLC,Hanna Leung Professional Law Corporation,Central Market,5411,True,1,1572000.0,False,0.0,12,62880.0,GBC International Bank
-1349350-01-241,Propark Mobility,Propark America West LLC,Central Market,8129,False,0,0,False,0,0,0,None
-1188541-05-181,San Francisco Proper Hotel - Charmaine's,"Sf Hotel Master Tenant, LLC",Central Market,721,False,0,0,False,0,0,0,None
-1080659-07-161,Blick Art Materials LLC,Blick Art Materials LLC,Central Market,4445,False,0,0,False,0,0,0,None
-1388267-05-251,Eviction Defense Collaborative,Eviction Defense Collab Inc,Central Market,5411,False,0,0,False,0,0,0,None
-1387735-05-251,Frontier Fitness Center,"Sodi, LLC",Central Market,5414,False,0,0,False,0,0,0,None
-1124117-10-161,Moe Greens,Fmsf Inc,Central Market,4599,False,0,0,False,0,0,0,None
-1391472-06-251,Minna Market,Minna Market Corp,Central Market,4451,False,0,0,False,0,0,0,None
-1149581-06-171,Coderpad Inc.,Coderpad Inc.,Central Market,5132,False,0,0,False,0,0,0,None
-1390318-05-251,Exclusive Parking,Exclusive Parking Management LLC,Central Market,8129,False,0,0,False,0,0,0,None
-1397018-08-251,The Ballroom,Deep Screw LLC,Central Market,7139,False,0,0,False,0,0,0,None
-1386247-04-251,"North Beach Parking Services, Inc",North Beach Parking Srvcs Inc,Central Market,8129,False,0,0,False,0,0,0,None
-1013800-12-141,Soma Park Inn,Mart Bkd LLC,Central Market,7211,False,0,0,False,0,0,0,None
-1368123-08-241,415 Ebikes,"Mandala Global, LLC",Central Market,4412,False,0,0,False,0,0,0,None
-1394699-07-251,Industrious,"Taara Connect, Inc.",Central Market,3342,False,0,0,False,0,0,0,None
-1056891-03-161,Impark 0356,Imperial Parking (Us) LLC,Central Market,8129,False,0,0,False,0,0,0,None
-1016468-01-151,Golden Gate Theatre,Broadway San Francisco LLC,Central Market,7111,False,0,0,False,0,0,0,None
-1276329-04-211,Studio Dental,"Sara Creighton Dds, Inc",Central Market,6212,False,0,0,False,0,0,0,None
-1409715-02-261,Pump.Co,Pump Billing Inc,Central Market,5416,False,0,0,False,0,0,0,None
-1350475-01-241,The Function,The Function Sf LLC,Central Market,7224,False,0,0,False,0,0,0,None
-1146663-05-171,"Wpengine, Inc.","Wpengine, Inc.",Central Market,5415,False,0,0,False,0,0,0,None
-1391087-06-251,Sepia Biosciences LLC,Sepia Biosciences LLC,Central Market,5471,False,0,0,False,0,0,0,None
-0483914-01-001,Enertia Designs Inc,Enertia Designs Inc,Central Market,5413,False,0,0,False,0,0,0,None
-1051477-01-161,Cumaica Coffee,Cumaica Corp,Central Market,3119,False,0,0,False,0,0,0,None
-0490135-01-001,Ram's Hotel,Rpsrrs LLC,Central Market,7211,False,0,0,False,0,0,0,None
-1357722-04-241,Civic Center Market,Civic Center Market LLC,Central Market,4451,False,0,0,False,0,0,0,None
-1377831-01-251,"Tower Valet Parking, Inc.",Tower Valet Parking Inc,Central Market,8129,False,0,0,False,0,0,0,None
-1352668-02-241,Supremo Pizza Inc,Supremo Pizza Inc,Central Market,7225,False,0,0,False,0,0,0,None
-1323178-02-231,Foodworks,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,None
-1427604-07-261,Metro By T-Mobile,Techno Ca LLC,Central Market,5171,False,0,0,False,0,0,0,None
-1027831-05-151,Warfield Hotel Inc,Warfield Hotel Inc,Central Market,7211,False,0,0,False,0,0,0,None
-1345684-10-231,San Francisco Health Care,Sf Health Care And Rehab Inc,Central Market,6231,False,0,0,False,0,0,0,None
-1096064-08-161,Dough,Lunch Geek LLC,Central Market,7225,False,0,0,False,0,0,0,None
-1392009-06-251,Ross Dress For Less #2154,Ross Dress For Less Inc,Central Market,4581,False,0,0,False,0,0,0,None
-1054993-02-161,5m Hearst,Hearst Communications Inc,Central Market,5111,False,0,0,False,0,0,0,None
-1431599-09-261,"Replica Ai, Inc.","Replica Ai, Inc.",Central Market,5415,False,0,0,False,0,0,0,None
-0019117-01-001,Microbiz,Microbiz Service Company,Central Market,8112,False,0,0,False,0,0,0,None
-1373515-10-241,1010 Market LLC,1010 Market LLC,Central Market,4451,False,0,0,False,0,0,0,None
-1345683-10-231,San Francisco Health Care,Sf Health Care And Rehab Inc,Central Market,6231,False,0,0,False,0,0,0,None
-1343442-09-231,Big Outdoor,"Big Outdoor Media Holdings, LLC",Central Market,5418,False,0,0,False,0,0,0,None
-1381713-02-251,"United Sf Parking, Inc.",United Sf Parking Inc,Central Market,8129,False,0,0,False,0,0,0,None
-1234213-09-191,Filipino Community Development Corporation,Filipino Community Development Corporation,Central Market,8133,False,0,0,False,0,0,0,None
-1426328-06-261,Mi Cocina,Ucs Dungaree And Co Inc.,Central Market,3159,False,0,0,False,0,0,0,None
-0318928-04-001,John W Deroy Chiropractic Corp,John W De Roy Chiroprac Corp,Central Market,6213,False,0,0,False,0,0,0,None
-0474382-01-001,Barbary Coast,"Bcsf, Inc.",Central Market,4599,False,0,0,False,0,0,0,None
-1425252-06-261,Honeybee Foods Corporation Dba Jollibee,Honeybee Foods Corporation,Central Market,7225,False,0,0,False,0,0,0,None
-1046949-12-151,Tax Credit Asset Management LLC,Tax Credit Asset Management LLC,Central Market,5415,False,0,0,False,0,0,0,None
-1313095-08-221,Winsor Hotel,20 6th Street LLC,Central Market,7221,False,0,0,False,0,0,0,None
-1143037-04-171,"Sprinklr, Inc.","Sprinklr, Inc.",Central Market,5400,False,0,0,False,0,0,0,None
-0431981-01-002,54 Mint-Winebar,Troia Alimentari Italiani Inc,Central Market,7225,False,0,0,False,0,0,0,None
-1348229-12-231,Golden Corner Market,F & A Trading Inc,Central Market,4451,False,0,0,False,0,0,0,None
-1344229-10-231,Merchant Roots,"Merchant Roots, LLC.",Central Market,7225,False,0,0,False,0,0,0,None
-1285960-09-211,"Homebridge, Inc.",Homebridge Inc,Central Market,6216,False,0,0,False,0,0,0,None
-1275281-04-211,"Convergeone, Inc.","Convergeone, Inc.",Central Market,5415,False,0,0,False,0,0,0,None
-0380638-02-001,Cigarettes For Less,Azar Brothers Inc,Central Market,4451,False,0,0,False,0,0,0,None
-1144514-04-171,"Ossium Health, Inc.","Ossium Health, Inc.",Central Market,3254,False,0,0,False,0,0,0,None
-0111755-01-001,Freds Liquor & Grocery,Musa Bros Inc,Central Market,4451,False,0,0,False,0,0,0,None
-1297266-02-221,Square Pie Guys,Adam Madison LLC,Central Market,7225,False,0,0,False,0,0,0,None
-1013186-12-141,Hashiri,Mp Planning Corp,Central Market,7225,False,0,0,False,0,0,0,None
-1051330-01-161,Pdm Group Inc,Pdm Group Inc,Central Market,5416,False,0,0,False,0,0,0,None
-1175132-01-181,Church Of God Outpost,Christian Evangelical Churches Of America Inc,Central Market,8131,False,0,0,False,0,0,0,None
-1311614-08-221,Golden Auto Muffler & Brake Sf Co.,Golden Auto Muffler & Brake Sf Co.,Central Market,8111,False,0,0,False,0,0,0,None
-1158980-08-171,The Melt,Fish Six Restaurant Corp,Central Market,7225,False,0,0,False,0,0,0,None
-1088753-08-161,Sour Flour,Sour Flour Corporation,Central Market,3118,False,0,0,False,0,0,0,None
-1414937-03-261,"Richmond Area Multi-Services, Inc. Caap",Richmond Area Multi Serv Inc,Central Market,6214,False,0,0,False,0,0,0,None
-1188036-05-181,"A & A Legal Service, Inc.",A & A Legal Service Inc,Central Market,5411,False,0,0,False,0,0,0,None
-1234518-09-191,Environmental & Construction Solutions,Env & Const Solutions Inc,Central Market,5413,False,0,0,False,0,0,0,None
-0301360-01-001,Gar May Garment Inc,Gar May Garment Inc,Central Market,3100,False,0,0,False,0,0,0,None
-1435354-10-261,Haru,Kebiso Inc.,Central Market,7225,False,0,0,False,0,0,0,None
-1361199-05-241,Yemeni Kabab & Mediterranean,Yemeni Kabab & Mediterranean Inc,Central Market,7225,False,0,0,False,0,0,0,None
-1350658-01-241,"Parking Management Company, LLC","Parking Management Company, LLC",Central Market,8129,False,0,0,False,0,0,0,None
-0431981-01-001,54 Mint-Winebar,Troia Alimentari Italiani Inc,Central Market,7225,False,0,0,False,0,0,0,None
-0046324-27-001,Canteen Refreshment Services,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,None
-0019117-02-001,Microbiz Security Company,Microbiz Service Company,Central Market,8112,False,0,0,False,0,0,0,None
-1289222-10-211,Monarch Beverage Catering LLC,Monarch Beverage Catering LLC,Central Market,7223,False,0,0,False,0,0,0,None
-1427610-07-261,Metro By T-Mobile,Techno Ca LLC,Central Market,5171,False,0,0,False,0,0,0,None
-1146487-05-171,Exabyte Inc.,Exabyte Inc.,Central Market,5417,False,0,0,False,0,0,0,None
-1383197-03-251,Honeybee Foods Corporation,Honeybee Foods Corporation,Central Market,7225,False,0,0,False,0,0,0,None
-0316083-09-001,West Coast Realties,Hearst Communications Inc,Central Market,5111,False,0,0,False,0,0,0,None
-1278937-05-211,The Bite,Sahin Inc,Central Market,7225,True,2,60000.0,False,0.0,14,12000.0,"U.S. Bank, National Association"
-0478180-01-001,Miss Saigon LLC,Miss Saigon LLC,Central Market,7225,False,0,0,False,0,0,0,None
-1149359-06-171,The Rumpus Room,10 6th St. LLC,Central Market,7224,False,0,0,False,0,0,0,None
-1375641-11-241,Diverse Business Enterprise Center,Asian Inc,Central Market,5419,False,0,0,False,0,0,0,None
-0046324-08-001,Eurest Dining-Bank Of America,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,None
-1281564-07-211,Bait Inc,Bait Inc,Central Market,4582,False,0,0,False,0,0,0,None
-1034218-07-151,United Sf Parking Inc,United Sf Parking Inc,Central Market,8129,False,0,0,False,0,0,0,None
-1291595-11-211,"Moesif, Inc","Moesif, Inc",Central Market,5415,False,0,0,False,0,0,0,None
-1073189-05-161,Constructor.Io Corporation,Constructor.Io Corporation,Central Market,5192,False,0,0,False,0,0,0,None
-0446800-01-001,Sunnyside Hotel,Guru Sharanam LLC,Central Market,7211,False,0,0,False,0,0,0,None
-1367265-07-241,"Richmond Area Multi-Services, Inc.",Richmond Area Multi Serv Inc,Central Market,6214,False,0,0,False,0,0,0,None
-1323189-02-231,Canteen,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,None
-1026779-04-151,Steel + Lacquer,Steel + Lacquer LLC,Central Market,8121,False,0,0,False,0,0,0,None
-0380638-03-001,Mid Market Mutts Pet Store,Azar Brothers Inc,Central Market,4451,False,0,0,False,0,0,0,None
-1079443-06-161,"S.F. Friends Meeting, Inc.","S.F. Friends Meeting, Inc.",Central Market,8131,False,0,0,False,0,0,0,None
-1391763-06-251,"Transparency Analytics, Inc.","Transparency Analytics, Inc.",Central Market,5415,False,0,0,False,0,0,0,None
-1351158-01-241,San Francisco Gyrotonic,Christolynn LLC,Central Market,7139,False,0,0,False,0,0,0,None
-1320063-12-221,Soliome Inc,Soliome Inc,Central Market,325,False,0,0,False,0,0,0,None
-0457689-01-001,Mercy Housing Ca 50 A Ca Lp,Mercy Housing Ca 50 A Ca Lp,Central Market,6242,False,0,0,False,0,0,0,None
-0911744-65-001,Starbucks Coffee #6937,Starbucks Corporation,Central Market,7225,False,0,0,False,0,0,0,None
-0469782-01-001,Arista Networks Inc,Arista Networks Inc,Central Market,3342,False,0,0,False,0,0,0,None
-1375215-11-241,Munchies & More Market,Dean And Hakim Inc,Central Market,44,False,0,0,False,0,0,0,None
-0012530-04-002,The Hearst Corp,Hearst Corp The,Central Market,5111,False,0,0,False,0,0,0,None
-1429133-08-261,"Risely Ai, Inc.","Risely Ai, Inc.",Central Market,5132,False,0,0,False,0,0,0,None
-0316083-04-001,San Francisco Chronicle,Hearst Communications Inc,Central Market,5111,False,0,0,False,0,0,0,None
-1178131-02-181,Conard House Inc.,Conard House Inc,Central Market,6242,False,0,0,False,0,0,0,None
-1391512-06-251,Jay's Grill,Fix It Fast LLC,Central Market,7225,False,0,0,False,0,0,0,None
-0470546-01-001,Club Omg!,Club Omg! LLC,Central Market,7224,False,0,0,False,0,0,0,None
-1257818-08-201,Waymo LLC,Waymo LLC,Central Market,3361,False,0,0,False,0,0,0,None
-0436160-01-001,Oak Tree Hotel,Shivangi LLC,Central Market,7211,False,0,0,False,0,0,0,None
-1427612-07-261,Metro By T-Mobile,Techno Ca LLC,Central Market,5171,False,0,0,False,0,0,0,None
-0479019-01-001,Califashions Manufacturing Inc,Califashions Manufacturing Inc,Central Market,3152,False,0,0,False,0,0,0,None
-0316083-16-001,Newspaper Administration,Hearst Communications Inc,Central Market,5111,False,0,0,False,0,0,0,None
-1188540-05-181,San Francisco Proper Hotel - Villon,"Sf Hotel Master Tenant, LLC",Central Market,721,False,0,0,False,0,0,0,None
-1275623-04-211,Baart Programs Market,Addiction Resrch & Treatment Inc,Central Market,6214,False,0,0,False,0,0,0,None
-1370213-09-241,The Rose - Commercial,"Mercy Housing California X, Lp",Central Market,6242,False,0,0,False,0,0,0,None
-1426142-06-261,Most Mini Mart,Most Mini Mart LLC,Central Market,4451,False,0,0,False,0,0,0,None
-1203640-10-181,Shn,Broadway San Francisco LLC,Central Market,7111,False,0,0,False,0,0,0,None
-1348515-12-231,Orangefitness Theory,Sffit Ms LLC,Central Market,7139,False,0,0,False,0,0,0,None
-1180123-02-181,"Tray.Io, Inc",Tray. Io Inc,Central Market,5415,False,0,0,False,0,0,0,None
-1364695-06-241,Eddy St Bodega Inc,Eddy St Bodega Inc,Central Market,4451,False,0,0,False,0,0,0,None
-1427191-07-261,Satoru Labs,Eof Security LLC,Central Market,5132,False,0,0,False,0,0,0,None
-1391007-06-251,1277 Mission,"Afterdark Productions, LLC",Central Market,7113,False,0,0,False,0,0,0,None
-1160324-09-171,City Produce,City Produce Market Inc,Central Market,4451,False,0,0,False,0,0,0,None
-1019291-02-151,Calworks/Fu Yau Project,Richmond Area Multi Serv Inc,Central Market,6214,False,0,0,False,0,0,0,None
-1212299-02-191,"Linqia, Inc.",Lingia Inc,Central Market,5418,False,0,0,False,0,0,0,None
-1257375-08-201,Af&Co LLC,Af&Co.,Central Market,5418,False,0,0,False,0,0,0,None
-1137701-02-171,"Dcmn, Inc.","Dcmn, Inc.",Central Market,5418,False,0,0,False,0,0,0,None
-1233217-09-191,Haojun Sewing  LLC,"Haojun Sewing, LLC",Central Market,3152,False,0,0,False,0,0,0,None
-1373358-10-241,C & Y Garment,C & Y Garment Inc,Central Market,3152,False,0,0,False,0,0,0,None
-1373850-11-241,Hotel Garrett,Hg Sf Holdings LLC,Central Market,7211,False,0,0,False,0,0,0,None
-1056681-02-161,Sf City Attorneys Office,Cra International Inc,Central Market,5419,False,0,0,False,0,0,0,None
-1402027-10-251,Sumfer Market Sf LLC,Sumfer Market Sf LLC,Central Market,7225,False,0,0,False,0,0,0,None
-1056704-02-161,Impark 0314,Imperial Parking (Us) LLC,Central Market,8129,False,0,0,False,0,0,0,None
-0467522-01-001,Third & Leconte Assoc A Ca Lp,Third & Leconte Assoc A Ca Lp,Central Market,6242,False,0,0,False,0,0,0,None
-0481879-01-001,Mo'z Cafe Inc,Mo'z Cafe Inc,Central Market,72,True,1,102700.0,False,0.0,7,10269.96,"Lendistry SBLC, LLC"
-1252953-06-201,Mr Tipple's Recording Studio,Angelica Root LLC,Central Market,7225,False,0,0,False,0,0,0,None
-1358915-04-241,Yotel San Francisco,Madison Market Street Lending LLC,Central Market,7211,False,0,0,False,0,0,0,None
-1334026-05-231,Yotel Hotel,Sage Client 577 LLC,Central Market,7211,False,0,0,False,0,0,0,None
-1195222-07-181,Washburn Housing Corporation,Washburn Housing Corporation,Central Market,6242,False,0,0,False,0,0,0,None
-1347357-11-231,Exclusive Parking Management,Exclusive Parking Management LLC,Central Market,8129,False,0,0,False,0,0,0,None
-1278974-06-211,Taqueria Angelicas,Bay Area Mobile Catering Inc,Central Market,7223,False,0,0,False,0,0,0,None
-1380319-02-251,"Cleva Payments, Inc.","Cleva Payments, Inc.",Central Market,5419,False,0,0,False,0,0,0,None
-0467521-01-001,Mercy Housing Ca 57 A Ca Lp,Mercy Housing Ca 57 A Ca Lp,Central Market,6242,False,0,0,False,0,0,0,None
-1257137-08-201,"Hound Technology, Inc/Honeycomb",Hound Technology Inc,Central Market,5415,False,0,0,False,0,0,0,None
-1146947-05-171,San Francisco Proper Hotel,"Sf Hotel Master Tenant, LLC",Central Market,721,False,0,0,False,0,0,0,None
-0466886-01-001,Mercy Housing Ca Xliv Ca Lp,Mercy Housing Ca Xliv Ca Lp,Central Market,6242,False,0,0,False,0,0,0,None
-1376886-12-241,Potter Hotel,"Cuz Of God, LLC",Central Market,7211,False,0,0,False,0,0,0,None
-1203637-10-181,The Pawn Shop,The Pawn Shop LLC,Central Market,7225,False,0,0,False,0,0,0,None
-1275590-04-211,Point One Navigation Offices,"Point One Navigation, Inc.",Central Market,5415,False,0,0,False,0,0,0,None
-0375063-01-001,Speed Queen Coin Laundry Inc,Speed Queen Coin Laundry Inc,Central Market,8123,False,0,0,False,0,0,0,None
-1217645-04-191,Electromania,"Sks Family Enterprises, Inc.",Central Market,4552,False,0,0,False,0,0,0,None
-0429331-02-001,The Warfield Theater,Aeg Live LLC,Central Market,7113,False,0,0,False,0,0,0,None
-1084069-07-161,"Asian, Inc.",Asian Inc,Central Market,5419,False,0,0,False,0,0,0,None
-1380233-02-251,Haru By Sams,Kpp Beer Inc,Central Market,7224,False,0,0,False,0,0,0,None
-1384585-03-251,"Decisional Ai, Inc.","Decisional Ai, Inc.",Central Market,5132,False,0,0,False,0,0,0,None
-1435114-10-261,Mi Cocina Cafe Con Leche,Mi Cocina Cafe Con Leche LLC,Central Market,7225,False,0,0,False,0,0,0,None
-0115774-02-002,Eddies Bookstores Inc Etc,Eddies Bookstores Inc,Central Market,4599,False,0,0,False,0,0,0,None
-1337485-07-231,Synergy Apparel2 LLC,Synergy Apparel2 LLC,Central Market,3152,False,0,0,False,0,0,0,None
-1384539-03-251,Glhq Inc.,Glhq Inc.,Central Market,8134,False,0,0,False,0,0,0,None
-1126972-11-161,Geary Place LLC,Geary Place LLC,Central Market,81,False,0,0,False,0,0,0,None
-1053683-02-161,Peer Based Division,Richmond Area Multi Serv Inc,Central Market,6214,False,0,0,False,0,0,0,None
-0459824-01-001,"Mercy Housing Ca 53, A Ca Lp","Mercy Housing Ca 53, A Ca Lp",Central Market,6242,False,0,0,False,0,0,0,None
-1228355-07-191,Go Go Market And Deli Inc,Go Go Market And Deli Inc,Central Market,4400,False,0,0,False,0,0,0,None
-1299176-03-221,Ikea Us Retail LLC,Ikea Us Retail LLC,Central Market,4491,False,0,0,False,0,0,0,None
-0445533-01-005,Blue Bottle Coffee LLC,Blue Bottle Coffee LLC,Central Market,7225,False,0,0,False,0,0,0,None
-1365611-07-241,Little Caesars,Ap Foods Inc.,Central Market,7225,False,0,0,False,0,0,0,None
-1316756-10-221,Ace Parking Management Inc,Ace Parking Management Inc,Central Market,8129,False,0,0,False,0,0,0,None
-1137011-02-171,Non Plus Ultra,Npu Inc,Central Market,7113,False,0,0,False,0,0,0,None
-0403437-01-002,Bluebird Office Supplies,Image Source Inc,Central Market,4594,False,0,0,False,0,0,0,None
-0470546-02-001,Omg!,Club Omg! LLC,Central Market,7224,False,0,0,False,0,0,0,None
-1390588-05-251,Salvage Studio Sf LLC,Salvage Studio Sf LLC,Central Market,8114,False,0,0,False,0,0,0,None
-1210596-01-191,Bei San Francisco,Com Howard I LLC,Central Market,7210,False,0,0,False,0,0,0,None
-1308480-06-221,Sf Apparel Inc,Sf Apparel Inc,Central Market,3152,False,0,0,False,0,0,0,None
-1376322-12-241,Foodture,First Choice Vending Inc.,Central Market,4451,False,0,0,False,0,0,0,None
-1015823-01-151,Ch Parking LLC,Ch Service Co Holdings LLC,Central Market,8129,False,0,0,False,0,0,0,None
-1328084-03-231,"Laz Parking California, LLC",Laz Parking California LLC,Central Market,8129,False,0,0,False,0,0,0,None
-1406147-12-251,Everself,Bariendo Inc,Central Market,5416,False,0,0,False,0,0,0,None
-1152776-06-171,Mercy Housing California 51  A California Limited Partnership,Mercy Housing Ca 51 A Ca Lp,Central Market,6242,False,0,0,False,0,0,0,None
-1389075-05-251,Halal Modena Pizza,Tassili Pizza Inc,Central Market,7225,False,0,0,False,0,0,0,None
-1433137-09-261,Nexor Ai,"Nexor Ai, Inc.",Central Market,5132,False,0,0,False,0,0,0,None
-0466549-01-001,1100 Ocean Avenue Lp,1100 Ocean Avenue Lp,Central Market,6242,False,0,0,False,0,0,0,None
-1323019-02-231,Eurest Dining-Bank Of,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,None
-1078764-06-161,Harvey M Rose Associates LLC,Harvey M Rose Associates LLC,Central Market,5400,False,0,0,False,0,0,0,None
-1293880-12-211,Baart Programs Market Street,Addiction Resrch & Treatment Inc,Central Market,6214,False,0,0,False,0,0,0,None
-1276434-04-211,"Convalesce, Inc.","Convalesce, Inc.",Central Market,5417,False,0,0,False,0,0,0,None
-0383859-01-001,Mcginnis Chen Associates Inc,Mcginnis Chen Associates Inc,Central Market,5413,False,0,0,False,0,0,0,None
-1136693-02-171,United Sf Parking Inc,United Sf Parking Inc,Central Market,8129,False,0,0,False,0,0,0,None
-1192496-06-181,Celo,A Protocol Inc,Central Market,5415,False,0,0,False,0,0,0,None
-0316083-06-001,Sfgate.Com,Hearst Communications Inc,Central Market,5111,False,0,0,False,0,0,0,None
-1205598-11-181,The Barbary Coast Pastry And Coffee,"Mav, Inc",Central Market,7225,False,0,0,False,0,0,0,None
-1369097-08-241,Taxgpt Inc,Taxgpt Inc,Central Market,5132,False,0,0,False,0,0,0,None
-1362950-06-241,The Rose,"Mercy Housing California X, Lp",Central Market,6242,False,0,0,False,0,0,0,None
-1236346-10-191,Foodworks,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,None
-1126947-11-161,Pro Park America West LLC,Propark America West LLC,Central Market,8129,False,0,0,False,0,0,0,None
-1085153-07-161,Baart,Addiction Resrch & Treatment Inc,Central Market,6214,False,0,0,False,0,0,0,None
-1323210-02-231,Canteen @ Wework 1460 Mission Street,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,None
-1338291-07-231,Ease Of Living Inc,Ease Of Living Inc,Central Market,4445,False,0,0,False,0,0,0,None
-1243775-01-201,"Systra Consulting, Inc.","Systra Consulting, Inc",Central Market,5413,False,0,0,False,0,0,0,None
-1211187-01-191,Binis Kitchen LLC,Binis Kitchen LLC,Central Market,7225,False,0,0,False,0,0,0,None
-1340095-08-231,Qua Spa,Ocean Wellness Works LLC,Central Market,8129,False,0,0,False,0,0,0,None
-1338918-07-231,New Performance Traditions Paul Dresher Ensemble,Musical Traditions Inc,Central Market,7111,False,0,0,False,0,0,0,None
-1427600-07-261,Metro By T-Mobile,Techno Ca LLC,Central Market,5171,False,0,0,False,0,0,0,None
-1347915-12-231,Saluhall Sf Inc.,Saluhall Sf Inc.,Central Market,7220,False,0,0,False,0,0,0,None
-1305446-05-221,Ava 55 Ninth,Where I Park Usa Inc.,Central Market,5416,False,0,0,False,0,0,0,None
-1246871-02-201,Canteen,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,None
-1241146-12-191,Afterburner Studios,Afterburner Co,Central Market,5132,False,0,0,False,0,0,0,None
-1397630-08-251,The Vita Brevis Club,Vbc Sf LLC,Central Market,4539,False,0,0,False,0,0,0,None
-1320080-12-221,San Francisco Proper Hotel - La Bande,"Sf Hotel Master Tenant, LLC",Central Market,721,False,0,0,False,0,0,0,None
-1387583-04-251,Nursel Central Asian & Russian Cuisine,Nursel LLC,Central Market,7220,False,0,0,False,0,0,0,None
-0111663-06-001,Orpheum Theatre,Broadway San Francisco LLC,Central Market,7111,False,0,0,False,0,0,0,None
-1431389-09-261,Soma Park Inn,Riddhi Hospitality LLC,Central Market,7211,False,0,0,False,0,0,0,None
-1376349-12-241,Burma Love 2,Burma Inc,Central Market,445,False,0,0,False,0,0,0,None
-1123854-10-161,Richmond Area Multi Serv Inc,Richmond Area Multi Serv Inc,Central Market,6214,False,0,0,False,0,0,0,None
-1429677-08-261,Taqueria Mexico 1986,Azteci LLC,Central Market,7225,False,0,0,False,0,0,0,None
-1193662-06-181,Corporation For Supportive Housing,Corporation For Supportive Housing,Central Market,6242,False,0,0,False,0,0,0,None
-1298448-02-221,G.Rabbit,G.Rabbit LLC,Central Market,7225,False,0,0,False,0,0,0,None
-1282809-07-211,Tradespace,Tradespace Inc,Central Market,5182,False,0,0,False,0,0,0,None
-1323038-02-231,Canteen Refreshment Services,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,None
-1216336-03-191,Square Pie Guys,Adam Madison LLC,Central Market,7225,False,0,0,False,0,0,0,None
-1384442-03-251,Easesf,Ease Of Living Inc,Central Market,4445,False,0,0,False,0,0,0,None
-1024600-04-151,Chico's Pizza,Sados Corporation,Central Market,7225,False,0,0,False,0,0,0,None
-1361799-05-241,200 Channels LLC,200 Channels LLC,Central Market,7111,False,0,0,False,0,0,0,None
-1340993-08-231,Crazy Horse,"Caballo Loco, LLC",Central Market,7224,False,0,0,False,0,0,0,None
-0486249-02-001,15five Inc,15five Inc,Central Market,5415,False,0,0,False,0,0,0,None
-1273032-03-211,6th Street Gift & More,6th Street Gift & More Inc,Central Market,4451,False,0,0,False,0,0,0,None
-1366016-07-241,Nom Tl Community Benefit Corp,Nom Tl Community Benefit Corp,Central Market,8134,False,0,0,False,0,0,0,None
-1003080-07-141,Hampton Inn San Francisco Downtown Convention Center,Mint Development Lp,Central Market,7211,False,0,0,False,0,0,0,None
-1193022-06-181,National Apparel LLC,National Apparel LLC,Central Market,3152,False,0,0,False,0,0,0,None
-0446962-01-001,Law Off Michael Gurfinkel Inc,Law Off Michael Gurfinkel Inc,Central Market,5411,False,0,0,False,0,0,0,None
-1119346-09-161,Street Taco,Df La Capital LLC,Central Market,7225,False,0,0,False,0,0,0,None
-1138356-03-171,"Waypoint Consulting, Inc.","Waypoint Consulting, Inc",Central Market,5416,False,0,0,False,0,0,0,None
-1366550-07-241,Civic Center Cafe & Deli,Civic Center Market LLC,Central Market,4451,False,0,0,False,0,0,0,None
+1301290-03-221,Mission Hl LLC,Hanna Leung Professional Law Corporation,Central Market,5411,True,2,1822000.0,False,0.0,12,62880.00,GBC International Bank
+1349350-01-241,Propark Mobility,Propark America West LLC,Central Market,8129,False,0,0,False,0,0,0,
+1080659-07-161,Blick Art Materials LLC,Blick Art Materials LLC,Central Market,4445,False,0,0,False,0,0,0,
+1388267-05-251,Eviction Defense Collaborative,Eviction Defense Collab Inc,Central Market,5411,False,0,0,False,0,0,0,
+1387735-05-251,Frontier Fitness Center,"Sodi, LLC",Central Market,5414,False,0,0,False,0,0,0,
+1124117-10-161,Moe Greens,Fmsf Inc,Central Market,4599,False,0,0,False,0,0,0,
+1391472-06-251,Minna Market,Minna Market Corp,Central Market,4451,False,0,0,False,0,0,0,
+1149581-06-171,Coderpad Inc.,Coderpad Inc.,Central Market,5132,False,0,0,False,0,0,0,
+1390318-05-251,Exclusive Parking,Exclusive Parking Management LLC,Central Market,8129,False,0,0,False,0,0,0,
+1397018-08-251,The Ballroom,Deep Screw LLC,Central Market,7139,False,0,0,False,0,0,0,
+1386247-04-251,"North Beach Parking Services, Inc",North Beach Parking Srvcs Inc,Central Market,8129,False,0,0,False,0,0,0,
+1013800-12-141,Soma Park Inn,Mart Bkd LLC,Central Market,7211,False,0,0,False,0,0,0,
+1368123-08-241,415 Ebikes,"Mandala Global, LLC",Central Market,4412,False,0,0,False,0,0,0,
+1394699-07-251,Industrious,"Taara Connect, Inc.",Central Market,3342,False,0,0,False,0,0,0,
+1056891-03-161,Impark 0356,Imperial Parking (Us) LLC,Central Market,8129,False,0,0,False,0,0,0,
+1016468-01-151,Golden Gate Theatre,Broadway San Francisco LLC,Central Market,7111,False,0,0,False,0,0,0,
+1276329-04-211,Studio Dental,"Sara Creighton Dds, Inc",Central Market,6212,True,1,350000.0,False,0.0,10,0.00,"Wells Fargo Bank, National Association"
+1409715-02-261,Pump.Co,Pump Billing Inc,Central Market,5416,False,0,0,False,0,0,0,
+1350475-01-241,The Function,The Function Sf LLC,Central Market,7224,False,0,0,False,0,0,0,
+1146663-05-171,"Wpengine, Inc.","Wpengine, Inc.",Central Market,5415,False,0,0,False,0,0,0,
+1391087-06-251,Sepia Biosciences LLC,Sepia Biosciences LLC,Central Market,5471,False,0,0,False,0,0,0,
+0483914-01-001,Enertia Designs Inc,Enertia Designs Inc,Central Market,5413,False,0,0,False,0,0,0,
+1051477-01-161,Cumaica Coffee,Cumaica Corp,Central Market,3119,False,0,0,False,0,0,0,
+0490135-01-001,Ram's Hotel,Rpsrrs LLC,Central Market,7211,False,0,0,False,0,0,0,
+1357722-04-241,Civic Center Market,Civic Center Market LLC,Central Market,4451,False,0,0,False,0,0,0,
+1377831-01-251,"Tower Valet Parking, Inc.",Tower Valet Parking Inc,Central Market,8129,False,0,0,False,0,0,0,
+1352668-02-241,Supremo Pizza Inc,Supremo Pizza Inc,Central Market,7225,False,0,0,False,0,0,0,
+1027831-05-151,Warfield Hotel Inc,Warfield Hotel Inc,Central Market,7211,False,0,0,False,0,0,0,
+1096064-08-161,Dough,Lunch Geek LLC,Central Market,7225,False,0,0,False,0,0,0,
+1392009-06-251,Ross Dress For Less #2154,Ross Dress For Less Inc,Central Market,4581,False,0,0,False,0,0,0,
+1054993-02-161,5m Hearst,Hearst Communications Inc,Central Market,5111,False,0,0,False,0,0,0,
+1431599-09-261,"Replica Ai, Inc.","Replica Ai, Inc.",Central Market,5415,False,0,0,False,0,0,0,
+0019117-01-001,Microbiz,Microbiz Service Company,Central Market,8112,False,0,0,False,0,0,0,
+1373515-10-241,1010 Market LLC,1010 Market LLC,Central Market,4451,False,0,0,False,0,0,0,
+1345683-10-231,San Francisco Health Care,Sf Health Care And Rehab Inc,Central Market,6231,False,0,0,False,0,0,0,
+1343442-09-231,Big Outdoor,"Big Outdoor Media Holdings, LLC",Central Market,5418,False,0,0,False,0,0,0,
+1381713-02-251,"United Sf Parking, Inc.",United Sf Parking Inc,Central Market,8129,False,0,0,False,0,0,0,
+1234213-09-191,Filipino Community Development Corporation,Filipino Community Development Corporation,Central Market,8133,False,0,0,False,0,0,0,
+1426328-06-261,Mi Cocina,Ucs Dungaree And Co Inc.,Central Market,3159,False,0,0,False,0,0,0,
+0318928-04-001,John W Deroy Chiropractic Corp,John W De Roy Chiroprac Corp,Central Market,6213,False,0,0,False,0,0,0,
+0474382-01-001,Barbary Coast,"Bcsf, Inc.",Central Market,4599,False,0,0,False,0,0,0,
+1425252-06-261,Honeybee Foods Corporation Dba Jollibee,Honeybee Foods Corporation,Central Market,7225,False,0,0,False,0,0,0,
+1046949-12-151,Tax Credit Asset Management LLC,Tax Credit Asset Management LLC,Central Market,5415,False,0,0,False,0,0,0,
+1313095-08-221,Winsor Hotel,20 6th Street LLC,Central Market,7221,False,0,0,False,0,0,0,
+1143037-04-171,"Sprinklr, Inc.","Sprinklr, Inc.",Central Market,5416,False,0,0,False,0,0,0,
+1348229-12-231,Golden Corner Market,F & A Trading Inc,Central Market,4451,False,0,0,False,0,0,0,
+1344229-10-231,Merchant Roots,"Merchant Roots, LLC.",Central Market,7225,False,0,0,False,0,0,0,
+1285960-09-211,"Homebridge, Inc.",Homebridge Inc,Central Market,6216,False,0,0,False,0,0,0,
+1275281-04-211,"Convergeone, Inc.","Convergeone, Inc.",Central Market,5415,False,0,0,False,0,0,0,
+0380638-02-001,Cigarettes For Less,Azar Brothers Inc,Central Market,4451,False,0,0,False,0,0,0,
+1144514-04-171,"Ossium Health, Inc.","Ossium Health, Inc.",Central Market,3254,False,0,0,False,0,0,0,
+0111755-01-001,Freds Liquor & Grocery,Musa Bros Inc,Central Market,4451,False,0,0,False,0,0,0,
+1013186-12-141,Hashiri,Mp Planning Corp,Central Market,7225,False,0,0,False,0,0,0,
+1051330-01-161,Pdm Group Inc,Pdm Group Inc,Central Market,5416,False,0,0,False,0,0,0,
+1175132-01-181,Church Of God Outpost,Christian Evangelical Churches Of America Inc,Central Market,8131,False,0,0,False,0,0,0,
+1311614-08-221,Golden Auto Muffler & Brake Sf Co.,Golden Auto Muffler & Brake Sf Co.,Central Market,8111,False,0,0,False,0,0,0,
+1158980-08-171,The Melt,Fish Six Restaurant Corp,Central Market,7225,False,0,0,False,0,0,0,
+1088753-08-161,Sour Flour,Sour Flour Corporation,Central Market,3118,False,0,0,False,0,0,0,
+1414937-03-261,"Richmond Area Multi-Services, Inc. Caap",Richmond Area Multi Serv Inc,Central Market,6214,False,0,0,False,0,0,0,
+1188036-05-181,"A & A Legal Service, Inc.",A & A Legal Service Inc,Central Market,5411,False,0,0,False,0,0,0,
+1234518-09-191,Environmental & Construction Solutions,Env & Const Solutions Inc,Central Market,5413,False,0,0,False,0,0,0,
+0301360-01-001,Gar May Garment Inc,Gar May Garment Inc,Central Market,3152,False,0,0,False,0,0,0,
+1435354-10-261,Haru,Kebiso Inc.,Central Market,7225,False,0,0,False,0,0,0,
+1361199-05-241,Yemeni Kabab & Mediterranean,Yemeni Kabab & Mediterranean Inc,Central Market,7225,False,0,0,False,0,0,0,
+1350658-01-241,"Parking Management Company, LLC","Parking Management Company, LLC",Central Market,8129,False,0,0,False,0,0,0,
+0431981-01-001,54 Mint-Winebar,Troia Alimentari Italiani Inc,Central Market,7225,False,0,0,False,0,0,0,
+0046324-27-001,Canteen Refreshment Services,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,
+0019117-02-001,Microbiz Security Company,Microbiz Service Company,Central Market,8112,False,0,0,False,0,0,0,
+1289222-10-211,Monarch Beverage Catering LLC,Monarch Beverage Catering LLC,Central Market,7223,False,0,0,False,0,0,0,
+1146487-05-171,Exabyte Inc.,Exabyte Inc.,Central Market,5417,False,0,0,False,0,0,0,
+1383197-03-251,Honeybee Foods Corporation,Honeybee Foods Corporation,Central Market,7225,False,0,0,False,0,0,0,
+0316083-09-001,West Coast Realties,Hearst Communications Inc,Central Market,5111,False,0,0,False,0,0,0,
+1278937-05-211,The Bite,Sahin Inc,Central Market,7225,True,2,60000.0,False,0.0,14,12000.00,"U.S. Bank, National Association"
+0478180-01-001,Miss Saigon LLC,Miss Saigon LLC,Central Market,7225,False,0,0,False,0,0,0,
+1149359-06-171,The Rumpus Room,10 6th St. LLC,Central Market,7224,False,0,0,False,0,0,0,
+1375641-11-241,Diverse Business Enterprise Center,Asian Inc,Central Market,5419,False,0,0,False,0,0,0,
+0046324-08-001,Eurest Dining-Bank Of America,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,
+1281564-07-211,Bait Inc,Bait Inc,Central Market,4582,False,0,0,False,0,0,0,
+1034218-07-151,United Sf Parking Inc,United Sf Parking Inc,Central Market,8129,False,0,0,False,0,0,0,
+1291595-11-211,"Moesif, Inc","Moesif, Inc",Central Market,5415,False,0,0,False,0,0,0,
+1073189-05-161,Constructor.Io Corporation,Constructor.Io Corporation,Central Market,5192,False,0,0,False,0,0,0,
+0446800-01-001,Sunnyside Hotel,Guru Sharanam LLC,Central Market,7211,False,0,0,False,0,0,0,
+1367265-07-241,"Richmond Area Multi-Services, Inc.",Richmond Area Multi Serv Inc,Central Market,6214,False,0,0,False,0,0,0,
+1026779-04-151,Steel + Lacquer,Steel + Lacquer LLC,Central Market,8121,True,1,150000.0,False,0.0,8,0.00,Redwood Credit Union
+0380638-03-001,Mid Market Mutts Pet Store,Azar Brothers Inc,Central Market,4451,False,0,0,False,0,0,0,
+1079443-06-161,"S.F. Friends Meeting, Inc.","S.F. Friends Meeting, Inc.",Central Market,8131,False,0,0,False,0,0,0,
+1391763-06-251,"Transparency Analytics, Inc.","Transparency Analytics, Inc.",Central Market,5415,False,0,0,False,0,0,0,
+1351158-01-241,San Francisco Gyrotonic,Christolynn LLC,Central Market,7139,False,0,0,False,0,0,0,
+1320063-12-221,Soliome Inc,Soliome Inc,Central Market,3254,False,0,0,False,0,0,0,
+0457689-01-001,Mercy Housing Ca 50 A Ca Lp,Mercy Housing Ca 50 A Ca Lp,Central Market,6242,False,0,0,False,0,0,0,
+0911744-65-001,Starbucks Coffee #6937,Starbucks Corporation,Central Market,7225,False,0,0,False,0,0,0,
+0469782-01-001,Arista Networks Inc,Arista Networks Inc,Central Market,3342,False,0,0,False,0,0,0,
+1375215-11-241,Munchies & More Market,Dean And Hakim Inc,Central Market,4451,False,0,0,False,0,0,0,
+0012530-04-002,The Hearst Corp,Hearst Corp The,Central Market,5111,False,0,0,False,0,0,0,
+1429133-08-261,"Risely Ai, Inc.","Risely Ai, Inc.",Central Market,5132,False,0,0,False,0,0,0,
+0316083-04-001,San Francisco Chronicle,Hearst Communications Inc,Central Market,5111,False,0,0,False,0,0,0,
+1178131-02-181,Conard House Inc.,Conard House Inc,Central Market,6242,False,0,0,False,0,0,0,
+1391512-06-251,Jay's Grill,Fix It Fast LLC,Central Market,7225,False,0,0,False,0,0,0,
+0470546-01-001,Club Omg!,Club Omg! LLC,Central Market,7224,False,0,0,False,0,0,0,
+1257818-08-201,Waymo LLC,Waymo LLC,Central Market,3361,False,0,0,False,0,0,0,
+0436160-01-001,Oak Tree Hotel,Shivangi LLC,Central Market,7211,False,0,0,False,0,0,0,
+0479019-01-001,Califashions Manufacturing Inc,Califashions Manufacturing Inc,Central Market,3152,False,0,0,False,0,0,0,
+0316083-16-001,Newspaper Administration,Hearst Communications Inc,Central Market,5111,False,0,0,False,0,0,0,
+1275623-04-211,Baart Programs Market,Addiction Resrch & Treatment Inc,Central Market,6214,False,0,0,False,0,0,0,
+1370213-09-241,The Rose - Commercial,"Mercy Housing California X, Lp",Central Market,6242,False,0,0,False,0,0,0,
+1426142-06-261,Most Mini Mart,Most Mini Mart LLC,Central Market,4451,False,0,0,False,0,0,0,
+1203640-10-181,Shn,Broadway San Francisco LLC,Central Market,7111,False,0,0,False,0,0,0,
+1348515-12-231,Orangefitness Theory,Sffit Ms LLC,Central Market,7139,False,0,0,False,0,0,0,
+1180123-02-181,"Tray.Io, Inc",Tray. Io Inc,Central Market,5415,False,0,0,False,0,0,0,
+1364695-06-241,Eddy St Bodega Inc,Eddy St Bodega Inc,Central Market,4451,False,0,0,False,0,0,0,
+1427191-07-261,Satoru Labs,Eof Security LLC,Central Market,5132,False,0,0,False,0,0,0,
+1391007-06-251,1277 Mission,"Afterdark Productions, LLC",Central Market,7113,False,0,0,False,0,0,0,
+1160324-09-171,City Produce,City Produce Market Inc,Central Market,4451,False,0,0,False,0,0,0,
+1019291-02-151,Calworks/Fu Yau Project,Richmond Area Multi Serv Inc,Central Market,6214,False,0,0,False,0,0,0,
+1212299-02-191,"Linqia, Inc.",Lingia Inc,Central Market,5418,False,0,0,False,0,0,0,
+1257375-08-201,Af&Co LLC,Af&Co.,Central Market,5418,False,0,0,False,0,0,0,
+1137701-02-171,"Dcmn, Inc.","Dcmn, Inc.",Central Market,5418,False,0,0,False,0,0,0,
+1233217-09-191,Haojun Sewing  LLC,"Haojun Sewing, LLC",Central Market,3152,False,0,0,False,0,0,0,
+1373358-10-241,C & Y Garment,C & Y Garment Inc,Central Market,3152,False,0,0,False,0,0,0,
+1373850-11-241,Hotel Garrett,Hg Sf Holdings LLC,Central Market,7211,False,0,0,False,0,0,0,
+1056681-02-161,Sf City Attorneys Office,Cra International Inc,Central Market,5419,False,0,0,False,0,0,0,
+1402027-10-251,Sumfer Market Sf LLC,Sumfer Market Sf LLC,Central Market,7225,False,0,0,False,0,0,0,
+1056704-02-161,Impark 0314,Imperial Parking (Us) LLC,Central Market,8129,False,0,0,False,0,0,0,
+0467522-01-001,Third & Leconte Assoc A Ca Lp,Third & Leconte Assoc A Ca Lp,Central Market,6242,False,0,0,False,0,0,0,
+0481879-01-001,Mo'z Cafe Inc,Mo'z Cafe Inc,Central Market,7225,True,1,102700.0,False,0.0,7,10269.96,"Lendistry SBLC, LLC"
+1252953-06-201,Mr Tipple's Recording Studio,Angelica Root LLC,Central Market,7225,True,1,200000.0,False,0.0,12,0.00,Live Oak Banking Company
+1358915-04-241,Yotel San Francisco,Madison Market Street Lending LLC,Central Market,7211,False,0,0,False,0,0,0,
+1334026-05-231,Yotel Hotel,Sage Client 577 LLC,Central Market,7211,False,0,0,False,0,0,0,
+1195222-07-181,Washburn Housing Corporation,Washburn Housing Corporation,Central Market,6242,False,0,0,False,0,0,0,
+1347357-11-231,Exclusive Parking Management,Exclusive Parking Management LLC,Central Market,8129,False,0,0,False,0,0,0,
+1278974-06-211,Taqueria Angelicas,Bay Area Mobile Catering Inc,Central Market,7223,False,0,0,False,0,0,0,
+1380319-02-251,"Cleva Payments, Inc.","Cleva Payments, Inc.",Central Market,5419,False,0,0,False,0,0,0,
+0467521-01-001,Mercy Housing Ca 57 A Ca Lp,Mercy Housing Ca 57 A Ca Lp,Central Market,6242,False,0,0,False,0,0,0,
+1257137-08-201,"Hound Technology, Inc/Honeycomb",Hound Technology Inc,Central Market,5415,False,0,0,False,0,0,0,
+1146947-05-171,San Francisco Proper Hotel,"Sf Hotel Master Tenant, LLC",Central Market,7211,False,0,0,False,0,0,0,
+0466886-01-001,Mercy Housing Ca Xliv Ca Lp,Mercy Housing Ca Xliv Ca Lp,Central Market,6242,False,0,0,False,0,0,0,
+1376886-12-241,Potter Hotel,"Cuz Of God, LLC",Central Market,7211,False,0,0,False,0,0,0,
+1203637-10-181,The Pawn Shop,The Pawn Shop LLC,Central Market,7225,False,0,0,False,0,0,0,
+1275590-04-211,Point One Navigation Offices,"Point One Navigation, Inc.",Central Market,5415,False,0,0,False,0,0,0,
+0375063-01-001,Speed Queen Coin Laundry Inc,Speed Queen Coin Laundry Inc,Central Market,8123,False,0,0,False,0,0,0,
+1217645-04-191,Electromania,"Sks Family Enterprises, Inc.",Central Market,4552,False,0,0,False,0,0,0,
+0429331-02-001,The Warfield Theater,Aeg Live LLC,Central Market,7113,False,0,0,False,0,0,0,
+1084069-07-161,"Asian, Inc.",Asian Inc,Central Market,5419,False,0,0,False,0,0,0,
+1380233-02-251,Haru By Sams,Kpp Beer Inc,Central Market,7224,False,0,0,False,0,0,0,
+1384585-03-251,"Decisional Ai, Inc.","Decisional Ai, Inc.",Central Market,5132,False,0,0,False,0,0,0,
+1435114-10-261,Mi Cocina Cafe Con Leche,Mi Cocina Cafe Con Leche LLC,Central Market,7225,False,0,0,False,0,0,0,
+0115774-02-002,Eddies Bookstores Inc Etc,Eddies Bookstores Inc,Central Market,4599,False,0,0,False,0,0,0,
+1337485-07-231,Synergy Apparel2 LLC,Synergy Apparel2 LLC,Central Market,3152,False,0,0,False,0,0,0,
+1384539-03-251,Glhq Inc.,Glhq Inc.,Central Market,8134,False,0,0,False,0,0,0,
+1126972-11-161,Geary Place LLC,Geary Place LLC,Central Market,8129,False,0,0,False,0,0,0,
+1053683-02-161,Peer Based Division,Richmond Area Multi Serv Inc,Central Market,6214,False,0,0,False,0,0,0,
+0459824-01-001,"Mercy Housing Ca 53, A Ca Lp","Mercy Housing Ca 53, A Ca Lp",Central Market,6242,False,0,0,False,0,0,0,
+1228355-07-191,Go Go Market And Deli Inc,Go Go Market And Deli Inc,Central Market,4451,False,0,0,False,0,0,0,
+1299176-03-221,Ikea Us Retail LLC,Ikea Us Retail LLC,Central Market,4491,False,0,0,False,0,0,0,
+0445533-01-005,Blue Bottle Coffee LLC,Blue Bottle Coffee LLC,Central Market,7225,False,0,0,False,0,0,0,
+1365611-07-241,Little Caesars,Ap Foods Inc.,Central Market,7225,False,0,0,False,0,0,0,
+1316756-10-221,Ace Parking Management Inc,Ace Parking Management Inc,Central Market,8129,False,0,0,False,0,0,0,
+1137011-02-171,Non Plus Ultra,Npu Inc,Central Market,7113,False,0,0,False,0,0,0,
+0403437-01-002,Bluebird Office Supplies,Image Source Inc,Central Market,4594,False,0,0,False,0,0,0,
+0470546-02-001,Omg!,Club Omg! LLC,Central Market,7224,False,0,0,False,0,0,0,
+1390588-05-251,Salvage Studio Sf LLC,Salvage Studio Sf LLC,Central Market,8114,False,0,0,False,0,0,0,
+1210596-01-191,Bei San Francisco,Com Howard I LLC,Central Market,7211,False,0,0,False,0,0,0,
+1308480-06-221,Sf Apparel Inc,Sf Apparel Inc,Central Market,3152,False,0,0,False,0,0,0,
+1376322-12-241,Foodture,First Choice Vending Inc.,Central Market,4451,False,0,0,False,0,0,0,
+1015823-01-151,Ch Parking LLC,Ch Service Co Holdings LLC,Central Market,8129,False,0,0,False,0,0,0,
+1328084-03-231,"Laz Parking California, LLC",Laz Parking California LLC,Central Market,8129,False,0,0,False,0,0,0,
+1406147-12-251,Everself,Bariendo Inc,Central Market,5416,False,0,0,False,0,0,0,
+1152776-06-171,Mercy Housing California 51  A California Limited Partnership,Mercy Housing Ca 51 A Ca Lp,Central Market,6242,False,0,0,False,0,0,0,
+1389075-05-251,Halal Modena Pizza,Tassili Pizza Inc,Central Market,7225,False,0,0,False,0,0,0,
+1433137-09-261,Nexor Ai,"Nexor Ai, Inc.",Central Market,5132,False,0,0,False,0,0,0,
+0466549-01-001,1100 Ocean Avenue Lp,1100 Ocean Avenue Lp,Central Market,6242,False,0,0,False,0,0,0,
+1323019-02-231,Eurest Dining-Bank Of,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,
+1078764-06-161,Harvey M Rose Associates LLC,Harvey M Rose Associates LLC,Central Market,5416,False,0,0,False,0,0,0,
+1293880-12-211,Baart Programs Market Street,Addiction Resrch & Treatment Inc,Central Market,6214,False,0,0,False,0,0,0,
+1276434-04-211,"Convalesce, Inc.","Convalesce, Inc.",Central Market,5417,False,0,0,False,0,0,0,
+0383859-01-001,Mcginnis Chen Associates Inc,Mcginnis Chen Associates Inc,Central Market,5413,False,0,0,False,0,0,0,
+1192496-06-181,Celo,A Protocol Inc,Central Market,5415,False,0,0,False,0,0,0,
+0316083-06-001,Sfgate.Com,Hearst Communications Inc,Central Market,5111,False,0,0,False,0,0,0,
+1205598-11-181,The Barbary Coast Pastry And Coffee,"Mav, Inc",Central Market,7225,False,0,0,False,0,0,0,
+1369097-08-241,Taxgpt Inc,Taxgpt Inc,Central Market,5132,False,0,0,False,0,0,0,
+1362950-06-241,The Rose,"Mercy Housing California X, Lp",Central Market,6242,False,0,0,False,0,0,0,
+1236346-10-191,Foodworks,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,
+1126947-11-161,Pro Park America West LLC,Propark America West LLC,Central Market,8129,False,0,0,False,0,0,0,
+1085153-07-161,Baart,Addiction Resrch & Treatment Inc,Central Market,6214,False,0,0,False,0,0,0,
+1323210-02-231,Canteen @ Wework 1460 Mission Street,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,
+1338291-07-231,Ease Of Living Inc,Ease Of Living Inc,Central Market,4445,False,0,0,False,0,0,0,
+1243775-01-201,"Systra Consulting, Inc.","Systra Consulting, Inc",Central Market,5413,False,0,0,False,0,0,0,
+1211187-01-191,Binis Kitchen LLC,Binis Kitchen LLC,Central Market,7225,False,0,0,False,0,0,0,
+1340095-08-231,Qua Spa,Ocean Wellness Works LLC,Central Market,8129,False,0,0,False,0,0,0,
+1338918-07-231,New Performance Traditions Paul Dresher Ensemble,Musical Traditions Inc,Central Market,7111,False,0,0,False,0,0,0,
+1427600-07-261,Metro By T-Mobile,Techno Ca LLC,Central Market,5171,False,0,0,False,0,0,0,
+1347915-12-231,Saluhall Sf Inc.,Saluhall Sf Inc.,Central Market,7225,False,0,0,False,0,0,0,
+1305446-05-221,Ava 55 Ninth,Where I Park Usa Inc.,Central Market,5416,False,0,0,False,0,0,0,
+1246871-02-201,Canteen,Compass Group Usa Inc,Central Market,7223,False,0,0,False,0,0,0,
+1241146-12-191,Afterburner Studios,Afterburner Co,Central Market,5132,False,0,0,False,0,0,0,
+1397630-08-251,The Vita Brevis Club,Vbc Sf LLC,Central Market,4539,False,0,0,False,0,0,0,
+1387583-04-251,Nursel Central Asian & Russian Cuisine,Nursel LLC,Central Market,7225,False,0,0,False,0,0,0,
+0111663-06-001,Orpheum Theatre,Broadway San Francisco LLC,Central Market,7111,False,0,0,False,0,0,0,
+1376349-12-241,Burma Love 2,Burma Inc,Central Market,4451,False,0,0,False,0,0,0,
+1123854-10-161,Richmond Area Multi Serv Inc,Richmond Area Multi Serv Inc,Central Market,6214,False,0,0,False,0,0,0,
+1429677-08-261,Taqueria Mexico 1986,Azteci LLC,Central Market,7225,False,0,0,False,0,0,0,
+1193662-06-181,Corporation For Supportive Housing,Corporation For Supportive Housing,Central Market,6242,False,0,0,False,0,0,0,
+1298448-02-221,G.Rabbit,G.Rabbit LLC,Central Market,7225,False,0,0,False,0,0,0,
+1282809-07-211,Tradespace,Tradespace Inc,Central Market,5182,False,0,0,False,0,0,0,
+1216336-03-191,Square Pie Guys,Adam Madison LLC,Central Market,7225,False,0,0,False,0,0,0,
+1384442-03-251,Easesf,Ease Of Living Inc,Central Market,4445,False,0,0,False,0,0,0,
+1024600-04-151,Chico's Pizza,Sados Corporation,Central Market,7225,False,0,0,False,0,0,0,
+1361799-05-241,200 Channels LLC,200 Channels LLC,Central Market,7111,False,0,0,False,0,0,0,
+1340993-08-231,Crazy Horse,"Caballo Loco, LLC",Central Market,7224,False,0,0,False,0,0,0,
+0486249-02-001,15five Inc,15five Inc,Central Market,5415,False,0,0,False,0,0,0,
+1273032-03-211,6th Street Gift & More,6th Street Gift & More Inc,Central Market,4451,False,0,0,False,0,0,0,
+1366016-07-241,Nom Tl Community Benefit Corp,Nom Tl Community Benefit Corp,Central Market,8134,False,0,0,False,0,0,0,
+1003080-07-141,Hampton Inn San Francisco Downtown Convention Center,Mint Development Lp,Central Market,7211,False,0,0,False,0,0,0,
+1193022-06-181,National Apparel LLC,National Apparel LLC,Central Market,3152,False,0,0,False,0,0,0,
+0446962-01-001,Law Off Michael Gurfinkel Inc,Law Off Michael Gurfinkel Inc,Central Market,5411,False,0,0,False,0,0,0,
+1119346-09-161,Street Taco,Df La Capital LLC,Central Market,7225,False,0,0,False,0,0,0,
+1138356-03-171,"Waypoint Consulting, Inc.","Waypoint Consulting, Inc",Central Market,5416,False,0,0,False,0,0,0,
+1366550-07-241,Civic Center Cafe & Deli,Civic Center Market LLC,Central Market,4451,False,0,0,False,0,0,0,
