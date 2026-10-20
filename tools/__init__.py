@@ -25,6 +25,7 @@ from tools.scoring_engine import (
     logistic_survival_probability,
     marginal_survival_lift,
     optimal_runway_inflection_point,
+    optimize_portfolio_knapsack,
     people_helped_score,
     piecewise_root_supplier_multiplier,
     run_all_regimes_comparison,
@@ -35,7 +36,6 @@ from tools.scoring_engine import (
     structural_viability_gate,
     supply_cascade_score,
     upstream_asymmetry_and_cascade_multiplier,
-    optimize_portfolio_knapsack,
 )
 from tools.compliance_reporter import (
     evaluate_red_team_compliance,
@@ -55,6 +55,13 @@ from tools.bigquery_connector import (
     trace_applicant_multihop_paths_and_compare,
     traverse_corridor_graph_gql,
 )
+from tools.mcp_bigquery_toolset import (
+    create_adk_managed_bigquery_toolset,
+    create_bigquery_builtin_mcp_toolset,
+    create_mcp_toolbox_bigquery_toolset,
+    get_google_managed_bigquery_mcp_toolsets,
+    get_mcp_bigquery_server_status,
+)
 
 __all__ = [
     "BigQueryGraphConnector",
@@ -71,6 +78,9 @@ __all__ = [
     "community_anchor_score",
     "compute_applicant_utility",
     "compute_sensitivity_and_robust_awardees",
+    "create_adk_managed_bigquery_toolset",
+    "create_bigquery_builtin_mcp_toolset",
+    "create_mcp_toolbox_bigquery_toolset",
     "cyclical_viability_factor",
     "discover_unapplied_bottlenecks",
     "ensure_bigquery_property_graph",
@@ -83,8 +93,10 @@ __all__ = [
     "format_red_team_compliance_report_markdown",
     "get_bq_enriched_corridor_sql",
     "get_canonical_applicants",
+    "get_google_managed_bigquery_mcp_toolsets",
     "get_gql_multihop_cascade_sql",
     "get_gql_shortest_path_trace_sql",
+    "get_mcp_bigquery_server_status",
     "get_property_graph_ddl",
     "haversine_distance_meters",
     "jaccard_similarity",
