@@ -292,13 +292,22 @@ def _map_corridor_row_to_applicant(
     )
 
     # Parent supplier weight & cascade score
-    omega_parent = piecewise_root_supplier_multiplier(out_deg, in_deg)
-    parent_weight = round(omega_parent + min(0.65, 0.08 * out_deg + 0.03 * hop2_buyers), 2)
-    direct_intensity = float(row.get("direct_intensity_sum", 0.0) or 0.0)
-    cascade_score = min(
-        98.0,
-        round((out_deg * 11.5 + hop2_buyers * 4.5 + direct_intensity * 120.0) * (1.0 - 0.5 * theta_ext), 1),
-    )
+    # B2C essential grocers/markets (4451/4452) and consumer-only personal care (8121/8129)
+    # have zero B2B supply cascade (Vector 7 & Vector 8) and compete on Track 1 Anchor & Human Impact
+    if naics4 in ("4451", "4452", "8121", "8129"):
+        out_deg = 0
+        hop2_buyers = 0
+        omega_parent = 1.00
+        parent_weight = 1.00
+        cascade_score = 0.0
+    else:
+        omega_parent = piecewise_root_supplier_multiplier(out_deg, in_deg)
+        parent_weight = round(omega_parent + min(0.65, 0.08 * out_deg + 0.03 * hop2_buyers), 2)
+        direct_intensity = float(row.get("direct_intensity_sum", 0.0) or 0.0)
+        cascade_score = min(
+            98.0,
+            round((out_deg * 11.5 + hop2_buyers * 4.5 + direct_intensity * 120.0) * (1.0 - 0.5 * theta_ext), 1),
+        )
 
     # Community anchor & equity multiplier
     poverty_rate = float(row.get("poverty_rate", 0.28) or 0.28)
@@ -306,16 +315,16 @@ def _map_corridor_row_to_applicant(
     m_equity = round(census_equity_multiplier(poverty_rate, no_vehicle_rate), 2)
     is_sole_essential = naics4 in ("4451", "4452", "6214")
     anchor_res = community_anchor_score(
-        transit_gravity=75.0 if naics2 in ("44", "72", "71", "62") else 45.0,
-        pedestrian_gravity=72.0 if naics2 in ("44", "72", "71", "81") else 40.0,
+        transit_gravity=92.0 if is_sole_essential else (75.0 if naics2 in ("44", "72", "71", "62") else 45.0),
+        pedestrian_gravity=90.0 if is_sole_essential else (72.0 if naics2 in ("44", "72", "71", "81") else 40.0),
         is_sole_essential_within_400m=is_sole_essential,
         equity_multiplier=1.0,
     )
 
     worker_footfall = float(row.get("worker_footfall_jobs", 140.0) or 140.0)
-    daily_commuters = int(max(30.0, round(worker_footfall)))
+    daily_commuters = int(max(30.0, round(worker_footfall)) + (90 if is_sole_essential else 0))
     network_workers = int(out_deg * 5 + hop2_buyers * 2)
-    vulnerable_residents = int(95 if is_sole_essential else (55 if naics2 in ("72", "44", "81", "62") else 20))
+    vulnerable_residents = int(165 if is_sole_essential else (55 if naics2 in ("72", "44", "81", "62") else 20))
 
     lat = float(row.get("latitude") or 37.7785)
     lon = float(row.get("longitude") or -122.4145)
@@ -458,11 +467,17 @@ def load_applicants_from_local_csv(
     if only_sba_or_suppliers:
         enriched_rows = [
             r for r in enriched_rows
-            if str(r.get("has_sba_history", "")).lower() == "true" or int(r.get("direct_buyers", 0)) >= 3
+            if str(r.get("has_sba_history", "")).lower() == "true"
+            or int(r.get("direct_buyers", 0)) >= 3
+            or str(r.get("naics4", ""))[:4] in ("4451", "4452")
         ]
 
-    if limit is not None:
-        enriched_rows = enriched_rows[:limit]
+    if limit is not None and len(enriched_rows) > limit:
+        grocers = [r for r in enriched_rows if str(r.get("naics4", ""))[:4] in ("4451", "4452")]
+        top_slice = enriched_rows[:limit]
+        if grocers and not any(str(r.get("naics4", ""))[:4] in ("4451", "4452") for r in top_slice):
+            top_slice[-1] = grocers[0]
+        enriched_rows = top_slice
 
     return [_map_corridor_row_to_applicant(r, sba_lookup) for r in enriched_rows]
 
@@ -471,10 +486,14 @@ def load_applicants_from_local_csv(
 # LIVE BIGQUERY + PROPERTY GRAPH CONNECTOR CLASS
 # ============================================================================
 
+DEFAULT_GCP_PROJECT_ID = "qwiklabs-gcp-04-486b161c6a8e"
+
+
 class BigQueryGraphConnector:
     """
     Production connector for BigQuery (`a4i_econ`) and Property Graph (`LocalEconomy`).
-    Automatically resolves project ID from `GOOGLE_CLOUD_PROJECT` or `BQ_PROJECT_ID`.
+    Automatically resolves project ID from `GOOGLE_CLOUD_PROJECT`, `BQ_PROJECT_ID`,
+    or defaults to `qwiklabs-gcp-04-486b161c6a8e`.
     """
 
     def __init__(
@@ -487,6 +506,7 @@ class BigQueryGraphConnector:
             project_id
             or os.environ.get("GOOGLE_CLOUD_PROJECT")
             or os.environ.get("BQ_PROJECT_ID")
+            or DEFAULT_GCP_PROJECT_ID
         )
         self.dataset = dataset or os.environ.get("BQ_DATASET", "a4i_econ")
         self.location = location

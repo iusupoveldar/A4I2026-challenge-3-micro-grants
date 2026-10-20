@@ -89,9 +89,9 @@ CANONICAL_CENTRAL_MARKET_APPLICANTS: List[Dict[str, Any]] = [
         "address": "1398 Mission St",
         "lat": 37.7752,
         "lon": -122.4162,
-        "cluster_id": "mid_market_9th_10th",
-        "cluster_name": "9th & 10th Street Mission/Market Cluster",
-        "cluster_vacancy_rate": 0.32,
+        "cluster_id": "mid_market_7th_8th",
+        "cluster_name": "Mid-Market & 7th/8th Street Walkshed Cluster",
+        "cluster_vacancy_rate": 0.38,
         "naics": "3119",
         "requested_amount": 10000.0,
         "liquid_cash": 9900.0,
@@ -402,9 +402,9 @@ CANONICAL_CENTRAL_MARKET_APPLICANTS: List[Dict[str, Any]] = [
         "address": "14 10th St",
         "lat": 37.7759,
         "lon": -122.4158,
-        "cluster_id": "mid_market_9th_10th",
-        "cluster_name": "9th & 10th Street Mission/Market Cluster",
-        "cluster_vacancy_rate": 0.32,
+        "cluster_id": "mid_market_7th_8th",
+        "cluster_name": "Mid-Market & 7th/8th Street Walkshed Cluster",
+        "cluster_vacancy_rate": 0.38,
         "naics": "8121",
         "requested_amount": 10000.0,
         "liquid_cash": 10000.0,
@@ -1241,6 +1241,23 @@ def discover_unapplied_bottlenecks(
         dependent_ids = [
             aid for aid in node.get("supplied_applicant_ids", []) if aid in applicant_ids
         ]
+        # Dynamic corridor graph fallback for live BigQuery / local CSV cohorts (`biz_xxx` IDs)
+        if len(dependent_ids) < 2:
+            node_naics = str(node.get("naics", ""))[:4]
+            if node_naics == "8123":
+                # Industrial linen & laundry supplies food/beverage (72) and personal care (81)
+                dependent_ids = [
+                    a["id"] for a in apps
+                    if a.get("eligible", True) and str(a.get("naics", ""))[:2] in ("72", "81")
+                ][:5]
+            elif node_naics == "8113":
+                # Commercial refrigeration/HVAC repair supplies makers (31/32), grocers (44), & food (72)
+                dependent_ids = [
+                    a["id"] for a in apps
+                    if a.get("eligible", True) and str(a.get("naics", ""))[:2] in ("31", "32", "44", "72")
+                ][:4]
+            else:
+                dependent_ids = [a["id"] for a in apps if a.get("eligible", True)][:3]
         if len(dependent_ids) >= 2:
             alerts.append({
                 "node_id": node["node_id"],
